@@ -1,0 +1,3 @@
+- Übungsdaten nach Trenner durchsucht 
+- Stoppwords,lemma, normalisieren und entfernen von sonderzeichen
+- Speichern in formatierter textdatei
