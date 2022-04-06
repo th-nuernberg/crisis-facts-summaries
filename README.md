@@ -1,5 +1,10 @@
 # It Projekt
-
+Before running Files from Felix or Marcus, install all needed packages [List of them will be added]
+for named entity recognition Spacy needs a file which contains named the named entities, get the file
+that is used in this project with:
+'''
+python -m spacy download en_core_web_sm
+'''
 
 
 ## Getting started
