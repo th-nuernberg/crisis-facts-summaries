@@ -1,0 +1,31 @@
+html {
+    text-align: center;
+    }
+#Label{
+    align-self: left;
+    float: left;
+}
+.Insert_Form {
+    margin: 5em;
+}
+#text_area{
+    resize: none;
+    width: 100%;
+    height: 100%;
+}
+.time_D_Graph{
+    margin: 5em;
+}
+#TDGraph{
+    border: 2px solid black;
+}
+#Summary {
+    border: 1px solid black;
+}
+.text_summary{
+    margin: 5em;
+}
+#start_summary{
+    margin-top: 0em;
+    text-align: left;
+}
