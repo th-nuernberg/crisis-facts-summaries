@@ -9,13 +9,13 @@ import matplotlib.pyplot as plt
 from helper_funct_token_txt import artikel_tokenice
 
 
-files = os.listdir("marcus\\data\\tokens")
+files = os.listdir("D:\\Meine Dateien\\Uni\\IT-Projekt\Arbeit\\it-projekt\\marcus\\data\\tokens")
 if len(files) == 0:
     artikel_tokenice()
 
 
 #test Graph making
-with open("marcus\\data\\tokens\\Final.txt", encoding="utf-8") as file:
+with open("D:\\Meine Dateien\\Uni\\IT-Projekt\Arbeit\\it-projekt\\marcus\\data\\tokens\\Final.txt", encoding="utf-8") as file:
         full_text = file.read()
         tokens =  full_text.split(";")
 tokens = re.findall(r"\'\w+\'", full_text)
