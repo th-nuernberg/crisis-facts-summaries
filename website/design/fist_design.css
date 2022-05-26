@@ -1,6 +1,19 @@
 html {
     text-align: center;
     }
+#Parameters{
+    align-self: left;
+    float: left;
+    margin-left: 5em;
+    margin-bottom: 1em;
+}
+.params {
+    margin-bottom: 10px;
+}
+.para_label{
+    display: inline-block;
+    width: 110px;
+}
 #Label{
     align-self: left;
     float: left;
@@ -21,11 +34,12 @@ html {
 }
 #Summary {
     border: 1px solid black;
+    padding: 0.5em;
 }
 .text_summary{
     margin: 5em;
 }
 #start_summary{
-    margin-top: 0em;
+    margin: 0em;
     text-align: left;
 }
