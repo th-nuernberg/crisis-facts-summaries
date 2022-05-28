@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+    <html lang="de">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" type="text/css" href="design/fist_design.css">
+
+            <title>IT-Projekt</title>
+            <script src="javascript/mock_scripts.js"></script>
+        </head>
+    <body onload="initAssignment()">
+        <form id="Parameters">
+            <div class="params">
+                <label class="param_label" for="ngram">N-gramms:</label>
+                <input id="ngram" type="text" name="ngram"  placeholder="Number of Word-Gramms"><br>
+            </div>
+            <div class="params">
+                <label class="param_label" for="time">Timespan:</label>
+                <input id="time" type="text" name="time"  placeholder="Timespan, single hour of a day"><br>
+            </div>
+            <div class="params">
+                <label class="param_label"  for="weight">Weight:</label>
+                <input id="weight" type="text" name="weight"  placeholder="The weight of a Sentence"><br>
+            </div>
+            <div class="params">
+                <label class="param_label" for="max_length">Max. Length:</label>
+                <input id="max_length" type="text" name="max_length"  placeholder="The max Length the Summary should have"><br>
+            </div>
+        </form>
+
+        <div class="Insert_Form">
+                <label id="Label" for="text">Such-Parameter</label>
+                <textarea id="text_area" name="text" cols="35" rows="4"  placeholder="What should the Summary be about?"></textarea> 	
+                <button id="calculate_button" type="button">Auswerten</button>
+        </div>
+
+        <div>
+            <canvas id="myChart" width="400" height="400"></canvas>
+            <script src="node_modules/chart.js"></script>
+            <script src="javascript/my-chart.js"></script>
+        </div>
+
+        <div class="text_summary">
+            <article id="Summary">
+                <h1 id="start_summary">Zusammenfassung:</h1>
+            </article>
+        </div>
+    </body>
+</html> 
