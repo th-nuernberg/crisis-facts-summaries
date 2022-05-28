@@ -29,8 +29,14 @@ html {
 .time_D_Graph{
     margin: 5em;
 }
-#TDGraph{
-    border: 2px solid black;
+#Graph{
+    width: 80%;
+    margin-left: 10em;
+    margin-right: 10em;
+}
+#myChart{
+    width: 600; 
+    height: 200;
 }
 #Summary {
     border: 1px solid black;
