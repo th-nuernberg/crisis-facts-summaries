@@ -1,11 +1,23 @@
 html {
     text-align: center;
     }
-#Parameters{
+    
+.Parameters{
     align-self: left;
-    float: left;
+    
     margin-left: 5em;
     margin-bottom: 1em;
+    padding-right: 70%;
+}
+.param_label{
+    align-self: left;
+    float: left;
+}
+.param_input{
+    align-self: left;
+    float: left;
+    width: 80%;
+    margin-left: 0.5em;
 }
 .params {
     margin-bottom: 10px;
@@ -20,6 +32,7 @@ html {
 }
 .Insert_Form {
     margin: 5em;
+    margin-top: 1em;
 }
 #text_area{
     resize: none;
@@ -29,14 +42,8 @@ html {
 .time_D_Graph{
     margin: 5em;
 }
-#Graph{
-    width: 80%;
-    margin-left: 10em;
-    margin-right: 10em;
-}
-#myChart{
-    width: 600; 
-    height: 200;
+#TDGraph{
+    border: 2px solid black;
 }
 #Summary {
     border: 1px solid black;
