@@ -1,5 +1,0 @@
-Für Build:
-docker build -t <Name> . 
-
-Für Ausführen:
-docker run -d -p 8082:80 <Name>
