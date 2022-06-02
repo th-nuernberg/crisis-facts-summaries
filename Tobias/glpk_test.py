@@ -75,9 +75,10 @@ def calculateOccurrences(bigramList, sentenceBigramList):
                 occ[i][j] = 1
     return occ
 
-# TODO: die längenbeschränkung funktioniert irgendwie nicht mehr richtig -> fixen
 def calculateSummary(saetze, weights, occurrences, length):
-    i = len(w)  # Anzahl der Konzepte
+    i = len(weights)  # Anzahl der Konzepte
+    l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
+    j = len(saetze)
     begin('test konzepte')
     c = var('c', i, kind=bool)  # ist ein konzept im Summary enhalten
     s = var('s', j, kind=bool)  # ist ein Satz im Summary enthalten
@@ -93,6 +94,7 @@ def calculateSummary(saetze, weights, occurrences, length):
     for b in range(j):
         # print(s[b].primal)
         if s[b].primal == 1.0:
+            print(b)
             summary.append(saetze[b])
     return summary
 
@@ -106,8 +108,8 @@ saetze = ["hallo wie geht es",
           "test satz 2"
           ]
 
-l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
-j = len(saetze)  # anzahl Sätze
+# l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
+# j = len(saetze)  # anzahl Sätze
 
 w = [1,  # hallo    Gewichte der Konzepte, hier Wörter
      2,  # wie
@@ -126,7 +128,7 @@ Occ = [  # ob ein Konzept in einem Satz enthalten ist
     [0, 0, 0, 0, 1, 1, 0, 1],
 ]
 
-L = 100  # Anzhal Buchstaben im Summary
+L = 500  # Anzhal Buchstaben im Summary
 
 # print(calculateSummary(saetze, w, Occ, L))
 
@@ -135,26 +137,30 @@ print(data[0])
 sentences = extractSentences(data)
 print(sentences[0])
 bigramsPerDocument = extractBigramsPerDocument(sentences)
-print(bigramsPerDocument['7b32de22a8f61f2c6d86e40a5a786cc7'])
+#print(bigramsPerDocument['7b32de22a8f61f2c6d86e40a5a786cc7'])
 bigramWeights = extractWeightPerBigram(bigramsPerDocument)
-print(bigramWeights['amid_heavy'])
+#print(bigramWeights['amid_heavy'])
 occ = calculateOccurrences(list(bigramWeights.keys()), [s['bigrams'] for s in sentences])
-print(occ[1])
+#print(occ[1])
+print("occurrences ready")
 weights = list(bigramWeights.values())
 saetzeList = [s['sentence'] for s in sentences]
+print(len(weights))
+print(len(saetzeList))
 summarySenetences = calculateSummary(saetzeList, weights, occ, L)
+
+
+testBigrams = ['hallo', 'wie', 'geht', 'es', 'test', 'satz', 'bla', '2']
+testSatzBigrams = [s.split() for s in saetze]
+
+#occ = calculateOccurrences(testBigrams, testSatzBigrams)
+#print(occ)
+
+#summarySenetences = calculateSummary(saetze, w, occ, L)
+
 
 totalLength = 0
 for s in summarySenetences:
     print(s)
     totalLength += len(s)
 print(totalLength)
-
-
-"""
-testBigrams = ['hallo', 'wie', 'geht', 'es', 'test', 'satz', 'bla', '2']
-testSatzBigrams = [s.split() for s in saetze]
-print(testSatzBigrams)
-occ = calculateOccurrences(testBigrams, testSatzBigrams)
-print(occ)
-"""
