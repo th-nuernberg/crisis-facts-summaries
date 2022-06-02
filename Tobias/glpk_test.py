@@ -1,12 +1,10 @@
 import json
 
 from pymprog import *
-import pandas as pd
 import json
 import re
-import numpy as np
 
-pathToFile = "../prepared/26.relonly.jsonl"
+pathToFile = "../prepared/28.relonly.jsonl"
 
 
 def readInput():
@@ -28,7 +26,7 @@ def bigramme(text):
             result.append(words[i] + "_" + words[i + 1])
     return result
 
-
+# TODO: split ist zu allgemein und trennt z. B. auch bei "1.5" und "B. Fischer" -> verbessern
 def extractSentences(rawDicts):
     sentencesDicts = []
     sentenceId = 0
@@ -75,7 +73,8 @@ def calculateOccurrences(bigramList, sentenceBigramList):
                 occ[i][j] = 1
     return occ
 
-def calculateSummary(saetze, weights, occurrences, length):
+# TODO: dies ist zu ressourcenintensiv -> doch direkt mit glpk? Kann das optimiert werden?
+def calculateSummary(saetze, weights, occurrences, totalLength):
     i = len(weights)  # Anzahl der Konzepte
     l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
     j = len(saetze)
@@ -83,7 +82,7 @@ def calculateSummary(saetze, weights, occurrences, length):
     c = var('c', i, kind=bool)  # ist ein konzept im Summary enhalten
     s = var('s', j, kind=bool)  # ist ein Satz im Summary enthalten
     maximize(sum(weights[a] * c[a] for a in range(i)))
-    sum(l[b] * s[b] for b in range(j)) <= length
+    sum(l[b] * s[b] for b in range(j)) <= totalLength
     for a in range(i):
         sum(s[b] * occurrences[b][a] for b in range(j)) >= c[a]
         for b in range(j):
@@ -96,6 +95,45 @@ def calculateSummary(saetze, weights, occurrences, length):
         if s[b].primal == 1.0:
             print(b)
             summary.append(saetze[b])
+    return summary
+
+
+# TODO: this can go (slightly) above the max size
+def calculateSummaryGreedy(saetze, weights, occurrences, maxTotalLength):
+    sentenceIndices = []
+    totalLength = 0
+    ngramValuable = [1 for a in weights]
+    while totalLength < maxTotalLength:
+        print(totalLength)
+        # calculate total value for all sentences
+        sentenceValue = [0 for a in saetze]
+        for i in range(len(saetze)):
+            for j in range(len((weights))):
+                sentenceValue[i] += occurrences[i][j] * weights[j] * ngramValuable[j]
+            if i % 1000 == 0:
+                print(i)
+        # get maximum value per length
+        maxVal = 0
+        maxSentence = -1
+        for i in range(len(sentenceValue)):
+            val = sentenceValue[i] / len(saetze[i])
+            if maxVal < val:
+                maxVal = val
+                maxSentence = i
+
+        # add senetence index to the used sentences and remove the used ngrams from the valuable list
+        sentenceIndices.append(maxSentence)
+        totalLength += len(saetze[maxSentence])
+        for i in range(len(occurrences[maxSentence])):
+            if ngramValuable[i] == 1 & occurrences[maxSentence][i] == 1:
+                ngramValuable[i] = 0
+        print("Sentence selected:")
+        print(saetze[maxSentence])
+
+    summary = []
+    for i in sentenceIndices:
+        summary.append(saetze[i])
+
     return summary
 
 
@@ -137,26 +175,25 @@ print(data[0])
 sentences = extractSentences(data)
 print(sentences[0])
 bigramsPerDocument = extractBigramsPerDocument(sentences)
-#print(bigramsPerDocument['7b32de22a8f61f2c6d86e40a5a786cc7'])
+# print(bigramsPerDocument['7b32de22a8f61f2c6d86e40a5a786cc7'])
 bigramWeights = extractWeightPerBigram(bigramsPerDocument)
-#print(bigramWeights['amid_heavy'])
+# print(bigramWeights['amid_heavy'])
 occ = calculateOccurrences(list(bigramWeights.keys()), [s['bigrams'] for s in sentences])
-#print(occ[1])
+# print(occ[1])
 print("occurrences ready")
 weights = list(bigramWeights.values())
 saetzeList = [s['sentence'] for s in sentences]
 print(len(weights))
 print(len(saetzeList))
-summarySenetences = calculateSummary(saetzeList, weights, occ, L)
-
+summarySenetences = calculateSummaryGreedy(saetzeList, weights, occ, L)
 
 testBigrams = ['hallo', 'wie', 'geht', 'es', 'test', 'satz', 'bla', '2']
 testSatzBigrams = [s.split() for s in saetze]
 
-#occ = calculateOccurrences(testBigrams, testSatzBigrams)
-#print(occ)
+# occ = calculateOccurrences(testBigrams, testSatzBigrams)
+# print(occ)
 
-#summarySenetences = calculateSummary(saetze, w, occ, L)
+# summarySenetences = calculateSummary(saetze, w, occ, L)
 
 
 totalLength = 0
