@@ -26,12 +26,13 @@ def bigramme(text):
             result.append(words[i] + "_" + words[i + 1])
     return result
 
-# TODO: split ist zu allgemein und trennt z. B. auch bei "1.5" und "B. Fischer" -> verbessern
+
+# TODO: split ist zu allgemein und trennt z. B. auch bei "B. Fischer" -> verbessern
 def extractSentences(rawDicts):
     sentencesDicts = []
     sentenceId = 0
     for rawDict in rawDicts:
-        sentences = rawDict['content'].split('.')
+        sentences = re.split("\.\s", rawDict['content'])
         sentences = list(map(lambda x: x.strip() + ".", sentences))
         for sentence in sentences:
             sentencesDicts.append(dict([("timestamp", rawDict['timestamp']),
@@ -72,6 +73,7 @@ def calculateOccurrences(bigramList, sentenceBigramList):
             if bigramList[j] in sentenceBigramList[i]:
                 occ[i][j] = 1
     return occ
+
 
 # TODO: dies ist zu ressourcenintensiv -> doch direkt mit glpk? Kann das optimiert werden?
 def calculateSummary(saetze, weights, occurrences, totalLength):
@@ -166,7 +168,7 @@ Occ = [  # ob ein Konzept in einem Satz enthalten ist
     [0, 0, 0, 0, 1, 1, 0, 1],
 ]
 
-L = 500  # Anzhal Buchstaben im Summary
+L = 300  # Anzhal Buchstaben im Summary
 
 # print(calculateSummary(saetze, w, Occ, L))
 
