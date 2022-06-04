@@ -3,9 +3,12 @@ import json
 from pymprog import *
 import json
 import re
+import nltk
 
-pathToFile = "../prepared/28.relonly.jsonl"
+pathToFile = "../prepared/26.relonly.jsonl"
 
+def init():
+    nltk.download('punkt')
 
 def readInput():
     df = []
@@ -27,7 +30,7 @@ def bigramme(text):
     return result
 
 
-# TODO: split ist zu allgemein und trennt z. B. auch bei "B. Fischer" -> verbessern
+# deprecated
 def extractSentences(rawDicts):
     sentencesDicts = []
     sentenceId = 0
@@ -39,7 +42,23 @@ def extractSentences(rawDicts):
                                         ("document_id", rawDict['document_id']),
                                         ("sentence_id", sentenceId),
                                         ("sentence", sentence),
-                                        ('bigrams', bigramme(sentence))]))
+                                        ('bigrams', list(set(bigramme(sentence))))]))
+            sentenceId += 1
+    return sentencesDicts
+
+def extractSentencesNLTK(rawDicts):
+    sentencesDicts = []
+    sentenceId = 0
+    for rawDict in rawDicts:
+
+        sentences = nltk.sent_tokenize (rawDict['content'])
+        sentences = list(map(lambda x: x.strip(), sentences))
+        for sentence in sentences:
+            sentencesDicts.append(dict([("timestamp", rawDict['timestamp']),
+                                        ("document_id", rawDict['document_id']),
+                                        ("sentence_id", sentenceId),
+                                        ("sentence", sentence),
+                                        ('bigrams', list(set(bigramme(sentence))))]))
             sentenceId += 1
     return sentencesDicts
 
@@ -54,7 +73,7 @@ def extractBigramsPerDocument(sentenceDicts):
         documentDict[key] = list(set(documentDict[key]))
     return documentDict
 
-
+# TODO: TFIDF anschauen
 def extractWeightPerBigram(documentsDict):
     bigramDict = {}
     for documentId in documentsDict:
@@ -63,7 +82,9 @@ def extractWeightPerBigram(documentsDict):
             bigramDict[bigram] = bigramDict[bigram] + 1
     return bigramDict
 
-
+# TODO: Ckitlearn kann das evtl. effizienter -> besseres Format
+# TODO: count vectorizer
+# TODO: sparseMatrix
 def calculateOccurrences(bigramList, sentenceBigramList):
     dim_columns = len(bigramList)
     dim_rows = len(sentenceBigramList)
@@ -76,6 +97,7 @@ def calculateOccurrences(bigramList, sentenceBigramList):
 
 
 # TODO: dies ist zu ressourcenintensiv -> doch direkt mit glpk? Kann das optimiert werden?
+# TODO: wegen Serverzugriff Mail schreiben
 def calculateSummary(saetze, weights, occurrences, totalLength):
     i = len(weights)  # Anzahl der Konzepte
     l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
@@ -99,38 +121,38 @@ def calculateSummary(saetze, weights, occurrences, totalLength):
             summary.append(saetze[b])
     return summary
 
-
-# TODO: this can go (slightly) above the max size
 def calculateSummaryGreedy(saetze, weights, occurrences, maxTotalLength):
     sentenceIndices = []
     totalLength = 0
-    ngramValuable = [1 for a in weights]
-    while totalLength < maxTotalLength:
-        print(totalLength)
-        # calculate total value for all sentences
-        sentenceValue = [0 for a in saetze]
-        for i in range(len(saetze)):
-            for j in range(len((weights))):
-                sentenceValue[i] += occurrences[i][j] * weights[j] * ngramValuable[j]
-            if i % 1000 == 0:
-                print(i)
+    continueSearching = True
+
+    # calculate total value for all sentences
+    sentenceValue = [0 for a in saetze]
+    for i in range(len(saetze)):
+        for j in range(len((weights))):
+            sentenceValue[i] += occurrences[i][j] * weights[j]
+        if i % 1000 == 0:
+            print(i)
+    while continueSearching:
         # get maximum value per length
         maxVal = 0
         maxSentence = -1
         for i in range(len(sentenceValue)):
             val = sentenceValue[i] / len(saetze[i])
-            if maxVal < val:
+            if (maxVal < val) & (totalLength + len(saetze[i]) < maxTotalLength):
                 maxVal = val
                 maxSentence = i
 
-        # add senetence index to the used sentences and remove the used ngrams from the valuable list
-        sentenceIndices.append(maxSentence)
-        totalLength += len(saetze[maxSentence])
-        for i in range(len(occurrences[maxSentence])):
-            if ngramValuable[i] == 1 & occurrences[maxSentence][i] == 1:
-                ngramValuable[i] = 0
-        print("Sentence selected:")
-        print(saetze[maxSentence])
+        # if a new sentence has been found, adjust the values
+        if maxSentence != -1:
+            sentenceIndices.append(maxSentence)
+            totalLength += len(saetze[maxSentence])
+            for j in range(len(occurrences[maxSentence])):
+                if occurrences[maxSentence][j] == 1:
+                    for i in range(len(occurrences)):
+                        sentenceValue[i] -= occurrences[i][j] * weights[j]
+        else:
+            continueSearching = False # no new sentence that fit the length was found, end the search
 
     summary = []
     for i in sentenceIndices:
@@ -168,13 +190,16 @@ Occ = [  # ob ein Konzept in einem Satz enthalten ist
     [0, 0, 0, 0, 1, 1, 0, 1],
 ]
 
-L = 300  # Anzhal Buchstaben im Summary
+L = 600  # Anzhal Buchstaben im Summary
 
 # print(calculateSummary(saetze, w, Occ, L))
-
+# TODO: einschränkung auf einen gewissen Zeitraum
+# TODO: zeitpunkte in Gewichtung mi einbeziehen
+# TODO: mit evaluationsmatrix evaluieren -> siehe Mail
+init()
 data = readInput()
 print(data[0])
-sentences = extractSentences(data)
+sentences = extractSentencesNLTK(data)
 print(sentences[0])
 bigramsPerDocument = extractBigramsPerDocument(sentences)
 # print(bigramsPerDocument['7b32de22a8f61f2c6d86e40a5a786cc7'])

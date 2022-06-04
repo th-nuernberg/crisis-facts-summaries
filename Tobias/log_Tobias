@@ -1,0 +1,18 @@
+1. GLPK für linear programming -> python wrapper pymprog scheint gut zu funktionieren
+    -> erste partielle Implementierung des papers "A Scalable Global Model for Summarization" mit testdaten und unigrammen
+
+2. Ausweitung der Implementierung auf automatische Generierung der Occurrences-Matrix, der Weights wie im Paper nach Häufigkeit und Nutzung von Bigrammen
+    -> Probleme: auswertung mit GLPK zu inperformant und braucht zu viel Speicher
+                    -> implementierung eines Gierigen Algorithmus, der aber laut Paper nicht so gut ist und auch noch nicht optimal ist
+                Einfach Unterteilung in Sätze durch Trennung an \.\s trennt an zu vielen falschen Stellen
+                Occurence Matrix braucht sehr viel Speicher
+3. (04.06.2022) Lösung der aufgetretenen Probleme
+    performance: Optimieurng des Gierigen Algorithmus
+    Satzunterteilung: nutzung von NLTK sent_tokenize
+
+TODO:
+    implementierung von Qualitätsmetriken anhand der Information nuggets
+    Optimierung Occurence Matrix
+    Stopword weights optimieren
+    Zeitliche Infos in Generierung einbeziehen
+
