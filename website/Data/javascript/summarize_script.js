@@ -6,7 +6,7 @@ function initAssignment(){
 
 
 
-function make_a_summary(){
+async function make_a_summary(){
    if(document.getElementById("new_summary") != null){
     document.getElementById("new_summary").remove();
    }
@@ -17,7 +17,33 @@ function make_a_summary(){
    let weight = document.getElementById("weight").value;
    let max_length = document.getElementById("max_length").value;
    
-   let summary_question = document.getElementById("text_area").value
+   let summary_question = document.getElementById("text_area").value;
+
+   let variables_for_summary = [{"ngrams": ngramms, "timespan": timespan, "weight":weight, "max_length": max_length, "question": summary_question}];
+
+
+   await fetch("http://127.0.0.1:5000/summarize", 
+        {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json'
+            },
+            // Strigify the payload into JSON:
+            body:JSON.stringify(variables_for_summary)}).then(res=>{
+            if(res.ok){
+                return res.json()
+            }else{
+                alert("something is wrong")
+            }
+        }).then(jsonResponse=>{
+            let response = jsonResponse;
+        } 
+    ).catch((err) => console.error(err));
+
+
+
+    // To Do  use response Object for summary
 
    let main_Container = document.getElementById("Summary")
 
