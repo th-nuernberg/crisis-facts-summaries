@@ -1,5 +1,4 @@
 #FLASK and FLASK-Endpoint
-from crypt import methods
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 
@@ -9,7 +8,7 @@ cors = CORS(app)
 
 @app.route("/", methods=["GET"])
 def main_page():
-    return render_template(index.html)
+    return render_template('index.html')
 
 @app.route("/summarize", methods=["POST"])
 def start_summaraize():
