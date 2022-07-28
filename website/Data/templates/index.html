@@ -3,10 +3,10 @@
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" type="text/css" href="/website/Data/design/fist_design.css">
+            <link rel="stylesheet" type="text/css" href='/static/fist_design.css'>
 
             <title>IT-Projekt</title>
-            <script src="Data/javascript/mock_scripts.js"></script>
+            <script src="{{url_for('static', filename='javascript/summarize_script.js')}}"></script>
         </head>
     <body onload="initAssignment()">
         <div class="Parameters">
@@ -38,7 +38,7 @@
         <div id="Graph">
             <canvas id="myChart" width="600" height="200"></canvas>
             <script src="node_modules/chart.js/dist/chart.js"></script>
-            <script src="javascript/my-chart.js"></script>
+            <script src="{{url_for('static', filename='javascript/my-chart.js')}}"></script>
         </div>
 
         <div class="text_summary">
