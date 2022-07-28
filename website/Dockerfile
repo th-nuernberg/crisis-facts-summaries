@@ -1,13 +1,13 @@
-FROM nginx:alpine 
+FROM python:3
 
-WORKDIR /usr/share/nginx/html
-COPY /Data /usr/share/nginx/html
+WORKDIR /usr/src/app
+COPY /Data /usr/src/app
 
-RUN apk add npm
+RUN apt-get -y update
+
+RUN apt-get -y install npm
 RUN npm install chart.js
 
-RUN apk add python3
-RUN apk add py3-pip
 RUN pip install flask
 RUN pip install flask-cors
 
