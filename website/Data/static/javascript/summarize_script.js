@@ -12,6 +12,7 @@ async function make_a_summary(){
    }
     
     //ALERT currently no check if data is valid
+   // TODO n-Gramm Als number Drop down
    let ngramms = document.getElementById("ngram").value;
    let timespan = document.getElementById("time").value;
    let weight = document.getElementById("weight").value;
