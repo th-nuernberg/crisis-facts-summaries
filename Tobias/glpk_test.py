@@ -4,10 +4,11 @@ from pymprog import *
 import json
 import re
 import nltk
+from nltk import ngrams
 
-def gesamt():
+def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
 
-    pathToFile = "../prepared/26.relonly.jsonl"
+    pathToFile = "D:\\Meine Dateien\\Uni\\IT-Projekt\\Arbeit\\it-projekt\\prepared\\26.relonly.jsonl"
 
     def init():
         nltk.download('punkt')
@@ -31,6 +32,21 @@ def gesamt():
                 result.append(words[i] + "_" + words[i + 1])
         return result
 
+    def ngrame(text,anzahl_worte=2):
+        result = []
+        for i in range(2,anzahl_worte):
+            ngrame = []
+            n_grams = ngrams(text.split(), i)
+            for grams in n_grams:
+                hold =""
+                for gram in grams:
+                    hold += gram
+                    hold +="_"
+                hold = hold[:-1]
+                ngrame.append(hold)
+            result.extend(ngrame)
+        return result
+
 
     # deprecated
     def extractSentences(rawDicts):
@@ -44,7 +60,7 @@ def gesamt():
                                             ("document_id", rawDict['document_id']),
                                             ("sentence_id", sentenceId),
                                             ("sentence", sentence),
-                                            ('bigrams', list(set(bigramme(sentence))))]))
+                                            ('bigrams', list(set(ngrame(sentence))))]))
                 sentenceId += 1
         return sentencesDicts
 
@@ -60,7 +76,7 @@ def gesamt():
                                             ("document_id", rawDict['document_id']),
                                             ("sentence_id", sentenceId),
                                             ("sentence", sentence),
-                                            ('bigrams', list(set(bigramme(sentence))))]))
+                                            ('bigrams', list(set(ngrame(sentence))))]))
                 sentenceId += 1
         return sentencesDicts
 
@@ -100,28 +116,28 @@ def gesamt():
 
     # TODO: dies ist zu ressourcenintensiv -> doch direkt mit glpk? Kann das optimiert werden?
     # TODO: wegen Serverzugriff Mail schreiben
-    def calculateSummary(saetze, weights, occurrences, totalLength):
-        i = len(weights)  # Anzahl der Konzepte
-        l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
-        j = len(saetze)
-        begin('test konzepte')
-        c = var('c', i, kind=bool)  # ist ein konzept im Summary enhalten
-        s = var('s', j, kind=bool)  # ist ein Satz im Summary enthalten
-        maximize(sum(weights[a] * c[a] for a in range(i)))
-        sum(l[b] * s[b] for b in range(j)) <= totalLength
-        for a in range(i):
-            sum(s[b] * occurrences[b][a] for b in range(j)) >= c[a]
-            for b in range(j):
-                s[b] * occurrences[b][a] <= c[a]
-        solve()
-        print("###>Objective value: %f" % vobj())
-        summary = []
-        for b in range(j):
-            # print(s[b].primal)
-            if s[b].primal == 1.0:
-                print(b)
-                summary.append(saetze[b])
-        return summary
+    # def calculateSummary(saetze, weights, occurrences, totalLength):
+    #     i = len(weights)  # Anzahl der Konzepte
+    #     l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
+    #     j = len(saetze)
+    #     begin('test konzepte')
+    #     c = var('c', i, kind=bool)  # ist ein konzept im Summary enhalten
+    #     s = var('s', j, kind=bool)  # ist ein Satz im Summary enthalten
+    #     maximize(sum(weights[a] * c[a] for a in range(i)))
+    #     sum(l[b] * s[b] for b in range(j)) <= totalLength
+    #     for a in range(i):
+    #         sum(s[b] * occurrences[b][a] for b in range(j)) >= c[a]
+    #         for b in range(j):
+    #             s[b] * occurrences[b][a] <= c[a]
+    #     solve()
+    #     print("###>Objective value: %f" % vobj())
+    #     summary = []
+    #     for b in range(j):
+    #         # print(s[b].primal)
+    #         if s[b].primal == 1.0:
+    #             print(b)
+    #             summary.append(saetze[b])
+    #     return summary
 
     def calculateSummaryGreedy(saetze, weights, occurrences, maxTotalLength):
         sentenceIndices = []
@@ -133,8 +149,8 @@ def gesamt():
         for i in range(len(saetze)):
             for j in range(len((weights))):
                 sentenceValue[i] += occurrences[i][j] * weights[j]
-            if i % 1000 == 0:
-                print(i)
+            #if i % 1000 == 0:
+            #    print(i)
         while continueSearching:
             # get maximum value per length
             maxVal = 0
@@ -192,7 +208,7 @@ def gesamt():
         [0, 0, 0, 0, 1, 1, 0, 1],
     ]
 
-    L = 600  # Anzhal Buchstaben im Summary
+    L = max_length#600  # Anzhal Buchstaben im Summary
 
     # print(calculateSummary(saetze, w, Occ, L))
     # TODO: einschränkung auf einen gewissen Zeitraum
@@ -200,24 +216,24 @@ def gesamt():
     # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
     init()
     data = readInput()
-    print(data[0])
+    #print(data[0])
     sentences = extractSentencesNLTK(data)
-    print(sentences[0])
+    #print(sentences[0])
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     # print(bigramsPerDocument['7b32de22a8f61f2c6d86e40a5a786cc7'])
     bigramWeights = extractWeightPerBigram(bigramsPerDocument)
     # print(bigramWeights['amid_heavy'])
     occ = calculateOccurrences(list(bigramWeights.keys()), [s['bigrams'] for s in sentences])
     # print(occ[1])
-    print("occurrences ready")
+    #print("occurrences ready")
     weights = list(bigramWeights.values())
     saetzeList = [s['sentence'] for s in sentences]
-    print(len(weights))
-    print(len(saetzeList))
+    #print(len(weights))
+    #print(len(saetzeList))
     summarySenetences = calculateSummaryGreedy(saetzeList, weights, occ, L)
 
-    testBigrams = ['hallo', 'wie', 'geht', 'es', 'test', 'satz', 'bla', '2']
-    testSatzBigrams = [s.split() for s in saetze]
+    #testBigrams = ['hallo', 'wie', 'geht', 'es', 'test', 'satz', 'bla', '2']
+    #testSatzBigrams = [s.split() for s in saetze]
 
     # occ = calculateOccurrences(testBigrams, testSatzBigrams)
     # print(occ)
@@ -226,7 +242,10 @@ def gesamt():
 
 
     totalLength = 0
-    for s in summarySenetences:
-        print(s)
-        totalLength += len(s)
-    print(totalLength)
+    #for s in summarySenetences:
+        #print(s)
+        #totalLength += len(s)
+    #print(totalLength)
+    print(json.dumps(summarySenetences))
+
+gesamt()
