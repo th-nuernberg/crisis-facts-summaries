@@ -3,6 +3,7 @@
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="shortcut icon" href="{{ url_for('static', filename='Icon_from_web.ico')}}">
             <link rel="stylesheet" type="text/css" href='/static/fist_design.css'>
 
             <title>IT-Projekt</title>
@@ -37,7 +38,7 @@
 
         <div id="Graph">
             <canvas id="myChart" width="600" height="200"></canvas>
-            <script src="node_modules/chart.js/dist/chart.js"></script>
+            <script src="{{url_for('static', filename='node_modules/chart.js/dist/chart.js')}}"></script>
             <script src="{{url_for('static', filename='javascript/my-chart.js')}}"></script>
         </div>
 
