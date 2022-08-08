@@ -34,7 +34,7 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
 
     def ngrame(text,anzahl_worte=2):
         result = []
-        for i in range(2,anzahl_worte):
+        for i in range(2,anzahl_worte+1):
             ngrame = []
             n_grams = ngrams(text.split(), i)
             for grams in n_grams:
@@ -46,23 +46,6 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
                 ngrame.append(hold)
             result.extend(ngrame)
         return result
-
-
-    # deprecated
-    def extractSentences(rawDicts):
-        sentencesDicts = []
-        sentenceId = 0
-        for rawDict in rawDicts:
-            sentences = re.split("\.\s", rawDict['content'])
-            sentences = list(map(lambda x: x.strip() + ".", sentences))
-            for sentence in sentences:
-                sentencesDicts.append(dict([("timestamp", rawDict['timestamp']),
-                                            ("document_id", rawDict['document_id']),
-                                            ("sentence_id", sentenceId),
-                                            ("sentence", sentence),
-                                            ('bigrams', list(set(ngrame(sentence))))]))
-                sentenceId += 1
-        return sentencesDicts
 
     def extractSentencesNLTK(rawDicts):
         sentencesDicts = []
@@ -76,7 +59,7 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
                                             ("document_id", rawDict['document_id']),
                                             ("sentence_id", sentenceId),
                                             ("sentence", sentence),
-                                            ('bigrams', list(set(ngrame(sentence))))]))
+                                            ('bigrams', list(set(bigramme(sentence))))]))
                 sentenceId += 1
         return sentencesDicts
 
