@@ -29,10 +29,10 @@ def getDaysForEventNo(eventNo):
   return dayList
   
 eventNoList = [
-    "001", # Lilac Wildfire 2017
-    "002", # Cranston Wildfire 2018
+    #"001", # Lilac Wildfire 2017
+    #"002", # Cranston Wildfire 2018
     "003", # Holy Wildfire 2018
-    "004", # Hurricane Florence 2018
+    #"004", # Hurricane Florence 2018
     "005", # 2018 Maryland Flood
     "006", # Saddleridge Wildfire 2019
     "007", # Hurricane Laura 2020
@@ -40,7 +40,7 @@ eventNoList = [
 ]
 
 eventNoLis = [
-    "001"
+    "004"
 ]
 
 def  mk_cre():
@@ -73,15 +73,40 @@ def  mk_cre():
 #for item in dataset.docs_iter()[:10]: # create an iterator over the stream containing the first 10 items
 #  print(item)
 #mk_cre()
+test=[
+"2018-09-01",
+"2018-09-04",
+"2018-09-05",
+"2018-09-07",
+"2018-09-08",
+"2018-09-09",
+"2018-09-10",
+"2018-09-12",
+"2018-09-13",
+"2018-09-14",
+"2018-09-15",
+"2018-09-16",
+"2018-09-17",
+"2018-09-18"
+]
 path = "D:\\Meine Dateien\\Uni\\IT-Projekt\\Arbeit\\it-projekt\\Felix\\"
 
 for event in eventNoLis:
-    for day in getDaysForEventNo(event):
-        file_out = path+event+"\\"+day["dateString"]+".json"
-        print(day["dateString"])
-        dataset = ir_datasets.load('crisisfacts/' +event+ '/' +day["dateString"])
-        #itemsAsDataFrame = pd.DataFrame(dataset.docs_iter())
-        #with open(file_out, 'a') as f:
-        #    f.write(itemsAsDataFrame.to_json())
-        for item in dataset.docs_iter()[:10]: # create an iterator over the stream containing the first 10 items
-            print(item)
+    print(event)
+    for day in test:#getDaysForEventNo(event):
+        file_out = path+event+"\\"+day+".json" #["dateString"]
+        print(day)#["dateString"]
+        dataset = ir_datasets.load('crisisfacts/' +event+ '/' +day)#["dateString"]
+        itemsAsDataFrame = pd.DataFrame(dataset.docs_iter())
+        with open(file_out, 'a',encoding="utf-8") as f:
+            result = itemsAsDataFrame.to_json(orient="records")
+            parsed = json.loads(result)
+            f.write(json.dumps(parsed, indent=4))
+        #for item in dataset.docs_iter()[:10]: # create an iterator over the stream containing the first 10 items
+        #    print(item)
+        #print(pd.DataFrame(dataset.queries_iter())[:10])
+        
+def newinput():
+    file="D:\\Meine Dateien\\Uni\\IT-Projekt\\Arbeit\\it-projekt\\Felix\\002\\2018-07-30.json"
+    df = pd.read_json(file, orient='records')
+    print(df[:10])   
