@@ -21,7 +21,7 @@ async function make_a_summary(){
    let summary_question = document.getElementById("text_area").value;
 
    let variables_for_summary = [{"ngrams": ngramms, "timespan": timespan, "weight":weight, "max_length": max_length, "question": summary_question}];
-
+   let response_json;
 
    await fetch("http://127.0.0.1:5000/summarize", 
         {
@@ -31,19 +31,27 @@ async function make_a_summary(){
                 'Accept': 'application/json'
             },
             // Strigify the payload into JSON:
-            body:JSON.stringify(variables_for_summary)}).then(res=>{
-            if(res.ok){
-                return res.json()
+            body:JSON.stringify(variables_for_summary)
+        }).then( (response) =>{
+            if(response.ok){
+                //alert(response.json());
+                return response.json();     //It returns a promise which resolves with the result of parsing the body text as JSON
             }else{
-                alert("something is wrong")
+                alert("something is wrong" + response);
             }
         }).then(jsonResponse=>{
-            let response = jsonResponse;
-            response_json = response.json()
-        } 
-    ).catch((err) => console.error(err));
+
+            o = JSON.stringify(jsonResponse);
 
 
+           
+            alert(o);
+
+            response_json = o;
+       
+
+            //response_json = result.json(); PROBLEM: Code nach dieser Zeile wird nicht mehr ausgeführt : result.json() gibt es anscheinend nicht
+        }).catch((err) => console.error(err));
 
     // To Do  use response Object for summary
 
@@ -54,7 +62,7 @@ async function make_a_summary(){
    
    new_summary.setAttribute('align', "left");
 
-   new_summary.innerHTML =`A new Summary with ${ngramms} word-gramms, over the timespan of hour ${timespan}, with the weight of ${weight} and the maximum length of ${max_length} words.`;
+   new_summary.innerHTML = response_json;
 
 
    main_Container.append(new_summary);
