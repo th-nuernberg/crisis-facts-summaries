@@ -4,6 +4,8 @@ import nltk
 from pymprog import *
 import re
 from nltk import ngrams
+import time
+
 
 pathToFile = "/usr/src/app/Datensaetze/prepared/26.relonly.jsonl"
 
@@ -20,7 +22,7 @@ def readInput():
                 df.append(json.loads(line))
     return df
 
-
+# Gibt eine Liste mit allen Bigrammen (Bigramm -> "wortA wortB wortC wortD" = "wortA wortB" "wortB wortC" "wortC wortD") aus einem mitgegebenen Text zurück
 def bigramme(text):
     words = re.findall(r'[A-Za-z0-9]+', text)
     result = []
@@ -29,6 +31,7 @@ def bigramme(text):
             result.append(words[i] + "_" + words[i + 1])
     return result
 
+# Das gleiche wie die Funktion darüber nur mit n-grammen (also n Wörterbündel)
 def ngrame(text,anzahl_worte=2):
     result = []
     for i in range(2,anzahl_worte+1):
@@ -44,6 +47,7 @@ def ngrame(text,anzahl_worte=2):
         result.extend(ngrame)
     return result
 
+# 
 def extractSentencesNLTK(rawDicts):
     sentencesDicts = []
     sentenceId = 0
@@ -71,6 +75,12 @@ def extractBigramsPerDocument(sentenceDicts):
     return documentDict
 
 # TODO: TFIDF anschauen
+# TF-IDF:
+#   - Termn Frequency: Gewichtung der Wörter anhand der Häufigkeit im Text
+#   - Document Frequency: Gewichtung der Wörter anhand der Häufigkeit in Seiten (oder größerer Texteinheit -> Wort kam in 3 Texteinheiten vor)
+#   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet.
+#   - 
+# Gewichtung der Bigramme feststellen -> Wie häufig kommt ein Bigramm in dem Text vor
 def extractWeightPerBigram(documentsDict):
     bigramDict = {}
     for documentId in documentsDict:
@@ -118,6 +128,7 @@ def calculateOccurrences(bigramList, sentenceBigramList):
 #             summary.append(saetze[b])
 #     return summary
 
+# 
 def calculateSummaryGreedy(saetze, weights, occurrences, maxTotalLength):
     sentenceIndices = []
     totalLength = 0
@@ -195,6 +206,7 @@ Occ = [  # ob ein Konzept in einem Satz enthalten ist
 def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
 
     print("Start!")
+    start = time.time()
     L = max_length#600  # Anzhal Buchstaben im Summary
 
     #init()
@@ -229,5 +241,9 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
         #print(s)
         #totalLength += len(s)
     #print(totalLength)
+
+    end = time.time()
     print("Fertig!")
+    print(end - start)
+    print("Sekunden Ausführungszeit")
     return json.dumps(summarySenetences)

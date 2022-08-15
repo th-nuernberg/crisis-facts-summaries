@@ -20,11 +20,8 @@ def start_summaraize():
 
    # TO DO: feed the Data to Tobias functions
     
-
-   # TO DO: Return Value needs to be a Json file containing the summary
-   
    a = gesamt() 
-   print(a)
+   print(a) # Zum debuggen
    return a
 
 #Run the app:

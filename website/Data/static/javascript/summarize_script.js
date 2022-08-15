@@ -11,7 +11,7 @@ async function make_a_summary(){
     document.getElementById("new_summary").remove();
    }
     
-    //ALERT currently no check if data is valid
+   //ALERT currently no check if data is valid
    // TODO n-Gramm Als number Drop down
    let ngramms = document.getElementById("ngram").value;
    let timespan = document.getElementById("time").value;
@@ -42,18 +42,9 @@ async function make_a_summary(){
         }).then(jsonResponse=>{
 
             o = JSON.stringify(jsonResponse);
-
-
-           
             alert(o);
-
             response_json = o;
-       
-
-            //response_json = result.json(); PROBLEM: Code nach dieser Zeile wird nicht mehr ausgeführt : result.json() gibt es anscheinend nicht
         }).catch((err) => console.error(err));
-
-    // To Do  use response Object for summary
 
    let main_Container = document.getElementById("Summary")
 
