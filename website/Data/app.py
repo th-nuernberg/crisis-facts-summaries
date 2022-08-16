@@ -16,11 +16,8 @@ def main_page():
 @app.route("/summarize", methods=["POST"])
 def start_summaraize():
    parameters_from_frontend = request.get_json()
-   json_parameters_from_frontend = jsonify(parameters_from_frontend)
-
-   # TO DO: feed the Data to Tobias functions
-    
-   a = gesamt() 
+   parameters = parameters_from_frontend[0]
+   a = gesamt(ngamms=int(parameters["ngrams"]),max_length=int(parameters["max_length"])) 
    print(a) # Zum debuggen
    return a
 

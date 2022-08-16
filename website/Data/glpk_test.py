@@ -12,6 +12,7 @@ pathToFile = "/usr/src/app/Datensaetze/prepared/26.relonly.jsonl"
 def init():
     nltk.download('punkt')
 
+#Funktion zum einlesen der neuen Daten in Felix/download.py
 def readInput():
     df = []
     with open(pathToFile, 'r', encoding="utf-8") as json_file:
@@ -48,7 +49,7 @@ def ngrame(text,anzahl_worte=2):
     return result
 
 # 
-def extractSentencesNLTK(rawDicts):
+def extractSentencesNLTK(rawDicts,numberOfWords):
     sentencesDicts = []
     sentenceId = 0
     for rawDict in rawDicts:
@@ -60,7 +61,7 @@ def extractSentencesNLTK(rawDicts):
                                         ("document_id", rawDict['document_id']),
                                         ("sentence_id", sentenceId),
                                         ("sentence", sentence),
-                                        ('bigrams', list(set(bigramme(sentence))))]))
+                                        ('bigrams', list(set(ngrame(sentence,numberOfWords))))]))
             sentenceId += 1
     return sentencesDicts
 
@@ -129,32 +130,42 @@ def calculateOccurrences(bigramList, sentenceBigramList):
 #     return summary
 
 # 
-def calculateSummaryGreedy(saetze, weights, occurrences, maxTotalLength):
+def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLength):
     sentenceIndices = []
     totalLength = 0
     continueSearching = True
+    satzDict={}
+    zeitDict={}
+    for s in sentences:
+        satzDict[s["sentence_id"]]= s["sentence"]
+    for s in sentences:
+        zeitDict[s["sentence_id"]]= s["timestamp"]
 
     # calculate total value for all sentences
-    sentenceValue = [0 for a in saetze]
+    sentenceValue = []
+    for s in saetze:
+        sentenceValue.append(0)
     for i in range(len(saetze)):
         for j in range(len((weights))):
             sentenceValue[i] += occurrences[i][j] * weights[j]
         #if i % 1000 == 0:
         #    print(i)
+    sentence =""
     while continueSearching:
         # get maximum value per length
         maxVal = 0
         maxSentence = -1
         for i in range(len(sentenceValue)):
-            val = sentenceValue[i] / len(saetze[i])
-            if (maxVal < val) & (totalLength + len(saetze[i]) < maxTotalLength):
+            val = sentenceValue[i] / len(satzDict[saetze[i]])
+            if (maxVal < val) & (totalLength + len(satzDict[saetze[i]]) < maxTotalLength):
                 maxVal = val
                 maxSentence = i
+                sentence = satzDict[saetze[i]]
 
         # if a new sentence has been found, adjust the values
         if maxSentence != -1:
             sentenceIndices.append(maxSentence)
-            totalLength += len(saetze[maxSentence])
+            totalLength += len(sentence)
             for j in range(len(occurrences[maxSentence])):
                 if occurrences[maxSentence][j] == 1:
                     for i in range(len(occurrences)):
@@ -163,8 +174,12 @@ def calculateSummaryGreedy(saetze, weights, occurrences, maxTotalLength):
             continueSearching = False # no new sentence that fit the length was found, end the search
 
     summary = []
+
     for i in sentenceIndices:
-        summary.append(saetze[i])
+        for s in sentences:
+            if(s["sentence_id"] == saetze[i]):
+                summary.append(s["sentence"])
+                summary.append(s["timestamp"])
 
     return summary
 
@@ -207,12 +222,12 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
 
     print("Start!")
     start = time.time()
-    L = max_length#600  # Anzhal Buchstaben im Summary
+    L = max_length # Anzhal Buchstaben im Summary
 
     #init()
     data = readInput()
     #print(data[0])
-    sentences = extractSentencesNLTK(data)
+    sentences = extractSentencesNLTK(data,ngamms)
     #print(sentences[0])
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     # print(bigramsPerDocument['7b32de22a8f61f2c6d86e40a5a786cc7'])
@@ -222,10 +237,10 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
     # print(occ[1])
     #print("occurrences ready")
     weights = list(bigramWeights.values())
-    saetzeList = [s['sentence'] for s in sentences]
+    saetzeList = [s['sentence_id'] for s in sentences]
     #print(len(weights))
     #print(len(saetzeList))
-    summarySenetences = calculateSummaryGreedy(saetzeList, weights, occ, L)
+    summarySenetences = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
 
     #testBigrams = ['hallo', 'wie', 'geht', 'es', 'test', 'satz', 'bla', '2']
     #testSatzBigrams = [s.split() for s in saetze]
@@ -235,8 +250,6 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
 
     # summarySenetences = calculateSummary(saetze, w, occ, L)
 
-
-    totalLength = 0
     #for s in summarySenetences:
         #print(s)
         #totalLength += len(s)
