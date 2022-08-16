@@ -43,7 +43,10 @@ async function make_a_summary(){
 
             o = JSON.stringify(jsonResponse);
             alert(o);
-            response_json = o;
+            //response_json = o;
+            // Test Solution since Docker doesnt work well with windows
+            // not made for Json at the moment
+            response_json = jsonResponse
         }).catch((err) => console.error(err));
 
    let main_Container = document.getElementById("Summary")
