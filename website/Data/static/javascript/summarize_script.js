@@ -20,7 +20,7 @@ async function make_a_summary(){
    
    let summary_question = document.getElementById("text_area").value;
 
-   let variables_for_summary = [{"ngrams": ngramms, "timespan": timespan, "weight":weight, "max_length": max_length, "question": summary_question}];
+   let variables_for_summary = {"ngrams": ngramms, "timespan": timespan, "weight":weight, "max_length": max_length, "question": summary_question};
    let response_json;
 
    await fetch("http://127.0.0.1:5000/summarize", 
