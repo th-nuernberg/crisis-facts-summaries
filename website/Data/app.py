@@ -16,8 +16,10 @@ def main_page():
 @app.route("/summarize", methods=["POST"])
 def start_summaraize():
    parameters_from_frontend = request.get_json()
-   parameters = parameters_from_frontend[0]
+   parameters = parameters_from_frontend
 
+   # TODO: Checken ob die Parameter leer sind, ansonsten werden leere Parameter verwendet und das führt zu Fehlern bei der gesamt Funktion
+   
    # summary_as_json is currently not in a valid JSON format. Pls Fix that
    summary_as_json = gesamt(ngamms=int(parameters["ngrams"]),max_length=int(parameters["max_length"])) 
    print(summary_as_json) # Zum debuggen

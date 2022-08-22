@@ -173,13 +173,15 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
         else:
             continueSearching = False # no new sentence that fit the length was found, end the search
 
-    summary = []
+    summary = { "sentences": [],
+            "timestamp": []  }
 
+    # TODO: Hier kann potentiell des JSON Format korriegiert werden
     for i in sentenceIndices:
         for s in sentences:
             if(s["sentence_id"] == saetze[i]):
-                summary.append(s["sentence"])
-                summary.append(s["timestamp"])
+                summary["sentences"].append(s["sentence"])
+                summary["timestamp"].append(s["timestamp"])
 
     return summary
 
@@ -240,6 +242,8 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
     saetzeList = [s['sentence_id'] for s in sentences]
     #print(len(weights))
     #print(len(saetzeList))
+
+    # TODO: calculateSummaryGreedy liefert kein gültiges JSON
     summarySenetences = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
 
     #testBigrams = ['hallo', 'wie', 'geht', 'es', 'test', 'satz', 'bla', '2']
@@ -259,4 +263,5 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
     print("Fertig!")
     print(end - start)
     print("Sekunden Ausführungszeit")
+    print(summarySenetences)
     return json.dumps(summarySenetences)

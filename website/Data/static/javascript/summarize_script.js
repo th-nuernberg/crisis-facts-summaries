@@ -37,7 +37,7 @@ async function make_a_summary(){
                 //alert(response.json());
                 return response.json();     //It returns a promise which resolves with the result of parsing the body text as JSON
             }else{
-                alert("something is wrong" + response);
+                alert("something is wrong: Sind die Parameter gesetzt? Wenn nein, kann das bei dem Aufruf von gesamt() zu Problemen führen" + response.toString());
             }
         }).then(jsonResponse=>{
 
@@ -56,7 +56,7 @@ async function make_a_summary(){
    
    new_summary.setAttribute('align', "left");
 
-   new_summary.innerHTML = response_json;
+   new_summary.innerHTML = response_json["sentences"];
 
 
    main_Container.append(new_summary);
