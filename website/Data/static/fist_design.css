@@ -9,6 +9,9 @@ html {
     margin-bottom: 1em;
     padding-right: 70%;
 }
+.slider:hover {
+    opacity: 1;
+  }
 .param_label{
     align-self: left;
     float: left;

@@ -14,7 +14,8 @@
         
             <div class="params">
                 <label class="param_label" for="ngram">N-gramms:</label>
-                <input class="param_input" id="ngram" type="text" name="ngram"  placeholder="Number of Word-Gramms"><br>
+                <input type="range" value="1" min="1" max="5" id="ngram" oninput="this.nextElementSibling.value = this.value">
+                <output>1</output><br>
             </div>
             <div class="params">
                 <label class="param_label" for="time">Timespan:</label>
