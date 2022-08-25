@@ -262,6 +262,6 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
     end = time.time()
     print("Fertig!")
     print(end - start)
-    print("Sekunden Ausführungszeit")
-    print(summarySenetences)
+    print("Sekunden Ausfuehrungszeit")
+    #print(summarySenetences)
     return json.dumps(summarySenetences)
