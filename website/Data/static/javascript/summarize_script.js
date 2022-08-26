@@ -10,15 +10,23 @@ async function make_a_summary(){
    if(document.getElementById("new_summary") != null){
     document.getElementById("new_summary").remove();
    }
-    
-   //ALERT currently no check if data is valid
-   // TODO n-Gramm Als number Drop down
+ 
    let ngramms = document.getElementById("ngram").value;
+   // Check if Parameters have been entered
+   if(!ngramms){ngramms = 2}
+
    let timespan = document.getElementById("time").value;
+   // Check if Parameters have been entered, else set default parameter
+   if(!timespan){timespan = 0}
+
    let weight = document.getElementById("weight").value;
+   if(!weight){weight = 0}
+
    let max_length = document.getElementById("max_length").value;
+   if(!max_length){max_length = 600}
    
    let summary_question = document.getElementById("text_area").value;
+   if(!summary_question){summary_question = ""}
 
    let variables_for_summary = {"ngrams": ngramms, "timespan": timespan, "weight":weight, "max_length": max_length, "question": summary_question};
    let response_json;
@@ -45,7 +53,6 @@ async function make_a_summary(){
             alert(o);
             //response_json = o;
             // Test Solution since Docker doesnt work well with windows
-            // not made for Json at the moment
             response_json = jsonResponse
         }).catch((err) => console.error(err));
 
