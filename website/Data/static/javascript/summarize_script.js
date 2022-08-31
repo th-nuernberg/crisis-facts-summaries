@@ -34,8 +34,10 @@ async function make_a_summary(){
    let response_json;
 
 
-   // Disable Analyse Button while function is calculating
+   // Disable Analyse Button while function is calculating and styling
    let analyse_button = document.getElementById("calculate_button")
+   analyse_button.style.opacity = 0.5
+   analyse_button.style.cursor = "not-allowed"
    analyse_button.disabled = true
 
    //Show loading Cricle
@@ -73,6 +75,8 @@ async function make_a_summary(){
     //Hide loading circle; Enable Analyse Button when function is finished
     loader.style.visibility = "hidden"
     loader.style.animation = ""
+    analyse_button.style.cursor = ""
+    analyse_button.style.opacity = 1
     analyse_button.disabled = false;
 
 

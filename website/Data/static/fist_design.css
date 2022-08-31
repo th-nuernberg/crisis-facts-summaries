@@ -1,7 +1,43 @@
 html {
     text-align: center;
     }
-    
+.header {
+    background-color:royalblue;
+    border-bottom-style: solid;
+    border-color: lightskyblue;
+    border-width: 10px;
+    margin-top: 0%;
+    text-align: left;
+    height: 60px;
+    margin-bottom: 1em;
+}
+#head_txt {
+    margin-top: 0%;
+    margin-left: 4%;
+    padding-top: 0.8%;
+    color:whitesmoke;
+}
+.body {
+    margin: 0%;
+
+}
+#calculate_button{
+  background-color: steelblue;
+  border: none;
+  color: white;
+  padding: 10px 27px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition-duration: 0.4s;
+}
+#calculate_button:hover{
+    background-color:dodgerblue
+}
 .Parameters{
     align-self: left;
     
