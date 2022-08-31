@@ -7,6 +7,7 @@ function initAssignment(){
 
 
 async function make_a_summary(){
+   //if there is already a summary, remove it 
    if(document.getElementById("new_summary") != null){
     document.getElementById("new_summary").remove();
    }
@@ -28,8 +29,10 @@ async function make_a_summary(){
    let summary_question = document.getElementById("text_area").value;
    if(!summary_question){summary_question = ""}
 
+   // Make a json with all parameters, to be send to the backend
    let variables_for_summary = {"ngrams": ngramms, "timespan": timespan, "weight":weight, "max_length": max_length, "question": summary_question};
    let response_json;
+
 
    // Disable Analyse Button while function is calculating
    let analyse_button = document.getElementById("calculate_button")
@@ -37,6 +40,7 @@ async function make_a_summary(){
 
    //Show loading Cricle
    let loader = document.getElementById("load")
+   loader.style.animation = "spin 2s linear infinite"
    loader.style.visibility = "visible"
 
 
@@ -68,10 +72,11 @@ async function make_a_summary(){
 
     //Hide loading circle; Enable Analyse Button when function is finished
     loader.style.visibility = "hidden"
+    loader.style.animation = ""
     analyse_button.disabled = false;
 
 
-
+   // Show new summary
    let main_Container = document.getElementById("Summary")
 
    let new_summary = document.createElement("p");

@@ -26,8 +26,9 @@
                 <input class="param_input" id="weight" type="text" name="weight"  placeholder="The weight of a Sentence"><br>
             </div>
             <div class="params">
-                <label class="param_label" for="max_length">Length:</label>
-                <input class="param_input" id="max_length" type="text" name="max_length"  placeholder="The max Length the Summary should have"><br>
+                <label class="param_label" for="max_length">Length of the Summary:</label>
+                <input type="range" value="600" min="50" max="1000" step="50" id="max_length" oninput="this.nextElementSibling.value = this.value">
+                <output>600</output><br>
             </div>
         </div>
 
