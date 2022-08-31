@@ -1,4 +1,4 @@
-//Mock Script for the Website
+// Initial Assignement for Button analyse
 function initAssignment(){
     let button = document.getElementById("calculate_button");
     button.addEventListener("click",make_a_summary)
@@ -31,6 +31,15 @@ async function make_a_summary(){
    let variables_for_summary = {"ngrams": ngramms, "timespan": timespan, "weight":weight, "max_length": max_length, "question": summary_question};
    let response_json;
 
+   // Disable Analyse Button while function is calculating
+   let analyse_button = document.getElementById("calculate_button")
+   analyse_button.disabled = true
+
+   //Show loading Cricle
+   let loader = document.getElementById("load")
+   loader.style.visibility = "visible"
+
+
    await fetch("http://127.0.0.1:5000/summarize", 
         {
             method: 'POST',
@@ -55,6 +64,13 @@ async function make_a_summary(){
             // Test Solution since Docker doesnt work well with windows
             response_json = jsonResponse
         }).catch((err) => console.error(err));
+
+
+    //Hide loading circle; Enable Analyse Button when function is finished
+    loader.style.visibility = "hidden"
+    analyse_button.disabled = false;
+
+
 
    let main_Container = document.getElementById("Summary")
 

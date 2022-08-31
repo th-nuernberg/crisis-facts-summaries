@@ -14,7 +14,7 @@
         
             <div class="params">
                 <label class="param_label" for="ngram">N-gramms:</label>
-                <input type="range" value="2" min="1" max="5" id="ngram" oninput="this.nextElementSibling.value = this.value">
+                <input type="range" value="2" min="2" max="5" id="ngram" oninput="this.nextElementSibling.value = this.value">
                 <output>2</output><br>
             </div>
             <div class="params">
@@ -35,6 +35,7 @@
                 <label id="Label" for="text">Search-Parameter</label>
                 <textarea id="text_area" name="text" cols="35" rows="4"  placeholder="What should the Summary be about?"></textarea> 	
                 <button id="calculate_button" type="button">Analyse</button>
+                <div class="loader" id="load"></div>
         </div>
 
         <div id="Graph">
