@@ -4,8 +4,6 @@ function initAssignment(){
     button.addEventListener("click",make_a_summary)
 }
 
-
-
 async function make_a_summary(){
    //if there is already a summary, remove it 
    if(document.getElementById("new_summary") != null){
@@ -33,7 +31,6 @@ async function make_a_summary(){
    let variables_for_summary = {"ngrams": ngramms, "timespan": timespan, "weight":weight, "max_length": max_length, "question": summary_question};
    let response_json;
 
-
    // Disable Analyse Button while function is calculating and styling
    let analyse_button = document.getElementById("calculate_button")
    analyse_button.style.opacity = 0.5
@@ -44,7 +41,6 @@ async function make_a_summary(){
    let loader = document.getElementById("load")
    loader.style.animation = "spin 2s linear infinite"
    loader.style.visibility = "visible"
-
 
    await fetch("http://127.0.0.1:5000/summarize", 
         {
@@ -65,12 +61,11 @@ async function make_a_summary(){
         }).then(jsonResponse=>{
 
             o = JSON.stringify(jsonResponse);
-            alert(o);
+            //alert(o);
             //response_json = o;
             // Test Solution since Docker doesnt work well with windows
             response_json = jsonResponse
         }).catch((err) => console.error(err));
-
 
     //Hide loading circle; Enable Analyse Button when function is finished
     loader.style.visibility = "hidden"

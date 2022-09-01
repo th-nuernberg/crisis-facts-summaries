@@ -6,7 +6,6 @@ import re
 from nltk import ngrams
 import time
 
-
 pathToFile = "/usr/src/app/Datensaetze/prepared/26.relonly.jsonl"
 
 def init():
@@ -176,7 +175,6 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
     summary = { "sentences": [],
             "timestamp": []  }
 
-    # TODO: Hier kann potentiell des JSON Format korriegiert werden
     for i in sentenceIndices:
         for s in sentences:
             if(s["sentence_id"] == saetze[i]):
@@ -243,7 +241,6 @@ def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
     #print(len(weights))
     #print(len(saetzeList))
 
-    # TODO: calculateSummaryGreedy liefert kein gültiges JSON
     summarySenetences = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
 
     #testBigrams = ['hallo', 'wie', 'geht', 'es', 'test', 'satz', 'bla', '2']
