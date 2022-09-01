@@ -22,6 +22,7 @@ html {
 
 }
 #calculate_button{
+  float: right;
   background-color: steelblue;
   border: none;
   color: white;
@@ -72,11 +73,20 @@ html {
 .Insert_Form {
     margin: 5em;
     margin-top: 1em;
+    margin-bottom: 3em;
 }
 #text_area{
     resize: none;
     width: 100%;
     height: 100%;
+}
+.button{
+    width: 52%;
+    float:left;
+}
+.loading_circle{
+    margin-top: 4px;
+    overflow: hidden;
 }
 .time_D_Graph{
     margin: 5em;
@@ -99,6 +109,7 @@ html {
 .loader {
     margin: auto;
     visibility: hidden;
+    float: left;
 
     border: 8px solid #f3f3f3;
     border-radius: 50%;
