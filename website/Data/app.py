@@ -13,7 +13,7 @@ def main_page():
     return render_template('index.html')
 
 @app.route("/summarize", methods=["POST"])
-def start_summaraize():
+def start_summarize():
    parameters_from_frontend = request.get_json()
    parameters = parameters_from_frontend
    all_parameters_set = False
@@ -28,13 +28,6 @@ def start_summaraize():
 
    print("All Parameters set ?")
    print(all_parameters_set)
-   
-   #if all_parameters_set == True:
-   #     summary_as_json = gesamt(ngamms=int(parameters["ngrams"]),max_length=int(parameters["max_length"])) 
-   #     print(":)")
-   #else:
-   #     summary_as_json = gesamt()
-   #     print(":(")
 
    summary_as_json = gesamt(ngamms=int(parameters["ngrams"]),max_length=int(parameters["max_length"]))
    print(summary_as_json) # Zum debuggen

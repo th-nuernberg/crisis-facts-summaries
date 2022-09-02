@@ -92,6 +92,10 @@ def extractWeightPerBigram(documentsDict):
 # TODO: Ckitlearn kann das evtl. effizienter -> besseres Format
 # TODO: count vectorizer
 # TODO: sparseMatrix
+
+# Erstellt eine Matrix mit den Vorkommnissen der Engrammen in den Sätzen
+# Anzahl der Spalten ist Anzahl der Ngramme
+# Anzahl der Zeilen ist Anzahl der Sätze
 def calculateOccurrences(bigramList, sentenceBigramList):
     dim_columns = len(bigramList)
     dim_rows = len(sentenceBigramList)
@@ -104,7 +108,7 @@ def calculateOccurrences(bigramList, sentenceBigramList):
 
 
 # TODO: dies ist zu ressourcenintensiv -> doch direkt mit glpk? Kann das optimiert werden?
-# TODO: wegen Serverzugriff Mail schreiben
+# TODO: wegen Serverzugriff Mail schreiben 
 # def calculateSummary(saetze, weights, occurrences, totalLength):
 #     i = len(weights)  # Anzahl der Konzepte
 #     l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
