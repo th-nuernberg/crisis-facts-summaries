@@ -13,21 +13,15 @@
         <header class="header">
             <h2 id="head_txt">IT Projekt</h2>
         </header>
-        <div class="Parameters">
-        
+
+        <div class="Parameters" id="sliders">
             <div class="params">
                 <label class="param_label" for="ngram">N-gramms:</label>
                 <input type="range" value="2" min="2" max="5" id="ngram" oninput="this.nextElementSibling.value = this.value">
                 <output>2</output><br>
             </div>
-            <div class="params">
-                <label class="param_label" for="time">Timespan:</label>
-                <input class="param_input" id="time" type="text" name="time"  placeholder="Timespan, single day hour"><br>
-            </div>
-            <div class="params">
-                <label class="param_label"  for="weight">Weight:</label>
-                <input class="param_input" id="weight" type="text" name="weight"  placeholder="The weight of a Sentence"><br>
-            </div>
+        </div>
+        <div class="Parameters">
             <div class="params">
                 <label class="param_label" for="max_length">Length of the Summary:</label>
                 <input type="range" value="600" min="50" max="1000" step="50" id="max_length" oninput="this.nextElementSibling.value = this.value">
@@ -35,9 +29,37 @@
             </div>
         </div>
 
+        <div class="param_options" id="time">
+            <div class="param_options_time">
+                    <label>Timespan: From </label>
+            </div>
+            <div class="param_options_time">
+                <input class="date" type="date" id="date_from">
+                <input type="time" id="time_from">
+            </div>
+            <div class="param_options_time">
+                <label id="label_time_to">To</label>
+            </div>
+            <div class="param_options_time">
+                <input class="date" type="date" id="date_to">
+                <input type="time" id="time_to">
+            </div>
+        </div>
+
+        <div class="param_options" id="dropdown">
+            <div class="param_options_time">
+                <label class="param_label" for="function_type">Analyse Function Type:</label>
+            </div>
+            <div class="param_options_time" id="dropdown_function_type">
+                <select class="dropbtn" name="function_type" id="type_of_function">
+                    <option class="dropbtn" value="Greedy" selected="selected">Greedy</option>
+                </select>
+            </div>
+        </div>
+
         <div class="Insert_Form">
                 <label id="Label" for="text">Search-Parameter</label>
-                <textarea id="text_area" name="text" cols="35" rows="4"  placeholder="What should the Summary be about?"></textarea> 
+                <textarea id="text_area" name="text" cols="35" rows="1"  placeholder="Keyword or words seperated by a single space"></textarea> 
                 <div class="button">
                     <button id="calculate_button" type="button">Analyse</button>
                 </div>

@@ -41,10 +41,28 @@ html {
 }
 .Parameters{
     align-self: left;
-    
+    overflow: hidden;
+    margin-left: 5em;
+    margin-bottom: 10px;
+   
+}
+.param_options{
+    align-self: left;
+    overflow: hidden;
     margin-left: 5em;
     margin-bottom: 1em;
-    padding-right: 70%;
+    
+}
+.param_options_time{
+    align-self: left;
+    float: left;
+}
+.date{
+    margin-left: 1em;
+}
+
+#label_time_to{
+    margin-left: 1em;
 }
 .slider:hover {
     opacity: 1;
@@ -60,6 +78,8 @@ html {
     margin-left: 0.5em;
 }
 .params {
+    align-self: left;
+    float: left;
     margin-bottom: 10px;
 }
 .para_label{
@@ -75,6 +95,17 @@ html {
     margin-top: 1em;
     margin-bottom: 3em;
 }
+#dropdown_function_type{
+    margin-left: 1em;
+}
+.dropbtn {
+    background-color: steelblue;
+    color: white;
+    padding: 4px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
 #text_area{
     resize: none;
     width: 100%;
@@ -88,6 +119,7 @@ html {
     margin-top: 4px;
     overflow: hidden;
 }
+
 .time_D_Graph{
     margin: 5em;
 }
