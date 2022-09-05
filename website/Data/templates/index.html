@@ -14,17 +14,17 @@
             <h2 id="head_txt">IT Projekt</h2>
         </header>
 
-        <div class="Parameters" id="sliders">
+        <div class="Parameters" id="sliders_div">
             <div class="params">
                 <label class="param_label" for="ngram">N-gramms:</label>
-                <input type="range" value="2" min="2" max="5" id="ngram" oninput="this.nextElementSibling.value = this.value">
+                <input class="slider" type="range" value="2" min="2" max="5" id="ngram" oninput="this.nextElementSibling.value = this.value">
                 <output>2</output><br>
             </div>
         </div>
         <div class="Parameters">
             <div class="params">
                 <label class="param_label" for="max_length">Length of the Summary:</label>
-                <input type="range" value="600" min="50" max="1000" step="50" id="max_length" oninput="this.nextElementSibling.value = this.value">
+                <input class="slider" type="range" value="600" min="50" max="1000" step="50" id="max_length" oninput="this.nextElementSibling.value = this.value">
                 <output>600</output><br>
             </div>
         </div>
@@ -35,14 +35,14 @@
             </div>
             <div class="param_options_time">
                 <input class="date" type="date" id="date_from">
-                <input type="time" id="time_from">
+                <input class="time" type="time" id="time_from">
             </div>
             <div class="param_options_time">
                 <label id="label_time_to">To</label>
             </div>
             <div class="param_options_time">
                 <input class="date" type="date" id="date_to">
-                <input type="time" id="time_to">
+                <input class="time"  type="time" id="time_to">
             </div>
         </div>
 

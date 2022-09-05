@@ -59,14 +59,20 @@ html {
 }
 .date{
     margin-left: 1em;
+    cursor: pointer;
 }
-
+.time{
+    cursor: pointer;
+}
 #label_time_to{
     margin-left: 1em;
 }
 .slider:hover {
     opacity: 1;
   }
+.slider{
+    cursor: pointer;
+}
 .param_label{
     align-self: left;
     float: left;
