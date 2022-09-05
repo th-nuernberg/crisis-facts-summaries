@@ -49,7 +49,7 @@ async function make_a_summary(){
     //Hide loading circle; Enable Analyse Button when function is finished
    open_button_hide_loader(analyse_button,loader);
 
-
+   
    // Show new summary
    let main_Container = document.getElementById("Summary");
 
@@ -58,7 +58,10 @@ async function make_a_summary(){
    
    new_summary.setAttribute('align', "left");
 
-   new_summary.innerHTML = response_json["sentences"];
+   //Add each sentence of the summary with space between them
+   for(let i = 0; i < response_json["sentences"].length; i++){
+        new_summary.innerHTML += response_json["sentences"][i] + " ";
+   }
 
    main_Container.append(new_summary);
 }
