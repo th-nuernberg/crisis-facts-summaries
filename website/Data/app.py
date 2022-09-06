@@ -17,17 +17,6 @@ def start_summarize():
    parameters_from_frontend = request.get_json()
    parameters = parameters_from_frontend
    all_parameters_set = False
-   
-   # Startupcheck -> Testet ob alle Parameter existieren, wenn das nicht der Fall ist und diese trotzdem an gesamt() übergeben werden gibt es einen Fehler, da int(NULL) angewendet wird
-   for element in parameters: 
-        if parameters[element] != "":
-            all_parameters_set = True
-        else:
-            all_parameters_set = False
-            break
-
-   print("All Parameters set ?")
-   print(all_parameters_set)
 
    summary_as_json = gesamt(ngamms=int(parameters["ngrams"]),max_length=int(parameters["max_length"]))
    print(summary_as_json) # Zum debuggen

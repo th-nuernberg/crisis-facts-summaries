@@ -77,7 +77,7 @@ def extractBigramsPerDocument(sentenceDicts):
 # TODO: TFIDF anschauen
 # TF-IDF:
 #   - Termn Frequency: Gewichtung der Wörter anhand der Häufigkeit im Text
-#   - Document Frequency: Gewichtung der Wörter anhand der Häufigkeit in Seiten (oder größerer Texteinheit -> Wort kam in 3 Texteinheiten vor)
+#   - momentan Document Frequency: Gewichtung der Wörter anhand der Häufigkeit in Seiten (oder größerer Texteinheit -> Wort kam in 3 Texteinheiten vor)
 #   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet.
 #   - 
 # Gewichtung der Bigramme feststellen -> Wie häufig kommt ein Bigramm in dem Text vor

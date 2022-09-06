@@ -35,7 +35,7 @@ async function make_a_summary(){
                 //alert(response.json());
                 return response.json();     //It returns a promise which resolves with the result of parsing the body text as JSON
             }else{
-                alert("something is wrong: Sind die Parameter gesetzt? Wenn nein, kann das bei dem Aufruf von gesamt() zu Problemen führen" + response.toString());
+                alert("something is wrong" + response.toString());
             }
         }).then(jsonResponse=>{
 
@@ -49,7 +49,6 @@ async function make_a_summary(){
     //Hide loading circle; Enable Analyse Button when function is finished
    open_button_hide_loader(analyse_button,loader);
 
-   
    // Show new summary
    let main_Container = document.getElementById("Summary");
 
