@@ -1,4 +1,4 @@
-#FLASK and FLASK-Endpoint
+#FLASK and FLASK-Endpoints
 import json
 import os
 from flask import Flask, request, jsonify, render_template
@@ -8,7 +8,7 @@ from glpk_test import *
 app = Flask(__name__, template_folder='templates', static_folder='static')
 cors = CORS(app)
 
-#localchost:500
+#localchost:5000
 @app.route("/", methods=["GET"])
 def main_page():
     return render_template('index.html')
@@ -25,16 +25,18 @@ def start_summarize():
 
 
 @app.route("/datasets", methods=["GET"])
-def get_datasets():
+def get_datasets()->json:
     #get datasetnames as json
     
     #momentan nicht korrekter Pfad, weil nicht genau klar welche Datensätze jetzt genutzt werden sollen
-    #relative Pfade funktionieren noch nicht richtig -> Überarbeiten
-    path = "./website/Datensaetze/prepared"
-    dir_list = os.listdir(path)
+    #relative Pfade funktionieren noch nicht richtig, deswegen über current working directory (cwd)
+    
+    curr_path = os.path.abspath(os.getcwd())
+    curr_path+="\Datensaetze\prepared"
+    dir_list = os.listdir(curr_path)
     dir_list_json = {"files": dir_list}
 
-    return json.dumps(dir_list_json)
+    return dir_list_json
 
 #Run the app:
 if __name__ == "__main__":

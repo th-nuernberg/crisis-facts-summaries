@@ -104,6 +104,15 @@ html {
 #dropdown_function_type{
     margin-left: 1em;
 }
+.dropbtn:hover{
+    background-color: dodgerblue;
+}
+#dropdown_dataset{
+    margin-left: 1em;
+}
+#label_dataset{
+    margin-left: 1em;
+}
 .dropbtn {
     background-color: steelblue;
     color: white;

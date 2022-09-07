@@ -9,11 +9,12 @@
             <title>IT-Projekt</title>
             <script src="{{url_for('static', filename='javascript/summarize_script.js')}}"></script>
         </head>
-    <body class="body" onload="initAssignment()">
+    <body class="body" onload="initAssignment(),getDataset()">
         <header class="header">
             <h2 id="head_txt">IT Projekt</h2>
         </header>
-
+        
+    <div>
         <div class="Parameters" id="sliders_div">
             <div class="params">
                 <label class="param_label" for="ngram">N-gramms:</label>
@@ -52,11 +53,19 @@
             </div>
             <div class="param_options_time" id="dropdown_function_type">
                 <select class="dropbtn" name="function_type" id="type_of_function">
-                    <option class="dropbtn" value="Greedy" selected="selected">Greedy</option>
+                    <option class="dropbtn_opt" value="Greedy" selected="selected">Greedy</option>
+                </select>
+            </div>
+            <div class="param_options_time">
+                <label class="param_label" for="dataset" id="label_dataset">Dataset to analyse:</label>
+            </div>
+            <div class="param_options_time" id="dropdown_dataset">
+                <select class="dropbtn" name="dataset" id="type_of_dataset">
+                    
                 </select>
             </div>
         </div>
-
+    </div>
         <div class="Insert_Form">
                 <label id="Label" for="text">Search-Parameter</label>
                 <textarea id="text_area" name="text" cols="35" rows="1"  placeholder="Keyword or words seperated by a single space"></textarea> 

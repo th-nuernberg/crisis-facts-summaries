@@ -4,6 +4,34 @@ function initAssignment(){
     button.addEventListener("click",make_a_summary)
 }
 
+//Create Options for Dataset
+//TODO: TEST IN DOCKER
+async function getDataset(){
+    let response_json;
+    await fetch("http://127.0.0.1:5000/datasets", 
+        {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json'
+            },
+        }).then(jsonResponse=>{
+            // Test Solution since Docker doesnt work well with windows
+            response_json = jsonResponse
+        }).catch((err) => console.error(err));
+
+        let data_dropdown = document.getElementById("type_of_dataset");
+        //alert(JSON.stringify(response_json))
+        for(let i = 0; i < response_json["files"].length; i++){
+            let new_option = document.createElement("option");
+            new_option.setAttribute('class',"dropbtn_opt");
+            new_option.setAttribute('value',response_json["files"][i]);
+            new_option.innerHTML=response_json["files"][i];
+            data_dropdown.appendChild(new_option);
+       }    
+}
+
+
 async function make_a_summary(){
    //if there is already a summary, remove it 
    if(document.getElementById("new_summary") != null){
