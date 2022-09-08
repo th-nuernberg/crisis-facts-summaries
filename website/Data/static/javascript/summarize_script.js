@@ -94,6 +94,11 @@ async function make_a_summary(){
 }
 
 function get_parameter_as_json(){
+    
+   let dataset = document.getElementById("type_of_dataset").value
+   //Placehold, TODO A DATASET MUST BE CHOSEN
+   if(!dataset){dataset = "empty"}
+
    let ngramms = document.getElementById("ngram").value;
    if(!ngramms){ngramms = 2}
 
@@ -117,7 +122,8 @@ function get_parameter_as_json(){
                                 "max_length": max_length,
                                 "question": summary_question,
                                 "timespan" : {"from": {"date":date_from, "time":time_from}, "to": {"date": date_to, "time":time_to}},
-                                "function_type": function_type,    
+                                "function_type": function_type,
+                                "dataset":dataset,    
                             };
    
    return variables_for_summary;
