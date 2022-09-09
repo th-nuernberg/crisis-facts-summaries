@@ -8,6 +8,7 @@ function initAssignment(){
 //TODO: TEST IN DOCKER
 async function getDataset(){
     let response_json;
+    
     await fetch("http://127.0.0.1:5000/datasets", 
         {
             method: 'GET',
@@ -15,13 +16,15 @@ async function getDataset(){
                 'Content-type': 'application/json',
                 'Accept': 'application/json'
             },
+        }).then( (response) =>{    
+                return response.json();     //It returns a promise which resolves with the result of parsing the body text as JSON
         }).then(jsonResponse=>{
             // Test Solution since Docker doesnt work well with windows
             response_json = jsonResponse
         }).catch((err) => console.error(err));
-
+    
         let data_dropdown = document.getElementById("type_of_dataset");
-        //alert(JSON.stringify(response_json))
+        
         for(let i = 0; i < response_json["files"].length; i++){
             let new_option = document.createElement("option");
             new_option.setAttribute('class',"dropbtn_opt");

@@ -36,7 +36,7 @@ def get_datasets()->json:
     dir_list = os.listdir(curr_path)
     dir_list_json = {"files": dir_list}
 
-    return dir_list_json
+    return jsonify(dir_list_json)
 
 #Run the app:
 if __name__ == "__main__":
