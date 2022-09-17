@@ -1,0 +1,1 @@
+{"stream_id": "1", "document_id": "1", "document_source": "WEBLOG", "timestamp": "2013-01-16T16:19:26.0Z", "lang": "en", "meta": "", "title": "Foo", "content": "Test"}

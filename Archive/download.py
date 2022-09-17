@@ -98,12 +98,12 @@ for event in eventNoLis:
         print(day)#["dateString"]
         dataset = ir_datasets.load('crisisfacts/' +event+ '/' +day)#["dateString"]
         itemsAsDataFrame = pd.DataFrame(dataset.docs_iter())
-        with open(file_out, 'a',encoding="utf-8") as f:
-            result = itemsAsDataFrame.to_json(orient="records")
-            parsed = json.loads(result)
-            f.write(json.dumps(parsed, indent=4))
-        #for item in dataset.docs_iter()[:10]: # create an iterator over the stream containing the first 10 items
-        #    print(item)
+        # with open(file_out, 'a',encoding="utf-8") as f:
+        #     result = itemsAsDataFrame.to_json(orient="records")
+        #     parsed = json.loads(result)
+        #     f.write(json.dumps(parsed, indent=4))
+        #for item in itemsAsDataFrame.head(1):#dataset.docs_iter()[1]: # create an iterator over the stream containing the first 10 items
+        print(itemsAsDataFrame.head(1)["source"])
         #print(pd.DataFrame(dataset.queries_iter())[:10])
         
 def newinput():

@@ -32,9 +32,9 @@ def bigramme(text):
     return result
 
 # Das gleiche wie die Funktion darüber nur mit n-grammen (also n Wörterbündel)
-def ngrame(text,anzahl_worte=2):
+def ngrame(text,anzahl_worte=1):
     result = []
-    for i in range(2,anzahl_worte+1):
+    for i in range(1,anzahl_worte+1):
         ngrame = []
         n_grams = ngrams(text.split(), i)
         for grams in n_grams:
@@ -222,7 +222,7 @@ Occ = [  # ob ein Konzept in einem Satz enthalten ist
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(ngamms=2,timespan=0,weigth=0,max_length=600,question=""):
+def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
 
     print("Start!")
     start = time.time()
