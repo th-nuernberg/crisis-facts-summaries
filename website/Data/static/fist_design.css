@@ -51,7 +51,11 @@ html {
     overflow: hidden;
     margin-left: 5em;
     margin-bottom: 1em;
-    
+}
+.param_options_collaps{
+    align-self: left;
+    overflow: hidden;
+    margin-left: 5em;
 }
 .param_options_time{
     align-self: left;
@@ -171,4 +175,47 @@ html {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+.collapsible {
+    background-color: steelblue;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    width: 10%;
+    height: inherit;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 16px;
+    float:left;
+    min-width: 9em;
+    max-width: 9em;
+   
+  }
+  .collapsible:hover {
+    background-color:dodgerblue
+  }
+  .content {
+    padding: 0 18px;
+    max-height: 0;
+    width: 50%;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: #f1f1f1;
+  }
+  .active, .collapsible:hover {
+    background-color: dodgerblue;
+  }
+  
+  .collapsible:after {
+    content: '\002B';
+    color: white;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+  }
+  
+  .active:after {
+    content: "\2212";
   }

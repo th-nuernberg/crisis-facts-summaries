@@ -2,6 +2,20 @@
 function initAssignment(){
     let button = document.getElementById("calculate_button");
     button.addEventListener("click",make_a_summary)
+
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+          this.classList.toggle("active");
+          var content = document.getElementById("field_more_opt");
+          if (content.style.maxHeight){
+            content.style.maxHeight = null;
+          } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+          } 
+        });}
 }
 
 //Create Options for Dataset
