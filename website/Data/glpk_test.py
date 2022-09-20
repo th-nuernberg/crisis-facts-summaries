@@ -5,6 +5,9 @@ from pymprog import *
 import re
 from nltk import ngrams
 import time
+import textacy as tprep
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
 
 pathToFile = "/usr/src/app/Datensaetze/prepared/26.relonly.jsonl" #Datensatz_1.json
 
@@ -31,6 +34,28 @@ def bigramme(text):
             result.append(words[i] + "_" + words[i + 1])
     return result
 
+def clean(text):
+    # tags like <tab>
+    text = re.sub(r'<[^<>]*>', ' ', text)
+    # markdown URLs like [Some text](https://....)
+    text = re.sub(r'\[([^\[\]]*)\]\([^\(\)]*\)', r'\1', text)
+    # text or code in brackets like [0]
+    text = re.sub(r'\[[^\[\]]*\]', ' ', text)
+    # standalone sequences of specials, matches &# but not #cool
+    text = re.sub(r'(?:^|\s)[&#<>{}\[\]+|\\:-]{1,}(?:\s|$)', ' ', text)
+    # standalone sequences of hyphens like --- or ==
+    text = re.sub(r'(?:^|\s)[\-=\+]{2,}(?:\s|$)', ' ', text)
+    # sequences of white spaces
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
+
+def normalize(text):
+    text = tprep.normalize.hyphenated_words(text)
+    text = tprep.normalize.quotation_marks(text)
+    text = tprep.normalize.unicode(text)
+    text = tprep.remove.accents(text)
+    return text
+
 # Das gleiche wie die Funktion darüber nur mit n-grammen (also n Wörterbündel)
 def ngrame(original_text,anzahl_worte=1):
     stopwords =[]
@@ -38,18 +63,19 @@ def ngrame(original_text,anzahl_worte=1):
         stopwords = file.read().splitlines()
     result = []
     text = ""
+    original_text = clean(original_text)
+    #original_text = normalize(original_text)
     for w in original_text.split():
         if w not in stopwords:
             text = text + " " + w
     for i in range(1,anzahl_worte+1):
         ngrame = []
-        n_grams = ngrams(text.split(), i)
+        n_grams = ngrams(re.findall(r'[A-Za-z0-9]+', text), i)
         for grams in n_grams:
             hold =""
             for gram in grams:
                 hold += gram
                 hold +="___"
-            hold = hold[:-1]
             ngrame.append(hold)
         result.extend(ngrame)
     return result
@@ -80,7 +106,6 @@ def extractBigramsPerDocument(sentenceDicts):
         documentDict[key] = list(set(documentDict[key]))
     return documentDict
 
-# TODO: TFIDF anschauen
 # TF-IDF:
 #   - Termn Frequency: Gewichtung der Wörter anhand der Häufigkeit im Text
 #   - momentan Document Frequency: Gewichtung der Wörter anhand der Häufigkeit in Seiten (oder größerer Texteinheit -> Wort kam in 3 Texteinheiten vor)
@@ -114,7 +139,6 @@ def extractWeightPerBigram(documentsDict,sentences,Vorzugsfaktor =2):
 # Erstellt eine Matrix mit den Vorkommnissen der Engrammen in den Sätzen
 # Anzahl der Spalten ist Anzahl der Ngramme
 # Anzahl der Zeilen ist Anzahl der Sätze
-#Felix
 def calculateOccurrences(bigramList, sentenceBigramList):
     dim_columns = len(bigramList)
     dim_rows = len(sentenceBigramList)
@@ -124,6 +148,14 @@ def calculateOccurrences(bigramList, sentenceBigramList):
             if bigramList[j] in sentenceBigramList[i]:
                 occ[i][j] = 1
     return occ
+
+def TfIdfBerechnen(sentences,ngrams=2):
+    df = pd.DataFrame(sentences)
+    df = df[:5000]
+    df.drop(['document_id','timestamp','bigrams'], axis = 1)
+    count_vect = CountVectorizer(lowercase=False, min_df=5, max_df=0.8, ngram_range=(1,ngrams))    
+    X_tf = count_vect.fit_transform(df['sentence'])   
+    return [X_tf,len(count_vect.get_feature_names())]
 
 # TODO: dies ist zu ressourcenintensiv -> doch direkt mit glpk? Kann das optimiert werden?
 # TODO: wegen Serverzugriff Mail schreiben 
@@ -150,8 +182,7 @@ def calculateOccurrences(bigramList, sentenceBigramList):
 #             summary.append(saetze[b])
 #     return summary
 
-# 
-def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLength):
+def calculateSummaryGreedy(saetze, sentences, weights, occurrences_, maxTotalLength):
     sentenceIndices = []
     totalLength = 0
     continueSearching = True
@@ -161,16 +192,16 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
         satzDict[s["sentence_id"]]= s["sentence"]
     for s in sentences:
         zeitDict[s["sentence_id"]]= s["timestamp"]
-
+    occurrences = occurrences_[0]
+    length = occurrences_[1]
     # calculate total value for all sentences
     sentenceValue = []
     for s in saetze:
         sentenceValue.append(0)
     for i in range(len(saetze)):
         for j in range(len((weights))):
-            sentenceValue[i] += occurrences[i][j] * weights[j]
-        #if i % 1000 == 0:
-        #    print(i)
+        #for j in range(length):
+            sentenceValue[i] += occurrences[i,j] * weights[j]
     sentence =""
     while continueSearching:
         # get maximum value per length
@@ -178,7 +209,7 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
         maxSentence = -1
         for i in range(len(sentenceValue)):
             val = sentenceValue[i] / len(satzDict[saetze[i]])
-            if (maxVal < val) & (totalLength + len(satzDict[saetze[i]]) < maxTotalLength):
+            if (maxVal < val) & ((totalLength + len(satzDict[saetze[i]])) < maxTotalLength):
                 maxVal = val
                 maxSentence = i
                 sentence = satzDict[saetze[i]]
@@ -187,10 +218,11 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
         if maxSentence != -1:
             sentenceIndices.append(maxSentence)
             totalLength += len(sentence)
+            print(totalLength)
             for j in range(len(occurrences[maxSentence])):
                 if occurrences[maxSentence][j] > 0:
                     for i in range(len(occurrences)):
-                        sentenceValue[i] -= occurrences[i][j] * weights[j]
+                        sentenceValue[i] -= occurrences[i][j] #* weights[j]
         else:
             continueSearching = False # no new sentence that fit the length was found, end the search
 
@@ -205,37 +237,6 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
 
     return summary
 
-
-satz1 = "hallo wie geht es"
-satz2 = "test satz bla"
-satz3 = "test satz 2"
-
-saetze = ["hallo wie geht es",
-        "test satz bla",
-        "test satz 2"
-        ]
-
-# l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
-# j = len(saetze)  # anzahl Sätze
-
-w = [1,  # hallo    Gewichte der Konzepte, hier Wörter
-    2,  # wie
-    3,  # geht
-    4,  # es
-    5,  # test
-    6,  # satz
-    2,  # bla
-    8,  # 2
-    ]
-# aktualität = (zeitpunkt_erste_erwähnung - startzeitpunkt) / (endzeitpunkt - startzeitpunkte)
-# w = anzahl_dokumente * x + (1-x) * aktualität
-Occ = [  # ob ein Konzept in einem Satz enthalten ist
-    [1, 1, 1, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 1, 1, 0, 1],
-]
-
-# print(calculateSummary(saetze, w, Occ, L))
 # TODO: einschränkung auf einen gewissen Zeitraum
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
@@ -246,44 +247,25 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
     start = time.time()
     L = max_length # Anzhal Buchstaben im Summary
 
-    #init()
     data = readInput()
-    #print(data[0])
     sentences = extractSentencesNLTK(data,ngamms)
-    #print(sentences[0])
     bigramsPerDocument = extractBigramsPerDocument(sentences)
-    # print(bigramsPerDocument['7b32de22a8f61f2c6d86e40a5a786cc7'])
     bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences)
-    # print(bigramWeights['amid_heavy'])
+
     # True setzen falls der Arbeitsspeicher voll läuft
     if False:
         occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys())[:Anzahl_gramme], [s['bigrams'] for s in sentences])
         weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())[:Anzahl_gramme]
     else:
         occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
+        #occ = TfIdfBerechnen(sentences)
         weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
     saetzeList = [s['sentence_id'] for s in sentences]
-    #print(len(weights))
-    #print(len(saetzeList))
 
     summarySenetences = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
-
-    #testBigrams = ['hallo', 'wie', 'geht', 'es', 'test', 'satz', 'bla', '2']
-    #testSatzBigrams = [s.split() for s in saetze]
-
-    # occ = calculateOccurrences(testBigrams, testSatzBigrams)
-    # print(occ)
-
-    # summarySenetences = calculateSummary(saetze, w, occ, L)
-
-    #for s in summarySenetences:
-        #print(s)
-        #totalLength += len(s)
-    #print(totalLength)
 
     end = time.time()
     print("Fertig!")
     print(end - start)
     print("Sekunden Ausfuehrungszeit")
-    #print(summarySenetences)
     return json.dumps(summarySenetences)

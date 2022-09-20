@@ -13,6 +13,9 @@ RUN pip install flask
 RUN pip install flask-cors
 RUN pip install pymprog
 RUN pip install nltk
+RUN pip install textacy
+RUN pip install pandas
+RUN pip install -U scikit-learn
 RUN python3 -m nltk.downloader popular
 
 #RUN mv /usr/src/app/node_modules/ /usr/src/app/static/
