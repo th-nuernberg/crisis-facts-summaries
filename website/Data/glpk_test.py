@@ -6,7 +6,7 @@ import re
 from nltk import ngrams
 import time
 
-pathToFile = "/usr/src/app/Datensaetze/prepared/26.relonly.jsonl"
+pathToFile = "/usr/src/app/Datensaetze/prepared/26.relonly.jsonl" #Datensatz_1.json
 
 def init():
     nltk.download('punkt')
@@ -32,8 +32,15 @@ def bigramme(text):
     return result
 
 # Das gleiche wie die Funktion darüber nur mit n-grammen (also n Wörterbündel)
-def ngrame(text,anzahl_worte=1):
+def ngrame(original_text,anzahl_worte=1):
+    stopwords =[]
+    with open('/usr/src/app/Datensaetze/stopwords-en.txt', encoding='utf-8') as file:
+        stopwords = file.read().splitlines()
     result = []
+    text = ""
+    for w in original_text.split():
+        if w not in stopwords:
+            text = text + " " + w
     for i in range(1,anzahl_worte+1):
         ngrame = []
         n_grams = ngrams(text.split(), i)
@@ -41,13 +48,12 @@ def ngrame(text,anzahl_worte=1):
             hold =""
             for gram in grams:
                 hold += gram
-                hold +="_"
+                hold +="___"
             hold = hold[:-1]
             ngrame.append(hold)
         result.extend(ngrame)
     return result
-
-# 
+ 
 def extractSentencesNLTK(rawDicts,numberOfWords):
     sentencesDicts = []
     sentenceId = 0
@@ -81,12 +87,24 @@ def extractBigramsPerDocument(sentenceDicts):
 #   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet.
 #   - 
 # Gewichtung der Bigramme feststellen -> Wie häufig kommt ein Bigramm in dem Text vor
-def extractWeightPerBigram(documentsDict):
+def extractWeightPerBigram(documentsDict,sentences,Vorzugsfaktor =2):
     bigramDict = {}
+    anzahl_dict = {1:0,2:0,3:0,4:0,5:0}
     for documentId in documentsDict:
         for bigram in documentsDict[documentId]:
             bigramDict.setdefault(bigram, 0)
             bigramDict[bigram] = bigramDict[bigram] + 1
+    bigrammList = []
+    for sentence in sentences:
+        for bigram in sentence["bigrams"]:
+            bigrammList.append(bigram)
+    for  gramm in bigrammList:
+        anzahl_dict[gramm.count('___')+1] = anzahl_dict[gramm.count('___')+1]+1
+    uniqueBigrams = list(set(bigrammList))
+    for gramm in uniqueBigrams:
+        grammLength =gramm.count('___')+1
+        # Gewichtung * Korrekturfaktor * Vorzugsfaktor
+        bigramDict[gramm] = bigramDict[gramm]  * (anzahl_dict[1]/anzahl_dict[grammLength]) * (grammLength*Vorzugsfaktor)
     return bigramDict
 
 # TODO: Ckitlearn kann das evtl. effizienter -> besseres Format
@@ -96,6 +114,7 @@ def extractWeightPerBigram(documentsDict):
 # Erstellt eine Matrix mit den Vorkommnissen der Engrammen in den Sätzen
 # Anzahl der Spalten ist Anzahl der Ngramme
 # Anzahl der Zeilen ist Anzahl der Sätze
+#Felix
 def calculateOccurrences(bigramList, sentenceBigramList):
     dim_columns = len(bigramList)
     dim_rows = len(sentenceBigramList)
@@ -105,7 +124,6 @@ def calculateOccurrences(bigramList, sentenceBigramList):
             if bigramList[j] in sentenceBigramList[i]:
                 occ[i][j] = 1
     return occ
-
 
 # TODO: dies ist zu ressourcenintensiv -> doch direkt mit glpk? Kann das optimiert werden?
 # TODO: wegen Serverzugriff Mail schreiben 
@@ -170,7 +188,7 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
             sentenceIndices.append(maxSentence)
             totalLength += len(sentence)
             for j in range(len(occurrences[maxSentence])):
-                if occurrences[maxSentence][j] == 1:
+                if occurrences[maxSentence][j] > 0:
                     for i in range(len(occurrences)):
                         sentenceValue[i] -= occurrences[i][j] * weights[j]
         else:
@@ -223,7 +241,7 @@ Occ = [  # ob ein Konzept in einem Satz enthalten ist
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
 def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
-
+    Anzahl_gramme = 5000
     print("Start!")
     start = time.time()
     L = max_length # Anzhal Buchstaben im Summary
@@ -235,12 +253,15 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
     #print(sentences[0])
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     # print(bigramsPerDocument['7b32de22a8f61f2c6d86e40a5a786cc7'])
-    bigramWeights = extractWeightPerBigram(bigramsPerDocument)
+    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences)
     # print(bigramWeights['amid_heavy'])
-    occ = calculateOccurrences(list(bigramWeights.keys()), [s['bigrams'] for s in sentences])
-    # print(occ[1])
-    #print("occurrences ready")
-    weights = list(bigramWeights.values())
+    # True setzen falls der Arbeitsspeicher voll läuft
+    if False:
+        occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys())[:Anzahl_gramme], [s['bigrams'] for s in sentences])
+        weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())[:Anzahl_gramme]
+    else:
+        occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
+        weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
     saetzeList = [s['sentence_id'] for s in sentences]
     #print(len(weights))
     #print(len(saetzeList))
