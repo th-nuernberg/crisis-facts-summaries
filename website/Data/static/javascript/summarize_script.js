@@ -19,7 +19,6 @@ function initAssignment(){
 }
 
 //Create Options for Dataset
-//TODO: TEST IN DOCKER
 async function getDataset(){
     let response_json;
     
@@ -57,6 +56,13 @@ async function make_a_summary(){
    //Get all Parameters
    let variables_for_summary = get_parameter_as_json();
 
+   //Check if atleast one Checkbox was selected
+   let atleast_one_checkmark_ticked = variables_for_summary["atleast_one_checkmark_ticked"]
+   if(atleast_one_checkmark_ticked==false){
+    alert("No Contextsize was selected");
+    return;
+    }
+
    let response_json;
 
    // Disable Analyse Button while function is calculating and styling
@@ -87,7 +93,7 @@ async function make_a_summary(){
             o = JSON.stringify(jsonResponse);
             //alert(o);
             //response_json = o;
-            // Test Solution since Docker doesnt work well with windows
+            
             response_json = jsonResponse
         }).catch((err) => console.error(err));
 
@@ -134,15 +140,31 @@ function get_parameter_as_json(){
    let summary_question = document.getElementById("text_area").value;
    if(!summary_question){summary_question = ""}
    
+    //Get Value for checkmarks Kontext
+    let kontext_mark_one = document.getElementById("kontext_eins");
+    let kontext_mark_two = document.getElementById("kontext_zwei");
+    let kontext_mark_three = document.getElementById("kontext_drei");
+    let kontext_mark_four = document.getElementById("kontext_vier");
+    
+    let list_of_checks = [kontext_mark_one,kontext_mark_two,kontext_mark_three,kontext_mark_four]; 
+    //Validate if atleast one has been ticked
+    let atleast_one = false;
+    for(let j = 0; j<list_of_checks.length;j++){
+        if (list_of_checks[j].checked === true) {
+            atleast_one = true;
+          }
+    }
+
    // Make a json with all parameters, to be send to the backend
    let variables_for_summary = {"ngrams": ngramms,
                                 "max_length": max_length,
                                 "question": summary_question,
                                 "timespan" : {"from": {"date":date_from, "time":time_from}, "to": {"date": date_to, "time":time_to}},
                                 "function_type": function_type,
-                                "dataset":dataset,    
+                                "dataset":dataset,
+                                "atleast_one_checkmark_ticked":atleast_one,
+                                "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},    
                             };
-   
    return variables_for_summary;
 }
 
