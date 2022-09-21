@@ -34,7 +34,17 @@ def bigramme(text):
             result.append(words[i] + "_" + words[i + 1])
     return result
 
-def sum_appearances():
+# Es wird gezählt, wie viele Ereignisse zu einem bestimmten Zeitpunkt erfasst wurden. Diese Daten werden grafisch auf der Webseite angezeigt
+def sum_appearances(rohtext):
+    # rohtext splitted by " " 
+    listofwords = rohtext.split()
+    pattern = ""
+    for word in listofwords:
+        if(re.search(pattern, word)):
+            print("found")
+        else:
+            print("not found")
+
 
     return "hui"
 
@@ -250,9 +260,12 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
     print("Start!")
     start = time.time()
     L = max_length # Anzhal Buchstaben im Summary
-
     data = readInput()
+
+    # Test für grafische Darstellung des Diagramms
     print(data)
+    test = sum_appearances(data)
+
     sentences = extractSentencesNLTK(data,ngamms)
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences)
