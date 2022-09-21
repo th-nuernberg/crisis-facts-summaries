@@ -34,6 +34,10 @@ def bigramme(text):
             result.append(words[i] + "_" + words[i + 1])
     return result
 
+def sum_appearances():
+
+    return "hui"
+
 def clean(text):
     # tags like <tab>
     text = re.sub(r'<[^<>]*>', ' ', text)
@@ -248,6 +252,7 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
     L = max_length # Anzhal Buchstaben im Summary
 
     data = readInput()
+    print(data)
     sentences = extractSentencesNLTK(data,ngamms)
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences)
