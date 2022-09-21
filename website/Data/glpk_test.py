@@ -38,14 +38,13 @@ def bigramme(text):
 def sum_appearances(rohtext):
     # rohtext splitted by " " 
     listofwords = rohtext.split()
-    pattern = ""
+    # Pattern um per regular Expression das Datum zu finden
+    pattern = "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]"
     for word in listofwords:
-        if(re.search(pattern, word)):
-            print("found")
-        else:
-            print("not found")
-
-
+        if(len(word) > 14):
+            if(re.search(pattern, word)):
+                time = re.match(pattern, word)
+                #TODO wenn es matcht soll das ganze an ein Json object angehängt werden (Datum:Anzahl Vorkommnisse)
     return "hui"
 
 def clean(text):
