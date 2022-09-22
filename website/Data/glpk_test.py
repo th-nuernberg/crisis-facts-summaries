@@ -37,7 +37,8 @@ def bigramme(text):
 # Es wird gezählt, wie viele Ereignisse zu einem bestimmten Zeitpunkt erfasst wurden. Diese Daten werden grafisch auf der Webseite angezeigt
 def sum_appearances(rohtext):
     # rohtext splitted by " " 
-    listofwords = rohtext.split()
+    #listofwords = rohtext.split()
+    listofwords = rohtext
     # Pattern um per regular Expression das Datum zu finden
     pattern = "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]"
     listofDates = {}
@@ -47,8 +48,12 @@ def sum_appearances(rohtext):
             if(re.search(pattern, word)):
                 time = re.match(pattern, word)
                 if time in listofDates.keys():
-
-                #TODO wenn es matcht soll das ganze an ein Json object angehängt werden (Datum:Anzahl Vorkommnisse)
+                    listofDates[time] = listofDates[time] + 1
+                else:
+                    listofDates[time] = 1
+    
+    print("Alle Zeitpunkte:")
+    print(listofDates)
     return "hui"
 
 def clean(text):
@@ -266,7 +271,6 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
     data = readInput()
 
     # Test für grafische Darstellung des Diagramms
-    print(data)
     test = sum_appearances(data)
 
     sentences = extractSentencesNLTK(data,ngamms)
