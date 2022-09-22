@@ -40,10 +40,14 @@ def sum_appearances(rohtext):
     listofwords = rohtext.split()
     # Pattern um per regular Expression das Datum zu finden
     pattern = "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]"
+    listofDates = {}
+    # Für alle String in listofwords wird geprüft, ob 1. der string größer als 14 ist 2. ob der string dem definiertem pattern entspricht 3. ob der string schon in dem dict vorhanden ist
     for word in listofwords:
         if(len(word) > 14):
             if(re.search(pattern, word)):
                 time = re.match(pattern, word)
+                if time in listofDates.keys():
+
                 #TODO wenn es matcht soll das ganze an ein Json object angehängt werden (Datum:Anzahl Vorkommnisse)
     return "hui"
 
