@@ -139,18 +139,21 @@ function get_parameter_as_json(){
    // Check if Parameters have been entered
    let summary_question = document.getElementById("text_area").value;
    if(!summary_question){summary_question = ""}
+
+   let exclude_params = document.getElementById("text_area_exclude").value;
+   if(!exclude_params){exclude_params = ""}
    
     //Get Value for checkmarks Kontext
-    let kontext_mark_one = document.getElementById("kontext_eins");
-    let kontext_mark_two = document.getElementById("kontext_zwei");
-    let kontext_mark_three = document.getElementById("kontext_drei");
-    let kontext_mark_four = document.getElementById("kontext_vier");
+    let kontext_mark_one = document.getElementById("kontext_eins").checked;
+    let kontext_mark_two = document.getElementById("kontext_zwei").checked;
+    let kontext_mark_three = document.getElementById("kontext_drei").checked;
+    let kontext_mark_four = document.getElementById("kontext_vier").checked;
     
     let list_of_checks = [kontext_mark_one,kontext_mark_two,kontext_mark_three,kontext_mark_four]; 
     //Validate if atleast one has been ticked
     let atleast_one = false;
     for(let j = 0; j<list_of_checks.length;j++){
-        if (list_of_checks[j].checked === true) {
+        if (list_of_checks[j] === true) {
             atleast_one = true;
           }
     }
@@ -159,12 +162,14 @@ function get_parameter_as_json(){
    let variables_for_summary = {"ngrams": ngramms,
                                 "max_length": max_length,
                                 "question": summary_question,
+                                "exclude_params":exclude_params,
                                 "timespan" : {"from": {"date":date_from, "time":time_from}, "to": {"date": date_to, "time":time_to}},
                                 "function_type": function_type,
                                 "dataset":dataset,
                                 "atleast_one_checkmark_ticked":atleast_one,
                                 "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},    
                             };
+alert(JSON.stringify(variables_for_summary))
    return variables_for_summary;
 }
 

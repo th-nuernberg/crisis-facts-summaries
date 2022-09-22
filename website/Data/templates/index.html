@@ -94,8 +94,14 @@
         </div>
     </div>
         <div class="Insert_Form">
+            <div>
                 <label id="Label" for="text">Search-Parameter</label>
-                <textarea id="text_area" name="text" cols="35" rows="1"  placeholder="Keyword or words seperated by a single space"></textarea> 
+                <textarea id="text_area" name="text" cols="35" rows="1"  placeholder="Keyword or words seperated by a single space that should be in the summary"></textarea>
+            </div>
+            <div>
+                <label id="Label" for="text">Exclude Parameter</label>
+                <textarea id="text_area_exclude" name="text" cols="35" rows="1"  placeholder="Keyword or words seperated by a single space that should NOT be in the summary"></textarea>
+            </div>  
                 <div class="button">
                     <button id="calculate_button" type="button">Analyse</button>
                 </div>
@@ -103,6 +109,7 @@
                     <div class="loader" id="load"></div>
                 </div>	
         </div>
+        
 
         <div id="Graph">
             <canvas id="myChart" width="600" height="200"></canvas>

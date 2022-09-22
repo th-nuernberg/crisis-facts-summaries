@@ -60,6 +60,7 @@ html {
 .param_options_time{
     align-self: left;
     float: left;
+    font-weight: bolder;
 }
 .date{
     margin-left: 1em;
@@ -78,6 +79,7 @@ html {
     cursor: pointer;
 }
 .param_label{
+    font-weight: bolder;
     align-self: left;
     float: left;
 }
@@ -126,6 +128,11 @@ html {
     cursor: pointer;
 }
 #text_area{
+    resize: none;
+    width: 100%;
+    height: 100%;
+}
+#text_area_exclude{
     resize: none;
     width: 100%;
     height: 100%;
