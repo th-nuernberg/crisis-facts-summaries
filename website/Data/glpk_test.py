@@ -35,26 +35,25 @@ def bigramme(text):
     return result
 
 # Es wird gezählt, wie viele Ereignisse zu einem bestimmten Zeitpunkt erfasst wurden. Diese Daten werden grafisch auf der Webseite angezeigt
-def sum_appearances(rohtext):
-    # rohtext splitted by " " 
-    #listofwords = rohtext.split()
-    listofwords = rohtext
-    # Pattern um per regular Expression das Datum zu finden
-    pattern = "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]"
+def sum_appearances(rohdaten):
     listofDates = {}
-    # Für alle String in listofwords wird geprüft, ob 1. der string größer als 14 ist 2. ob der string dem definiertem pattern entspricht 3. ob der string schon in dem dict vorhanden ist
-    for word in listofwords:
-        if(len(word) > 14):
-            if(re.search(pattern, word)):
-                time = re.match(pattern, word)
-                if time in listofDates.keys():
-                    listofDates[time] = listofDates[time] + 1
-                else:
-                    listofDates[time] = 1
-    
-    print("Alle Zeitpunkte:")
-    print(listofDates)
-    return "hui"
+    for satz in rohdaten:
+        time = satz["timestamp"]
+        if time in listofDates.keys():
+            listofDates[time] = listofDates[time] + 1
+        else:
+            listofDates[time] = 1
+
+    #print("Alle Zeitpunkte:")
+    #print(listofDates)
+    return listofDates
+
+def add_sum_appearances(summarySenetences,timeDataForDiagramm):
+    keys = timeDataForDiagramm.keys()
+    for s in keys:
+        summarySenetences["timestampsforDiagramm"].append(s)
+        summarySenetences["occurrencesforDiagramm"].append(summarySenetences[s])
+    return summarySenetences
 
 def clean(text):
     # tags like <tab>
@@ -249,7 +248,9 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences_, maxTotalLen
             continueSearching = False # no new sentence that fit the length was found, end the search
 
     summary = { "sentences": [],
-            "timestamp": []  }
+            "timestamp": [],
+            "timestampsforDiagramm": [],
+            "occurrencesforDiagramm": [] }
 
     for i in sentenceIndices:
         for s in sentences:
@@ -271,7 +272,7 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
     data = readInput()
 
     # Test für grafische Darstellung des Diagramms
-    test = sum_appearances(data)
+    timeDataForDiagramm = sum_appearances(data)
 
     sentences = extractSentencesNLTK(data,ngamms)
     bigramsPerDocument = extractBigramsPerDocument(sentences)
@@ -287,7 +288,9 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
         weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
     saetzeList = [s['sentence_id'] for s in sentences]
 
-    summarySenetences = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
+    summarySenetencesincomplete = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
+    summarySenetences = add_sum_appearances(summarySenetencesincomplete,timeDataForDiagramm)
+    print(summarySenetences)
 
     end = time.time()
     print("Fertig!")
