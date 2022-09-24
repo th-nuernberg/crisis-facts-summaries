@@ -203,7 +203,7 @@ def TfIdfBerechnen(sentences,ngrams=2):
 #             summary.append(saetze[b])
 #     return summary
 
-def calculateSummaryGreedy(saetze, sentences, weights, occurrences_, maxTotalLength):
+def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLength):
     sentenceIndices = []
     totalLength = 0
     continueSearching = True
@@ -213,16 +213,16 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences_, maxTotalLen
         satzDict[s["sentence_id"]]= s["sentence"]
     for s in sentences:
         zeitDict[s["sentence_id"]]= s["timestamp"]
-    occurrences = occurrences_[0]
-    length = occurrences_[1]
+
     # calculate total value for all sentences
     sentenceValue = []
     for s in saetze:
         sentenceValue.append(0)
     for i in range(len(saetze)):
         for j in range(len((weights))):
-        #for j in range(length):
-            sentenceValue[i] += occurrences[i,j] * weights[j]
+            sentenceValue[i] += occurrences[i][j] * weights[j]
+        #if i % 1000 == 0:
+        #    print(i)
     sentence =""
     while continueSearching:
         # get maximum value per length
@@ -230,7 +230,7 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences_, maxTotalLen
         maxSentence = -1
         for i in range(len(sentenceValue)):
             val = sentenceValue[i] / len(satzDict[saetze[i]])
-            if (maxVal < val) & ((totalLength + len(satzDict[saetze[i]])) < maxTotalLength):
+            if (maxVal < val) & (totalLength + len(satzDict[saetze[i]]) < maxTotalLength):
                 maxVal = val
                 maxSentence = i
                 sentence = satzDict[saetze[i]]
@@ -239,11 +239,10 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences_, maxTotalLen
         if maxSentence != -1:
             sentenceIndices.append(maxSentence)
             totalLength += len(sentence)
-            print(totalLength)
             for j in range(len(occurrences[maxSentence])):
                 if occurrences[maxSentence][j] > 0:
                     for i in range(len(occurrences)):
-                        sentenceValue[i] -= occurrences[i][j] #* weights[j]
+                        sentenceValue[i] -= occurrences[i][j] * weights[j]
         else:
             continueSearching = False # no new sentence that fit the length was found, end the search
 
@@ -283,8 +282,9 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
         occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys())[:Anzahl_gramme], [s['bigrams'] for s in sentences])
         weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())[:Anzahl_gramme]
     else:
-        occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
+        #occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
         #occ = TfIdfBerechnen(sentences)
+        occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
         weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
     saetzeList = [s['sentence_id'] for s in sentences]
 
