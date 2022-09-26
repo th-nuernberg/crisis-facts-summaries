@@ -32,9 +32,17 @@ def get_datasets()->json:
     #relative Pfade funktionieren noch nicht richtig, deswegen über current working directory (cwd)
     
     curr_path = os.path.abspath(os.getcwd())
-    curr_path+="\Datensaetze\prepared"
+    curr_path+="\Datensaetze"
     dir_list = os.listdir(curr_path)
-    dir_list_json = {"files": dir_list}
+    
+    #until dataset file structure is cleaned, chekc if file is a json by checking if the string ends with .json
+    list_of_json_files = []
+    for name in dir_list:
+        if(name.endswith(".json")):
+            list_of_json_files.append(name)
+
+
+    dir_list_json = {"files": list_of_json_files}
 
     return jsonify(dir_list_json)
 
