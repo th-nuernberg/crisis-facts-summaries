@@ -52,7 +52,7 @@ def add_sum_appearances(summarySenetences,timeDataForDiagramm):
     keys = timeDataForDiagramm.keys()
     for s in keys:
         summarySenetences["timestampsforDiagramm"].append(s)
-        summarySenetences["occurrencesforDiagramm"].append(summarySenetences[s])
+        summarySenetences["occurrencesforDiagramm"].append(timeDataForDiagramm[s])
     return summarySenetences
 
 def clean(text):
@@ -271,7 +271,7 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
     data = readInput()
 
     # Test für grafische Darstellung des Diagramms
-    # timeDataForDiagramm = sum_appearances(data)
+    timeDataForDiagramm = sum_appearances(data)
 
     sentences = extractSentencesNLTK(data,ngamms)
     bigramsPerDocument = extractBigramsPerDocument(sentences)
@@ -289,11 +289,11 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
     saetzeList = [s['sentence_id'] for s in sentences]
 
     summarySenetencesincomplete = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
-    # summarySenetences = add_sum_appearances(summarySenetencesincomplete,timeDataForDiagramm)
-    # print(summarySenetences) 
+    summarySenetences = add_sum_appearances(summarySenetencesincomplete,timeDataForDiagramm)
+    print(summarySenetences) 
 
     end = time.time()
     print("Fertig!")
     print(end - start)
     print("Sekunden Ausfuehrungszeit")
-    return json.dumps(summarySenetencesincomplete) # wieder auf summarySenetences ändern
+    return json.dumps(summarySenetences) # wieder auf summarySenetences ändern
