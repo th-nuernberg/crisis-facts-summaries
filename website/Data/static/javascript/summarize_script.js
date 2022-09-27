@@ -33,6 +33,7 @@ function initAssignment(){
         });}
 }
 
+
 //Create Options for Dataset
 async function getDataset(){
     let response_json;
@@ -184,10 +185,18 @@ function get_parameter_as_json(){
                                 "atleast_one_checkmark_ticked":atleast_one,
                                 "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},    
                             };
-alert(JSON.stringify(variables_for_summary))
+//alert(JSON.stringify(variables_for_summary))
    return variables_for_summary;
 }
 
+/**
+ * Shows the loading circle animation when the "Analyse" button is pressed
+ * 
+ * @param {analyse_button} analyse_button is the Button "Analyse"
+ * @param {loader} loader is the loading circle including the animation in css
+ * 
+ * @note Also makes the Button "Analyse" unclickable and grayed out
+ */
 function close_button_show_loader(analyse_button,loader){
    analyse_button.style.opacity = 0.5
    analyse_button.style.cursor = "not-allowed"
@@ -197,7 +206,14 @@ function close_button_show_loader(analyse_button,loader){
    loader.style.animation = "spin 2s linear infinite"
    loader.style.visibility = "visible"
 }
-
+/**
+ * Hides the loading circle Animation when the summary is returned from the back-end
+ * 
+ * @param {analyse_button} analyse_button is the Button "Analyse"
+ * @param {loader} loader is the loading circle including the animation in css
+ * 
+ * @note Also makes the Button "Analyse" clickable and no longer grayed out
+ */
 function open_button_hide_loader(analyse_button,loader){
    loader.style.visibility = "hidden"
    loader.style.animation = ""
