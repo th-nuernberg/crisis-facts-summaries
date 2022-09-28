@@ -195,6 +195,9 @@ function get_parameter_as_json(){
             }
     }
 
+    let checkmark_likes = document.getElementById("likes").checked;
+    let checkmark_follows = document.getElementById("follows").checked;
+
     // Make a json with all parameters, to be send to the backend
     let variables_for_summary = {"ngrams": ngramms,
                                 "max_length": max_length,
@@ -204,7 +207,8 @@ function get_parameter_as_json(){
                                 "function_type": function_type,
                                 "dataset":dataset,
                                 "atleast_one_checkmark_ticked":atleast_one,
-                                "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},    
+                                "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},
+                                "meta_daten":{"likes":checkmark_likes,"follow":checkmark_follows},    
                             };
     //alert(JSON.stringify(variables_for_summary))
     return variables_for_summary;
