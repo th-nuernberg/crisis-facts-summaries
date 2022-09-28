@@ -140,7 +140,7 @@ async function make_a_summary(){
             label: "Daten der Zusammenfassung",
             backgroundColor: 'rgba(12,55,225,1)',
             borderColor: 'rgba(12,55,225,1)',
-            data: values
+            data: [{x:'2013-01-16T16:54:22.0Z', y:20}, {x:'2013-01-17T14:57:20.0Z', y:10}]
             }]
         }
     });
