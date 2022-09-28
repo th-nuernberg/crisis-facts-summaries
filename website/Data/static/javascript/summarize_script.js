@@ -99,11 +99,9 @@ async function make_a_summary(){
             response_json = jsonResponse
         }).catch((err) => console.error(err));
 
-    alert("wtf?")
     //Hide loading circle; Enable Analyse Button when function is finished
     open_button_hide_loader(analyse_button,loader);
 
-    alert("Hu?")
     // Show new summary
     let main_Container = document.getElementById("Summary");
 
@@ -116,9 +114,12 @@ async function make_a_summary(){
     labels = [];
     values = [];
 
-    console.log("Hä?")
     for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
-        lables.push(response_json["timestampsforDiagramm"][i])
+        labels.push(response_json["timestampsforDiagramm"][i]);
+    }
+
+    for(let i = 0; i < response_json["occurrencesforDiagramm"].length; i++){
+        values.push(response_json["occurrencesforDiagramm"][i]);
     }
 
     alert("Alle vorhandenen Lables:")
@@ -127,7 +128,7 @@ async function make_a_summary(){
     var mychartObject = document.getElementById('myChart')
 
     var chart = new Chart(mychartObject, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: labels,
             datasets: [{
@@ -135,6 +136,11 @@ async function make_a_summary(){
                 backgroundColor: 'rgba(65,105,225,1)',
                 borderColor: 'rgba(65,105,225,1)',
                 data: values
+            }, {
+            label: "Daten der Zusammenfassung",
+            backgroundColor: 'rgba(12,55,225,1)',
+            borderColor: 'rgba(12,55,225,1)',
+            data: values
             }]
         }
     });
