@@ -1,19 +1,5 @@
 // Initial Assignement for Button analyse
 function initAssignment(){
-    var mychartObject = document.getElementById('myChart')
-
-    var chart = new Chart(mychartObject, {
-        type: 'line',
-        data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July", "August"],
-            datasets: [{
-                label: "Datensatz Nummer 1",
-                backgroundColor: 'rgba(65,105,225,1)',
-                borderColor: 'rgba(65,105,225,1)',
-                data: [3,7,5,2,7,8,6,4]
-            }]
-        }
-    });
 
     let button = document.getElementById("calculate_button");
     button.addEventListener("click",make_a_summary)
@@ -113,9 +99,11 @@ async function make_a_summary(){
             response_json = jsonResponse
         }).catch((err) => console.error(err));
 
+        console.log("wtf?")
     //Hide loading circle; Enable Analyse Button when function is finished
    open_button_hide_loader(analyse_button,loader);
 
+   console.log("Hu?")
    // Show new summary
    let main_Container = document.getElementById("Summary");
 
@@ -123,6 +111,33 @@ async function make_a_summary(){
    new_summary.setAttribute('id', "new_summary");
    
    new_summary.setAttribute('align', "left");
+
+   // Diagramm
+   labels = [];
+   values = [];
+
+   console.log("Hä?")
+   for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
+        lables.push(response_json["timestampsforDiagramm"][i])
+   }
+
+   console.log("Alle vorhandenen Lables:")
+   console.log(labels)
+
+   var mychartObject = document.getElementById('myChart')
+
+   var chart = new Chart(mychartObject, {
+       type: 'line',
+       data: {
+           labels: labels,
+           datasets: [{
+               label: "Alle Daten",
+               backgroundColor: 'rgba(65,105,225,1)',
+               borderColor: 'rgba(65,105,225,1)',
+               data: values
+           }]
+       }
+   });
 
    //Add each sentence of the summary with space between them
    for(let i = 0; i < response_json["sentences"].length; i++){
