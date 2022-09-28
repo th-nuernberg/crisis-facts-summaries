@@ -9,21 +9,21 @@ function initAssignment(){
 
     for (i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", function() {
-          this.classList.toggle("active");
-          var content = document.getElementById("field_more_opt");
-          if (content.style.maxHeight){
+            this.classList.toggle("active");
+            var content = document.getElementById("field_more_opt");
+            if (content.style.maxHeight){
             content.style.maxHeight = null;
-          } else {
+            } else {
             content.style.maxHeight = content.scrollHeight + "px";
-          } 
+            } 
         });}
 }
 
 
 //Create Options for Dataset
 async function getDataset(){
-    let response_json;
-    
+let response_json;
+
     await fetch("http://127.0.0.1:5000/datasets", 
         {
             method: 'GET',
@@ -37,7 +37,7 @@ async function getDataset(){
             // Test Solution since Docker doesnt work well with windows
             response_json = jsonResponse
         }).catch((err) => console.error(err));
-    
+
         let data_dropdown = document.getElementById("type_of_dataset");
         
         for(let i = 0; i < response_json["files"].length; i++){
@@ -46,35 +46,35 @@ async function getDataset(){
             new_option.setAttribute('value',response_json["files"][i]);
             new_option.innerHTML=response_json["files"][i];
             data_dropdown.appendChild(new_option);
-       }    
+        }    
 }
 
 
 async function make_a_summary(){
-   //if there is already a summary, remove it 
-   if(document.getElementById("new_summary") != null){
+    //if there is already a summary, remove it 
+    if(document.getElementById("new_summary") != null){
     document.getElementById("new_summary").remove();
-   }
-   //Get all Parameters
-   let variables_for_summary = get_parameter_as_json();
+    }
+    //Get all Parameters
+    let variables_for_summary = get_parameter_as_json();
 
-   //Check if atleast one Checkbox was selected
-   let atleast_one_checkmark_ticked = variables_for_summary["atleast_one_checkmark_ticked"]
-   if(atleast_one_checkmark_ticked==false){
+    //Check if atleast one Checkbox was selected
+    let atleast_one_checkmark_ticked = variables_for_summary["atleast_one_checkmark_ticked"]
+    if(atleast_one_checkmark_ticked==false){
     alert("No Contextsize was selected");
     return;
     }
 
-   let response_json;
+    let response_json;
 
-   // Disable Analyse Button while function is calculating and styling
-   let analyse_button = document.getElementById("calculate_button");
-   let loader = document.getElementById("load");
+    // Disable Analyse Button while function is calculating and styling
+    let analyse_button = document.getElementById("calculate_button");
+    let loader = document.getElementById("load");
 
-   close_button_show_loader(analyse_button,loader);
+    close_button_show_loader(analyse_button,loader);
 
-   //Send Data to Backend and await calculated results
-   await fetch("http://127.0.0.1:5000/summarize", 
+    //Send Data to Backend and await calculated results
+    await fetch("http://127.0.0.1:5000/summarize", 
         {
             method: 'POST',
             headers: {
@@ -99,98 +99,98 @@ async function make_a_summary(){
             response_json = jsonResponse
         }).catch((err) => console.error(err));
 
-        console.log("wtf?")
+    alert("wtf?")
     //Hide loading circle; Enable Analyse Button when function is finished
-   open_button_hide_loader(analyse_button,loader);
+    open_button_hide_loader(analyse_button,loader);
 
-   console.log("Hu?")
-   // Show new summary
-   let main_Container = document.getElementById("Summary");
+    alert("Hu?")
+    // Show new summary
+    let main_Container = document.getElementById("Summary");
 
-   let new_summary = document.createElement("p");
-   new_summary.setAttribute('id', "new_summary");
-   
-   new_summary.setAttribute('align', "left");
+    let new_summary = document.createElement("p");
+    new_summary.setAttribute('id', "new_summary");
 
-   // Diagramm
-   labels = [];
-   values = [];
+    new_summary.setAttribute('align', "left");
 
-   console.log("Hä?")
-   for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
+    // Diagramm
+    labels = [];
+    values = [];
+
+    console.log("Hä?")
+    for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
         lables.push(response_json["timestampsforDiagramm"][i])
-   }
+    }
 
-   console.log("Alle vorhandenen Lables:")
-   console.log(labels)
+    alert("Alle vorhandenen Lables:")
+    alert(labels)
 
-   var mychartObject = document.getElementById('myChart')
+    var mychartObject = document.getElementById('myChart')
 
-   var chart = new Chart(mychartObject, {
-       type: 'line',
-       data: {
-           labels: labels,
-           datasets: [{
-               label: "Alle Daten",
-               backgroundColor: 'rgba(65,105,225,1)',
-               borderColor: 'rgba(65,105,225,1)',
-               data: values
-           }]
-       }
-   });
+    var chart = new Chart(mychartObject, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Alle Daten",
+                backgroundColor: 'rgba(65,105,225,1)',
+                borderColor: 'rgba(65,105,225,1)',
+                data: values
+            }]
+        }
+    });
 
-   //Add each sentence of the summary with space between them
-   for(let i = 0; i < response_json["sentences"].length; i++){
+    //Add each sentence of the summary with space between them
+    for(let i = 0; i < response_json["sentences"].length; i++){
         new_summary.innerHTML += response_json["sentences"][i] + " ";
-   }
+    }
 
-   main_Container.append(new_summary);
+    main_Container.append(new_summary);
 }
 
 function get_parameter_as_json(){
-    
-   let dataset = document.getElementById("type_of_dataset").value
-   //Placehold, TODO A DATASET MUST BE CHOSEN
-   if(!dataset){dataset = "empty"}
 
-   let ngramms = document.getElementById("ngram").value;
-   if(!ngramms){ngramms = 2}
+    let dataset = document.getElementById("type_of_dataset").value
+    //Placehold, TODO A DATASET MUST BE CHOSEN
+    if(!dataset){dataset = "empty"}
 
-   let max_length = document.getElementById("max_length").value;
-   if(!max_length){max_length = 600}
+    let ngramms = document.getElementById("ngram").value;
+    if(!ngramms){ngramms = 2}
 
-   let date_from = document.getElementById("date_from").value;
-   let time_from = document.getElementById("time_from").value;
+    let max_length = document.getElementById("max_length").value;
+    if(!max_length){max_length = 600}
 
-   let date_to = document.getElementById("time_from").value;
-   let time_to = document.getElementById("time_from").value;
+    let date_from = document.getElementById("date_from").value;
+    let time_from = document.getElementById("time_from").value;
 
-   let function_type = document.getElementById("type_of_function").value;
+    let date_to = document.getElementById("time_from").value;
+    let time_to = document.getElementById("time_from").value;
 
-   // Check if Parameters have been entered
-   let summary_question = document.getElementById("text_area").value;
-   if(!summary_question){summary_question = ""}
+    let function_type = document.getElementById("type_of_function").value;
 
-   let exclude_params = document.getElementById("text_area_exclude").value;
-   if(!exclude_params){exclude_params = ""}
-   
+    // Check if Parameters have been entered
+    let summary_question = document.getElementById("text_area").value;
+    if(!summary_question){summary_question = ""}
+
+    let exclude_params = document.getElementById("text_area_exclude").value;
+    if(!exclude_params){exclude_params = ""}
+
     //Get Value for checkmarks Kontext
     let kontext_mark_one = document.getElementById("kontext_eins").checked;
     let kontext_mark_two = document.getElementById("kontext_zwei").checked;
     let kontext_mark_three = document.getElementById("kontext_drei").checked;
     let kontext_mark_four = document.getElementById("kontext_vier").checked;
-    
+
     let list_of_checks = [kontext_mark_one,kontext_mark_two,kontext_mark_three,kontext_mark_four]; 
     //Validate if atleast one has been ticked
     let atleast_one = false;
     for(let j = 0; j<list_of_checks.length;j++){
         if (list_of_checks[j] === true) {
             atleast_one = true;
-          }
+            }
     }
 
-   // Make a json with all parameters, to be send to the backend
-   let variables_for_summary = {"ngrams": ngramms,
+    // Make a json with all parameters, to be send to the backend
+    let variables_for_summary = {"ngrams": ngramms,
                                 "max_length": max_length,
                                 "question": summary_question,
                                 "exclude_params":exclude_params,
@@ -200,8 +200,8 @@ function get_parameter_as_json(){
                                 "atleast_one_checkmark_ticked":atleast_one,
                                 "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},    
                             };
-//alert(JSON.stringify(variables_for_summary))
-   return variables_for_summary;
+    //alert(JSON.stringify(variables_for_summary))
+    return variables_for_summary;
 }
 
 /**
@@ -213,14 +213,15 @@ function get_parameter_as_json(){
  * @note Also makes the Button "Analyse" unclickable and grayed out
  */
 function close_button_show_loader(analyse_button,loader){
-   analyse_button.style.opacity = 0.5
-   analyse_button.style.cursor = "not-allowed"
-   analyse_button.disabled = true
+    analyse_button.style.opacity = 0.5
+    analyse_button.style.cursor = "not-allowed"
+    analyse_button.disabled = true
 
-   //Show loading Cricle animation
-   loader.style.animation = "spin 2s linear infinite"
-   loader.style.visibility = "visible"
+    //Show loading Cricle animation
+    loader.style.animation = "spin 2s linear infinite"
+    loader.style.visibility = "visible"
 }
+
 /**
  * Hides the loading circle Animation when the summary is returned from the back-end
  * 
@@ -230,9 +231,9 @@ function close_button_show_loader(analyse_button,loader){
  * @note Also makes the Button "Analyse" clickable and no longer grayed out
  */
 function open_button_hide_loader(analyse_button,loader){
-   loader.style.visibility = "hidden"
-   loader.style.animation = ""
-   analyse_button.style.cursor = ""
-   analyse_button.style.opacity = 1
-   analyse_button.disabled = false;
+    loader.style.visibility = "hidden"
+    loader.style.animation = ""
+    analyse_button.style.cursor = ""
+    analyse_button.style.opacity = 1
+    analyse_button.disabled = false;
 }
