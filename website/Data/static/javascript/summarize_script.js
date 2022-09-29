@@ -20,7 +20,7 @@ function initAssignment(){
 }
 
 
-//Create Options for Dataset
+//Create Options for Dataset dropdown menu
 async function getDataset(){
 let response_json;
 
@@ -32,9 +32,9 @@ let response_json;
                 'Accept': 'application/json'
             },
         }).then( (response) =>{    
-                return response.json();     //It returns a promise which resolves with the result of parsing the body text as JSON
+                //It returns a promise which resolves with the result of parsing the body text as JSON
+                return response.json();
         }).then(jsonResponse=>{
-            // Test Solution since Docker doesnt work well with windows
             response_json = jsonResponse
         }).catch((err) => console.error(err));
 
@@ -55,10 +55,10 @@ async function make_a_summary(){
     if(document.getElementById("new_summary") != null){
     document.getElementById("new_summary").remove();
     }
+
     //Get all Parameters
     let variables_for_summary = get_parameter_as_json();
 
-    //Check if atleast one Checkbox was selected
     let atleast_one_checkmark_ticked = variables_for_summary["atleast_one_checkmark_ticked"]
     if(atleast_one_checkmark_ticked==false){
     alert("No Contextsize was selected");
@@ -86,15 +86,14 @@ async function make_a_summary(){
         }).then( (response) =>{
             if(response.ok){
                 //alert(response.json());
-                return response.json();     //It returns a promise which resolves with the result of parsing the body text as JSON
+                //It returns a promise which resolves with the result of parsing the body text as JSON
+                return response.json();
             }else{
                 alert("something is wrong" + response.toString());
             }
         }).then(jsonResponse=>{
 
             o = JSON.stringify(jsonResponse);
-            //alert(o);
-            //response_json = o;
             
             response_json = jsonResponse
         }).catch((err) => console.error(err));
@@ -102,7 +101,6 @@ async function make_a_summary(){
     //Hide loading circle; Enable Analyse Button when function is finished
     open_button_hide_loader(analyse_button,loader);
 
-    // Show new summary
     let main_Container = document.getElementById("Summary");
 
     let new_summary = document.createElement("p");
@@ -189,7 +187,6 @@ function draw_diagramm(response_json){
 function get_parameter_as_json(){
 
     let dataset = document.getElementById("type_of_dataset").value
-    //Placehold, TODO A DATASET MUST BE CHOSEN
     if(!dataset){dataset = "empty"}
 
     let ngramms = document.getElementById("ngram").value;
