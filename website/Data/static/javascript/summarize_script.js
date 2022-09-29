@@ -110,6 +110,17 @@ async function make_a_summary(){
 
     new_summary.setAttribute('align', "left");
 
+    draw_diagramm(response_json);
+
+    //Add each sentence of the summary with space between them
+    for(let i = 0; i < response_json["sentences"].length; i++){
+        new_summary.innerHTML += response_json["sentences"][i] + " ";
+    }
+
+    main_Container.append(new_summary);
+}
+
+function draw_diagramm(response_json){
     // Diagramm
     labels = [];
     values = [];
@@ -144,13 +155,6 @@ async function make_a_summary(){
             }]
         }
     });
-
-    //Add each sentence of the summary with space between them
-    for(let i = 0; i < response_json["sentences"].length; i++){
-        new_summary.innerHTML += response_json["sentences"][i] + " ";
-    }
-
-    main_Container.append(new_summary);
 }
 
 function get_parameter_as_json(){
