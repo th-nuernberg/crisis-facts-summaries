@@ -51,7 +51,9 @@ def sum_appearances(rohdaten):
 def add_sum_appearances(summarySenetences,timeDataForDiagramm):
     keys = timeDataForDiagramm.keys()
     for s in keys:
-        summarySenetences["timestampsforDiagramm"].append(s)
+        fastformatiert = s.replace('T', ' ')
+        formatiert = fastformatiert.replace('.0Z', '')
+        summarySenetences["timestampsforDiagramm"].append(formatiert)
         summarySenetences["occurrencesforDiagramm"].append(timeDataForDiagramm[s])
     return summarySenetences
 
@@ -290,7 +292,7 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
 
     summarySenetencesincomplete = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
     summarySenetences = add_sum_appearances(summarySenetencesincomplete,timeDataForDiagramm)
-    print(summarySenetences) 
+    print(summarySenetences)
 
     end = time.time()
     print("Fertig!")

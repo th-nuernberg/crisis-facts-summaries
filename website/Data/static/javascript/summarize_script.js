@@ -124,6 +124,7 @@ function draw_diagramm(response_json){
     // Diagramm
     labels = [];
     values = [];
+    data = [];
 
     for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
         labels.push(response_json["timestampsforDiagramm"][i]);
@@ -133,11 +134,18 @@ function draw_diagramm(response_json){
         values.push(response_json["occurrencesforDiagramm"][i]);
     }
 
-    alert("Alle vorhandenen Lables:")
-    alert(labels)
+    for(let i = 0; i < labels.length; i++){
+
+        const points = {x:labels[i],y:values[i]}
+        data.push(points);
+    }
+
+    alert("Alle vorhandenen DataObjects:")
+    alert(data)
 
     var mychartObject = document.getElementById('myChart')
 
+    /*
     var chart = new Chart(mychartObject, {
         type: 'bar',
         data: {
@@ -155,6 +163,27 @@ function draw_diagramm(response_json){
             }]
         }
     });
+    */
+   
+    var chart = new Chart(mychartObject, {
+        type: 'bar',
+        data: {
+            datasets: [{
+                label: "Alle Daten",
+                backgroundColor: 'rgba(65,105,225,1)',
+                borderColor: 'rgba(65,105,225,1)',
+                data: data
+            }],
+        },
+        options: {
+            scales: {
+                x: {
+                    min: '2021-11-07 00:00:00',
+                }
+            }
+        }
+    });
+
 }
 
 function get_parameter_as_json(){
