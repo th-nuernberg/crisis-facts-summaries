@@ -106,6 +106,17 @@
                         <span class="checkmark"></span>
                     </label>
                 </div>
+                <div id="grid_colm_3">
+                    <p id="label_checkbox_2">Anzahl der zu berücksichtigen Konzepte</p>
+                    <input class="slider" type="range" value="600" min="50" max="1000" step="50" id="numb_concepts" oninput="this.nextElementSibling.value = this.value">
+                        <output>600</output><br>
+                    <p id="label_checkbox_2_2">Ausgabe Reihenfolge der Zusammenfassung:</p>
+                    <select class="dropbtn" name="return_type" id="type_of_summary_return">
+                        <option class="dropbtn_opt" value="first_found_first" selected="selected">Zuerst gefundenes Konzept zuerst</option>
+                        <option class="dropbtn_opt" value="last_found_first">Zuletzt gefundenes Konzept zuerst</option>
+                        <option class="dropbtn_opt" value="best_found_first">Am best bewerteste Konzept zuerst</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>

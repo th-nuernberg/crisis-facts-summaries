@@ -228,6 +228,9 @@ function get_parameter_as_json(){
     let checkmark_likes = document.getElementById("likes").checked;
     let checkmark_follows = document.getElementById("follows").checked;
 
+    let number_concepts = document.getElementById("numb_concepts").value
+    let order_of_summary = document.getElementById("type_of_summary_return").value
+
     // Make a json with all parameters, to be send to the backend
     let variables_for_summary = {"ngrams": ngramms,
                                 "max_length": max_length,
@@ -238,7 +241,9 @@ function get_parameter_as_json(){
                                 "dataset":dataset,
                                 "atleast_one_checkmark_ticked":atleast_one,
                                 "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},
-                                "meta_daten":{"likes":checkmark_likes,"follow":checkmark_follows},    
+                                "meta_daten":{"likes":checkmark_likes,"follow":checkmark_follows},
+                                "number_of_concepts": number_concepts,
+                                "return_order_of_summary":order_of_summary,    
                             };
     //alert(JSON.stringify(variables_for_summary))
     return variables_for_summary;
