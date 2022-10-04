@@ -125,7 +125,7 @@ function draw_diagramm(response_json){
     data = [];
     labelsZusammenfassung = [];
     valuesZusammenfassung = [];
-    dataZusammenfassunf = [];
+    dataZusammenfassung = [];
 
     // Häufigkeit aller Daten wird zu einem Datenobjekt verarbeitet
     for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
@@ -142,15 +142,22 @@ function draw_diagramm(response_json){
         data.push(points);
     }
 
-    // Zuerst werden 
+    // Formatierung der für die Zusammenfassung genutzten Daten
     for(let i = 0; i < response_json["timestamp"].length; i++){
-        labels.push(response_json["timestamp"][i]);
+        if(labelsZusammenfassung.includes(response_json["timestamp"][i])){
+            valuesZusammenfassung[i] = valuesZusammenfassung[i] + 1;
+        }
+        else{
+            labelsZusammenfassung.push(response_json["timestamp"][i]);
+            valuesZusammenfassung.push(1);
+        }
     }
 
+    for(let i = 0; i < labelsZusammenfassung.length; i++){
 
-
-    alert("Alle vorhandenen DataObjects:")
-    alert(data)
+        const points = {x:labelsZusammenfassung[i],y:valuesZusammenfassung[i]}
+        dataZusammenfassung.push(points);
+    }
 
     var mychartObject = document.getElementById('myChart')
 
@@ -182,6 +189,11 @@ function draw_diagramm(response_json){
                 backgroundColor: 'rgba(65,105,225,1)',
                 borderColor: 'rgba(65,105,225,1)',
                 data: data
+            }, {
+                label: "Zusammenfassung Daten",
+                backgroundColor: 'rgba(255,0,0,1)',
+                borderColor: 'rgba(255,0,0,1)',
+                data: dataZusammenfassung
             }],
         },
         options: {
