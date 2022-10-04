@@ -33,12 +33,12 @@ def get_datasets()->json:
     
     curr_path = os.path.abspath(os.getcwd())
     curr_path+="\Datensaetze"
-    dir_list = os.listdir(curr_path)
+    dir_list = "/usr/src/app/Datensaetze/prepared/" #os.listdir(curr_path)
     
     #until dataset file structure is cleaned, chekc if file is a json by checking if the string ends with .json
     list_of_json_files = []
-    for name in dir_list:
-        if(name.endswith(".json")):
+    for name in os.listdir(dir_list):
+        if(name.endswith(".jsonl")):
             list_of_json_files.append(name)
 
 
