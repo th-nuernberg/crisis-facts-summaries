@@ -123,7 +123,11 @@ function draw_diagramm(response_json){
     labels = [];
     values = [];
     data = [];
+    labelsZusammenfassung = [];
+    valuesZusammenfassung = [];
+    dataZusammenfassunf = [];
 
+    // Häufigkeit aller Daten wird zu einem Datenobjekt verarbeitet
     for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
         labels.push(response_json["timestampsforDiagramm"][i]);
     }
@@ -137,6 +141,13 @@ function draw_diagramm(response_json){
         const points = {x:labels[i],y:values[i]}
         data.push(points);
     }
+
+    // Zuerst werden 
+    for(let i = 0; i < response_json["timestamp"].length; i++){
+        labels.push(response_json["timestamp"][i]);
+    }
+
+
 
     alert("Alle vorhandenen DataObjects:")
     alert(data)
