@@ -80,7 +80,7 @@ def normalize(text):
     return text
 
 # Das gleiche wie die Funktion darüber nur mit n-grammen (also n Wörterbündel)
-def ngrame(original_text,anzahl_worte=1):
+def ngrame(original_text,test_dict):
     stopwords =[]
     with open('/usr/src/app/Datensaetze/stopwords-en.txt', encoding='utf-8') as file:
         stopwords = file.read().splitlines()
@@ -88,22 +88,24 @@ def ngrame(original_text,anzahl_worte=1):
     text = ""
     original_text = clean(original_text)
     #original_text = normalize(original_text)
+    
     for w in original_text.split():
         if w not in stopwords:
             text = text + " " + w
-    for i in range(1,anzahl_worte+1):
-        ngrame = []
-        n_grams = ngrams(re.findall(r'[A-Za-z0-9]+', text), i)
-        for grams in n_grams:
-            hold =""
-            for gram in grams:
-                hold += gram
-                hold +="___"
-            ngrame.append(hold)
-        result.extend(ngrame)
+    for i in range(1,5):
+        if(test_dict[str(i)]):
+            ngrame = []
+            n_grams = ngrams(re.findall(r'[A-Za-z0-9]+', text), i)
+            for grams in n_grams:
+                hold =""
+                for gram in grams:
+                    hold += gram
+                    hold +="___"
+                ngrame.append(hold)
+            result.extend(ngrame)
     return result
  
-def extractSentencesNLTK(rawDicts,numberOfWords):
+def extractSentencesNLTK(rawDicts,test_dict):
     sentencesDicts = []
     sentenceId = 0
     for rawDict in rawDicts:
@@ -115,7 +117,7 @@ def extractSentencesNLTK(rawDicts,numberOfWords):
                                         ("document_id", rawDict['document_id']),
                                         ("sentence_id", sentenceId),
                                         ("sentence", sentence),
-                                        ('bigrams', list(set(ngrame(sentence,numberOfWords))))]))
+                                        ('bigrams', list(set(ngrame(sentence,test_dict))))]))
             sentenceId += 1
     return sentencesDicts
 
@@ -265,8 +267,9 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
+def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,question=""):
     Anzahl_gramme = 5000
+    test_dict = {"1":eins, "2":zwei,"3":drei,"4":vier}
     print("Start!")
     start = time.time()
     L = max_length # Anzhal Buchstaben im Summary
@@ -275,7 +278,7 @@ def gesamt(ngamms=1,timespan=0,weigth=0,max_length=600,question=""):
     # Test für grafische Darstellung des Diagramms
     timeDataForDiagramm = sum_appearances(data)
 
-    sentences = extractSentencesNLTK(data,ngamms)
+    sentences = extractSentencesNLTK(data,test_dict)
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences)
 

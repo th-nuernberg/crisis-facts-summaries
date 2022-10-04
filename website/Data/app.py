@@ -18,8 +18,8 @@ def start_summarize():
    parameters_from_frontend = request.get_json()
    parameters = parameters_from_frontend
    all_parameters_set = False
-
-   summary_as_json = gesamt(ngamms=int(parameters["ngrams"]),max_length=int(parameters["max_length"]))
+   print(parameters)
+   summary_as_json = gesamt(eins=parameters["kontext_checkmarks"]["eins"],zwei=parameters["kontext_checkmarks"]["zwei"],drei=parameters["kontext_checkmarks"]["drei"],vier=parameters["kontext_checkmarks"]["vier"],max_length=int(parameters["max_length"]))
    print(summary_as_json) # Zum debuggen
    return summary_as_json
 
