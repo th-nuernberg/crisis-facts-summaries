@@ -258,9 +258,11 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
     for i in sentenceIndices:
         for s in sentences:
             if(s["sentence_id"] == saetze[i]):
-                # timestamp auf das passende Format bringen
+                # timestamp wird auf das passende Format gebracht
                 summary["sentences"].append(s["sentence"])
-                summary["timestamp"].append(s["timestamp"])
+                fastformatiert = s["timestamp"].replace('T', ' ')
+                formatiert = fastformatiert.replace('.0Z', '')
+                summary["timestamp"].append(formatiert)
 
     return summary
 
