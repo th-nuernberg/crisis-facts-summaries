@@ -151,10 +151,14 @@ def extractWeightPerBigram(documentsDict,sentences,Vorzugsfaktor =2):
     for  gramm in bigrammList:
         anzahl_dict[gramm.count('___')+1] = anzahl_dict[gramm.count('___')+1]+1
     uniqueBigrams = list(set(bigrammList))
+    anzahl_kleinster_gramme =0
+    for i in range(1,5):
+        if anzahl_kleinster_gramme ==0:
+            anzahl_kleinster_gramme= anzahl_dict[i]
     for gramm in uniqueBigrams:
         grammLength =gramm.count('___')+1
-        # Gewichtung * Korrekturfaktor * Vorzugsfaktor
-        bigramDict[gramm] = bigramDict[gramm]  * (anzahl_dict[1]/anzahl_dict[grammLength]) * (grammLength*Vorzugsfaktor)
+        # Gewichtung * Vorzugsfaktor * Korrekturfaktor 
+        bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) 
     return bigramDict
 
 # TODO: Ckitlearn kann das evtl. effizienter -> besseres Format
