@@ -230,9 +230,6 @@ function get_parameter_as_json(){
     let dataset = document.getElementById("type_of_dataset").value
     if(!dataset){dataset = "empty"}
 
-    let ngramms = document.getElementById("ngram").value;
-    if(!ngramms){ngramms = 2}
-
     let max_length = document.getElementById("max_length").value;
     if(!max_length){max_length = 600}
 
@@ -273,7 +270,7 @@ function get_parameter_as_json(){
     let order_of_summary = document.getElementById("type_of_summary_return").value
 
     // Make a json with all parameters, to be send to the backend
-    let variables_for_summary = {"ngrams": ngramms,
+    let variables_for_summary = {
                                 "max_length": max_length,
                                 "question": summary_question,
                                 "exclude_params":exclude_params,
