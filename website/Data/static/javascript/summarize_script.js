@@ -197,15 +197,33 @@ function draw_diagramm(response_json){
             }],
         },
         options: {
+            legend: {
+              display: false
+            },
             scales: {
-                x: {
-                    min: '2021-11-07 00:00:00',
+              yAxes: [{
+                ticks: {
+                  display: false,
+                },        
+                gridLines: {
+                  display: false
                 }
+              }],
+              xAxes: [{
+                type: 'time',
+                time: {
+                  unit: 'hour',
+                  tooltipFormat: 'MMM DD',
+                },
+                gridLines: {
+                  display:false
+                }
+              }]
             }
-        }
-    });
-
-}
+          }
+      });
+  
+  }
 
 function get_parameter_as_json(){
 
