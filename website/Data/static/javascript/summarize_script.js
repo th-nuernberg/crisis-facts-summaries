@@ -215,7 +215,8 @@ function draw_diagramm(response_json){
               }
             }
         },
-    },
+    },)
+}
 
 function get_parameter_as_json(){
 
