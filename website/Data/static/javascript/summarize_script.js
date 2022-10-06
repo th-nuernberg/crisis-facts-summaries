@@ -196,34 +196,26 @@ function draw_diagramm(response_json){
                 data: dataZusammenfassung
             }],
         },
-        options: {
-            legend: {
-              display: false
+        scales: {
+            x: {
+              type: 'time',
+              time: {
+                // Luxon format string
+                tooltipFormat: 'DD T'
+              },
+              title: {
+                display: true,
+                text: 'Date'
+              }
             },
-            scales: {
-              yAxes: [{
-                ticks: {
-                  display: false,
-                },        
-                gridLines: {
-                  display: false
-                }
-              }],
-              xAxes: [{
-                type: 'time',
-                time: {
-                  unit: 'hour',
-                  tooltipFormat: 'MMM DD',
-                },
-                gridLines: {
-                  display:false
-                }
-              }]
+            y: {
+              title: {
+                display: true,
+                text: 'value'
+              }
             }
-          }
-      });
-  
-  }
+        },
+    },
 
 function get_parameter_as_json(){
 
