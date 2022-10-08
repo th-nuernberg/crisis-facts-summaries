@@ -69,6 +69,8 @@ def clean(text):
     text = re.sub(r'(?:^|\s)[&#<>{}\[\]+|\\:-]{1,}(?:\s|$)', ' ', text)
     # standalone sequences of hyphens like --- or ==
     text = re.sub(r'(?:^|\s)[\-=\+]{2,}(?:\s|$)', ' ', text)
+    text = re.sub(r'http.+', ' ', text)
+    text = re.sub(r'[\U00010000-\U0010ffff]', ' ', text)
     # sequences of white spaces
     text = re.sub(r'\s+', ' ', text)
     return text.strip()
@@ -114,11 +116,12 @@ def extractSentencesNLTK(rawDicts,test_dict):
         sentences = nltk.sent_tokenize (rawDict['content'])
         sentences = list(map(lambda x: x.strip(), sentences))
         for sentence in sentences:
-            sentencesDicts.append(dict([("timestamp", rawDict['timestamp']),
-                                        ("document_id", rawDict['document_id']),
-                                        ("sentence_id", sentenceId),
-                                        ("sentence", sentence),
-                                        ('bigrams', list(set(ngrame(sentence,test_dict))))]))
+            if len(clean(sentence)) >0:
+                sentencesDicts.append(dict([("timestamp", rawDict['timestamp']),
+                                            ("document_id", rawDict['document_id']),
+                                            ("sentence_id", sentenceId),
+                                            ("sentence", clean(sentence)),
+                                            ('bigrams', list(set(ngrame(sentence,test_dict))))]))
             sentenceId += 1
     return sentencesDicts
 
@@ -301,6 +304,7 @@ def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,question=""):
     timeDataForDiagramm = sum_appearances(data)
 
     sentences = extractSentencesNLTK(data,test_dict)
+    sentences = sentences
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences)
 
