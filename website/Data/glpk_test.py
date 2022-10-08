@@ -1,6 +1,7 @@
 #FLASK and FLASK-Endpoint
 import json
 import nltk
+import math
 from pymprog import *
 import re
 from nltk import ngrams
@@ -150,15 +151,27 @@ def extractWeightPerBigram(documentsDict,sentences,Vorzugsfaktor =2):
             bigrammList.append(bigram)
     for  gramm in bigrammList:
         anzahl_dict[gramm.count('___')+1] = anzahl_dict[gramm.count('___')+1]+1
+    #documentList =[]
+    #for sentence in sentences:
+    #    documentList.append(sentence['sentence_id'])
+    #uniquesentences = list(set(documentList))
+    #amountSen =len(uniquesentences)
     uniqueBigrams = list(set(bigrammList))
+    #testDict = {}
+    # for gram in uniqueBigrams:
+    #     testDict.setdefault(gram,[])
+    #     for sentence in sentences:
+    #         if gram in sentence["bigrams"]:
+    #             testDict[gram].append(sentence['sentence_id'])
+    #     testDict[gram] = list(set(testDict[gram]))
     anzahl_kleinster_gramme =0
     for i in range(1,5):
         if anzahl_kleinster_gramme ==0:
             anzahl_kleinster_gramme= anzahl_dict[i]
     for gramm in uniqueBigrams:
         grammLength =gramm.count('___')+1
-        # Gewichtung * Vorzugsfaktor * Korrekturfaktor 
-        bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) 
+        # Gewichtung * Vorzugsfaktor * Korrekturfaktor *log *IDF
+        bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) #* math.log(amountSen/len(testDict[gram]))
     return bigramDict
 
 # TODO: Ckitlearn kann das evtl. effizienter -> besseres Format
@@ -246,6 +259,8 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
         # if a new sentence has been found, adjust the values
         if maxSentence != -1:
             sentenceIndices.append(maxSentence)
+            print(maxVal)
+            print("\n")
             totalLength += len(sentence)
             for j in range(len(occurrences[maxSentence])):
                 if occurrences[maxSentence][j] > 0:
