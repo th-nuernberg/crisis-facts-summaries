@@ -196,25 +196,16 @@ function draw_diagramm(response_json){
                 data: dataZusammenfassung
             }],
         },
-        scales: {
-            x: {
-              type: 'time',
-              time: {
-                // Luxon format string
-                tooltipFormat: 'DD T'
-              },
-              title: {
-                display: true,
-                text: 'Date'
-              }
-            },
-            y: {
-              title: {
-                display: true,
-                text: 'value'
-              }
+        options: {
+            scales: {
+                x: {
+                    type: 'time'
+                },
+                y: {
+                    beginAtZero :true
+                }
             }
-        },
+        }       
     },)
 }
 
