@@ -349,3 +349,9 @@ html {
     max-width: 120px;
     float: left;
   }
+  #numb_ctxt_txt{
+    max-width: 25px;
+    float: left;
+    margin-left: 1em;
+    text-align: center;
+  }

@@ -104,7 +104,7 @@
                 <div id="grid_colm_3">
                     <p id="label_checkbox_2">Anzahl der zu berücksichtigen Konzepte:</p>
                     <input class="slider" type="range" value="100" min="1" max="100" step="1" id="numb_concepts" oninput="this.nextElementSibling.value = this.value">
-                        <output id="output_concepts">100</output>
+                        <input class="text" id="numb_ctxt_txt" value="100"  oninput="this.previousElementSibling.value = this.value" >
                         <output id="output_concepts">%</output><br>
                     <p id="label_checkbox_3_2">Ausgabe Reihenfolge der Zusammenfassung:</p>
                     <select class="dropbtn" name="return_type" id="type_of_summary_return">
