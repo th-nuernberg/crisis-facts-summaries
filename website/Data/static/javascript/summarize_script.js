@@ -182,7 +182,7 @@ function draw_diagramm(response_json){
     */
    
     var chart = new Chart(mychartObject, {
-        type: 'bar',
+        type: 'line',
         data: {
             datasets: [{
                 label: "Alle Daten",
@@ -199,7 +199,10 @@ function draw_diagramm(response_json){
         options: {
             scales: {
                 x: {
-                    type: 'time'
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    }
                 },
                 y: {
                     beginAtZero :true
