@@ -182,18 +182,20 @@ function draw_diagramm(response_json){
     */
    
     var chart = new Chart(mychartObject, {
-        type: 'line',
+        type: 'bar',
         data: {
             datasets: [{
-                label: "Alle Daten",
-                backgroundColor: 'rgba(65,105,225,1)',
-                borderColor: 'rgba(65,105,225,1)',
-                data: data
-            }, {
                 label: "Zusammenfassung Daten",
                 backgroundColor: 'rgba(255,0,0,1)',
                 borderColor: 'rgba(255,0,0,1)',
+                barThickness: 1,
                 data: dataZusammenfassung
+            }, {
+                label: "Alle Daten",
+                backgroundColor: 'rgba(65,105,225,1)',
+                borderColor: 'rgba(65,105,225,1)',
+                barThickness: 1,
+                data: data
             }],
         },
         options: {

@@ -8,6 +8,8 @@ RUN apt-get -y update
 
 RUN apt-get -y install npm
 RUN npm install chart.js
+RUN npm install date-fns chartjs-adapter-date-fns --save
+RUN npm install chartjs-plugin-zoom
 
 RUN pip install flask
 RUN pip install flask-cors
