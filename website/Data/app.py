@@ -38,7 +38,7 @@ def get_datasets()->json:
     #until dataset file structure is cleaned, chekc if file is a json by checking if the string ends with .json
     list_of_json_files = []
     for name in os.listdir(dir_list):
-        if(name.endswith(".jsonl")):
+        if(name.endswith(".json") or name.endswith(".jsonl")):
             list_of_json_files.append(name)
 
 
