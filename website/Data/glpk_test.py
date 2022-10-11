@@ -8,8 +8,9 @@ import re
 from nltk import ngrams
 import time
 import textacy as tprep
-import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
+import spacy
+
+nlp = spacy.load('en_core_web_sm')
 
 pathToFile = "/usr/src/app/Datensaetze/prepared/26.relonly.jsonl" #Datensatz_1.json
 
@@ -84,13 +85,15 @@ def normalize(text):
     return text
 
 # Das gleiche wie die Funktion darüber nur mit n-grammen (also n Wörterbündel)
-def ngrame(original_text,test_dict):
+def ngrame(original_text,test_dict,to_lower,to_lemma):
     stopwords =[]
     with open('/usr/src/app/Datensaetze/stopwords-en.txt', encoding='utf-8') as file:
         stopwords = file.read().splitlines()
     result = []
     text = ""
     original_text = clean(original_text)
+    if to_lower:
+        original_text = original_text.lower()
     #original_text = normalize(original_text)
     
     for w in original_text.split():
@@ -103,13 +106,18 @@ def ngrame(original_text,test_dict):
             for grams in n_grams:
                 hold =""
                 for gram in grams:
-                    hold += gram
-                    hold +="___"
+                    if to_lemma:
+                        doc = nlp(gram)
+                        for t in doc:                    
+                            hold += t.lemma_
+                    else:
+                        hold += gram
+                        hold +="___"
                 ngrame.append(hold)
             result.extend(ngrame)
     return result
  
-def extractSentencesNLTK(rawDicts,test_dict):
+def extractSentencesNLTK(rawDicts,test_dict,to_lower,to_lemma):
     sentencesDicts = []
     sentenceId = 0
     for rawDict in rawDicts:
@@ -122,7 +130,7 @@ def extractSentencesNLTK(rawDicts,test_dict):
                                             ("document_id", rawDict['document_id']),
                                             ("sentence_id", sentenceId),
                                             ("sentence", clean(sentence)),
-                                            ('bigrams', list(set(ngrame(sentence,test_dict))))]))
+                                            ('bigrams', list(set(ngrame(sentence,test_dict,to_lower,to_lemma))))]))
             sentenceId += 1
     return sentencesDicts
 
@@ -203,10 +211,6 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,Vorzugsf
             bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) 
     return bigramDict
 
-# TODO: Ckitlearn kann das evtl. effizienter -> besseres Format
-# TODO: count vectorizer
-# TODO: sparseMatrix
-
 # Erstellt eine Matrix mit den Vorkommnissen der Engrammen in den Sätzen
 # Anzahl der Spalten ist Anzahl der Ngramme
 # Anzahl der Zeilen ist Anzahl der Sätze
@@ -219,14 +223,6 @@ def calculateOccurrences(bigramList, sentenceBigramList):
             if bigramList[j] in sentenceBigramList[i]:
                 occ[i][j] = 1
     return occ
-
-def TfIdfBerechnen(sentences,ngrams=2):
-    df = pd.DataFrame(sentences)
-    df = df[:5000]
-    df.drop(['document_id','timestamp','bigrams'], axis = 1)
-    count_vect = CountVectorizer(lowercase=False, min_df=5, max_df=0.8, ngram_range=(1,ngrams))    
-    X_tf = count_vect.fit_transform(df['sentence'])   
-    return [X_tf,len(count_vect.get_feature_names())]
 
 # TODO: dies ist zu ressourcenintensiv -> doch direkt mit glpk? Kann das optimiert werden?
 # TODO: wegen Serverzugriff Mail schreiben 
@@ -316,7 +312,7 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,TF=True,IDF=True,min_df=3,max_df=0.8,question=""):
+def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,TF=True,IDF=True,min_df=3,max_df=0.8,to_lower=True,to_lemma=False,question=""):
     Anzahl_gramme = 5000
     test_dict = {"1":eins, "2":zwei,"3":drei,"4":vier}
     print("Start!")
@@ -327,7 +323,7 @@ def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,TF=True,IDF=Tr
     # Test für grafische Darstellung des Diagramms
     timeDataForDiagramm = sum_appearances(data)
 
-    sentences = extractSentencesNLTK(data,test_dict)
+    sentences = extractSentencesNLTK(data,test_dict,to_lower,to_lemma)
     sentences = sentences
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,min_df,max_df)
