@@ -1,4 +1,5 @@
 #FLASK and FLASK-Endpoint
+from audioop import maxpp
 import json
 import nltk
 import math
@@ -141,40 +142,65 @@ def extractBigramsPerDocument(sentenceDicts):
 #   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet.
 #   - 
 # Gewichtung der Bigramme feststellen -> Wie häufig kommt ein Bigramm in dem Text vor
-def extractWeightPerBigram(documentsDict,sentences,Vorzugsfaktor =2):
+def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,Vorzugsfaktor =2):
+
     bigramDict = {}
+    if TF:    
+        # Term Frequency
+        for sentence in sentences:
+            for bigram in sentence["bigrams"]:
+                bigramDict.setdefault(bigram, 0)
+                bigramDict[bigram] = bigramDict[bigram] + 1
+    else:            
+        # Document Frequency
+        for documentId in documentsDict:
+            for bigram in documentsDict[documentId]:
+                bigramDict.setdefault(bigram, 0)
+                bigramDict[bigram] = bigramDict[bigram] + 1            
+    
+    #Korrekturfaktor
     anzahl_dict = {1:0,2:0,3:0,4:0,5:0}
-    for documentId in documentsDict:
-        for bigram in documentsDict[documentId]:
-            bigramDict.setdefault(bigram, 0)
-            bigramDict[bigram] = bigramDict[bigram] + 1
     bigrammList = []
     for sentence in sentences:
         for bigram in sentence["bigrams"]:
             bigrammList.append(bigram)
     for  gramm in bigrammList:
         anzahl_dict[gramm.count('___')+1] = anzahl_dict[gramm.count('___')+1]+1
-    #documentList =[]
-    #for sentence in sentences:
-    #    documentList.append(sentence['sentence_id'])
-    #uniquesentences = list(set(documentList))
-    #amountSen =len(uniquesentences)
-    uniqueBigrams = list(set(bigrammList))
-    #testDict = {}
-    # for gram in uniqueBigrams:
-    #     testDict.setdefault(gram,[])
-    #     for sentence in sentences:
-    #         if gram in sentence["bigrams"]:
-    #             testDict[gram].append(sentence['sentence_id'])
-    #     testDict[gram] = list(set(testDict[gram]))
     anzahl_kleinster_gramme =0
     for i in range(1,5):
         if anzahl_kleinster_gramme ==0:
             anzahl_kleinster_gramme= anzahl_dict[i]
-    for gramm in uniqueBigrams:
-        grammLength =gramm.count('___')+1
-        # Gewichtung * Vorzugsfaktor * Korrekturfaktor *log *IDF
-        bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) #* math.log(amountSen/len(testDict[gram]))
+
+    uniqueBigrams = list(set(bigrammList))
+    #IDF Fakor
+    if IDF:
+        documentList =[]
+        for sentence in sentences:
+            documentList.append(sentence['document_id'])
+        uniquesentences = list(set(documentList))
+        amountSen =len(uniquesentences)    
+        testDict = {}
+        for gram in uniqueBigrams:
+            testDict.setdefault(gram,[])
+            for sentence in sentences:
+                if gram in sentence["bigrams"]:
+                    testDict[gram].append(sentence['document_id'])
+            testDict[gram] = list(set(testDict[gram]))
+    
+    #Wert Berchnung
+    if IDF:
+        for gramm in uniqueBigrams:
+            grammLength =gramm.count('___')+1
+            # Gewichtung * Vorzugsfaktor * Korrekturfaktor *log *IDF
+            if len(testDict[gramm])/amountSen > max_df or len(testDict[gramm]) < min_df:
+                bigramDict[gramm] =0
+            else:
+                bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) * math.log(amountSen/len(testDict[gramm]))
+    else:
+        for gramm in uniqueBigrams:
+            grammLength =gramm.count('___')+1
+            # Gewichtung * Vorzugsfaktor * Korrekturfaktor *log *IDF
+            bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) 
     return bigramDict
 
 # TODO: Ckitlearn kann das evtl. effizienter -> besseres Format
@@ -262,8 +288,6 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
         # if a new sentence has been found, adjust the values
         if maxSentence != -1:
             sentenceIndices.append(maxSentence)
-            print(maxVal)
-            print("\n")
             totalLength += len(sentence)
             for j in range(len(occurrences[maxSentence])):
                 if occurrences[maxSentence][j] > 0:
@@ -292,7 +316,7 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,question=""):
+def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,TF=True,IDF=True,min_df=3,max_df=0.8,question=""):
     Anzahl_gramme = 5000
     test_dict = {"1":eins, "2":zwei,"3":drei,"4":vier}
     print("Start!")
@@ -306,7 +330,7 @@ def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,question=""):
     sentences = extractSentencesNLTK(data,test_dict)
     sentences = sentences
     bigramsPerDocument = extractBigramsPerDocument(sentences)
-    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences)
+    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,min_df,max_df)
 
     # True setzen falls der Arbeitsspeicher voll läuft
     if False:
