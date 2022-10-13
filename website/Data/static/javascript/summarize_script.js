@@ -276,7 +276,7 @@ function get_parameter_as_json(){
                                 "return_order_of_summary":order_of_summary,
                                 "tf_idf":{"min_df":min_df, "max_df":max_df},    
                             };
-    alert(JSON.stringify(variables_for_summary))
+    //alert(JSON.stringify(variables_for_summary))
     return variables_for_summary;
 }
 
