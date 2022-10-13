@@ -258,6 +258,9 @@ function get_parameter_as_json(){
     let number_concepts = document.getElementById("numb_concepts").value
     let order_of_summary = document.getElementById("type_of_summary_return").value
 
+    let min_df = document.getElementById("min_df").value
+    let max_df = document.getElementById("max_df").value
+
     // Make a json with all parameters, to be send to the backend
     let variables_for_summary = {
                                 "max_length": max_length,
@@ -270,9 +273,10 @@ function get_parameter_as_json(){
                                 "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},
                                 "meta_daten":{"likes":checkmark_likes,"follow":checkmark_follows},
                                 "number_of_concepts": number_concepts,
-                                "return_order_of_summary":order_of_summary,    
+                                "return_order_of_summary":order_of_summary,
+                                "tf_idf":{"min_df":min_df, "max_df":max_df},    
                             };
-    //alert(JSON.stringify(variables_for_summary))
+    alert(JSON.stringify(variables_for_summary))
     return variables_for_summary;
 }
 

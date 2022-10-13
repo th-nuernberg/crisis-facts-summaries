@@ -342,6 +342,9 @@ html {
   #grid_colm_3{
     grid-column: 3;
   }
+  #grid_colm_4{
+    grid-column: 4;
+  }
   #type_of_summary_return{
     max-width: 240px;
   }
@@ -354,4 +357,19 @@ html {
     float: left;
     margin-left: 1em;
     text-align: center;
+  }
+  #output_min_df{
+    float: left;
+    margin-left: 10px;
+  }
+  #label_checkbox_4_2{
+    margin-bottom: 0%;
+    text-align: left;
+    font-weight: bolder;
+  }
+  #min_df{
+    float: left;
+  }
+  #max_df{
+    float: left;
   }
