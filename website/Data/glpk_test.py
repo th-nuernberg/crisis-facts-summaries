@@ -1,5 +1,5 @@
 #FLASK and FLASK-Endpoint
-from audioop import maxpp
+from audioop import maxpp, reverse
 import json
 import nltk
 import math
@@ -12,13 +12,11 @@ import spacy
 
 nlp = spacy.load('en_core_web_sm')
 
-pathToFile = "/usr/src/app/Datensaetze/prepared/26.relonly.jsonl" #Datensatz_1.json
-
 def init():
     nltk.download('punkt')
 
 #Funktion zum einlesen der neuen Daten in Felix/download.py
-def readInput():
+def readInput(pathToFile):
     df = []
     with open(pathToFile, 'r', encoding="utf-8") as json_file:
         mytext = json_file.read()
@@ -134,6 +132,19 @@ def extractSentencesNLTK(rawDicts,test_dict,to_lower,to_lemma):
             sentenceId += 1
     return sentencesDicts
 
+def Filter(sentences, exclude):
+    badwords = exclude.lower().split()
+    filteredsentences = []
+    for sentence in sentences:
+        test = True
+        for word in badwords:
+            for gramm in sentence["bigrams"]:
+                if  (word+"___") in gramm:
+                    test = False
+        if test:
+            filteredsentences.append(sentence)
+    return filteredsentences
+
 def extractBigramsPerDocument(sentenceDicts):
     documentDict = {}
     for sentenceDict in sentenceDicts:
@@ -150,7 +161,7 @@ def extractBigramsPerDocument(sentenceDicts):
 #   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet.
 #   - 
 # Gewichtung der Bigramme feststellen -> Wie häufig kommt ein Bigramm in dem Text vor
-def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,Vorzugsfaktor =2):
+def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,percentConcepts,question,exclude,Vorzugsfaktor =2):
 
     bigramDict = {}
     if TF:    
@@ -195,6 +206,14 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,Vorzugsf
                     testDict[gram].append(sentence['document_id'])
             testDict[gram] = list(set(testDict[gram]))
     
+    #question Vorbereitung
+    goodwords = question.lower().split()
+    questionFaktor =5
+    #exclude Vorbereitung
+    badwords = exclude.lower().split()
+    excludeFaktor =-0.5
+
+    
     #Wert Berchnung
     if IDF:
         for gramm in uniqueBigrams:
@@ -204,11 +223,28 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,Vorzugsf
                 bigramDict[gramm] =0
             else:
                 bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) * math.log(amountSen/len(testDict[gramm]))
+                for word in goodwords:
+                    if (word+ "___") in gramm:
+                        bigramDict[gramm] = bigramDict[gramm] *questionFaktor
+                for word in badwords:
+                    if (word+ "___") in gramm:
+                        bigramDict[gramm] = bigramDict[gramm] *excludeFaktor
     else:
         for gramm in uniqueBigrams:
             grammLength =gramm.count('___')+1
             # Gewichtung * Vorzugsfaktor * Korrekturfaktor *log *IDF
             bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) 
+            for word in goodwords:
+                if (word+ "___") in gramm:
+                    bigramDict[gramm] = bigramDict[gramm] *questionFaktor
+            for word in badwords:
+                if (word+ "___") in gramm:
+                    bigramDict[gramm] = bigramDict[gramm] *excludeFaktor
+
+    # Top N Prozent auswählen 
+    if percentConcepts != "100":
+        anzahlkonzepte = int(len(bigramDict) *(int(percentConcepts)/100))
+        bigramDict =dict(sorted(bigramDict.items(), key=lambda item: item[1], reverse = True)[:anzahlkonzepte])
     return bigramDict
 
 # Erstellt eine Matrix mit den Vorkommnissen der Engrammen in den Sätzen
@@ -295,7 +331,8 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
     summary = { "sentences": [],
             "timestamp": [],
             "timestampsforDiagramm": [],
-            "occurrencesforDiagramm": [] }
+            "occurrencesforDiagramm": [],
+            "timestamp_dict": {} }
 
     for i in sentenceIndices:
         for s in sentences:
@@ -305,6 +342,7 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
                 fastformatiert = s["timestamp"].replace('T', ' ')
                 formatiert = fastformatiert.replace('.0Z', '')
                 summary["timestamp"].append(formatiert)
+                summary["timestamp_dict"][formatiert] = s["sentence"]
 
     return summary
 
@@ -312,21 +350,26 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,TF=True,IDF=True,min_df=3,max_df=0.8,to_lower=True,to_lemma=False,question=""):
+def gesamt(eins,zwei,drei,vier, Datensatz,percentConcepts,returnorder="",hardexclude=True,timespan=0,weigth=0,max_length=600,TF=True,IDF=True,min_df=3,max_df=0.8,to_lower=True,to_lemma=False,question="",exclude=""):
     Anzahl_gramme = 5000
     test_dict = {"1":eins, "2":zwei,"3":drei,"4":vier}
     print("Start!")
     start = time.time()
     L = max_length # Anzhal Buchstaben im Summary
-    data = readInput()
+    pathToFile = "/usr/src/app/Datensaetze/prepared/"+Datensatz  #Datensatz_1.json 26.relonly.jsonl
+    data = readInput(pathToFile)
 
     # Test für grafische Darstellung des Diagramms
     timeDataForDiagramm = sum_appearances(data)
 
     sentences = extractSentencesNLTK(data,test_dict,to_lower,to_lemma)
-    sentences = sentences
+    if exclude != "" and hardexclude:
+        sentences = Filter(sentences,exclude)
+
     bigramsPerDocument = extractBigramsPerDocument(sentences)
-    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,min_df,max_df)
+    if hardexclude:
+        exclude= ""
+    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,min_df,max_df,percentConcepts,question,exclude)
 
     # True setzen falls der Arbeitsspeicher voll läuft
     if False:
@@ -341,6 +384,12 @@ def gesamt(eins,zwei,drei,vier,timespan=0,weigth=0,max_length=600,TF=True,IDF=Tr
 
     summarySenetencesincomplete = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
     summarySenetences = add_sum_appearances(summarySenetencesincomplete,timeDataForDiagramm)
+
+    if returnorder == "first_found_first":
+        summarySenetences["sentences"] =list(summarySenetences["timestamp_dict"].values())
+    if returnorder == "last_found_first":
+        summarySenetences["sentences"] =list(sorted(summarySenetences["timestamp_dict"],reverse=True).values())
+
     print(summarySenetences)
 
     end = time.time()
