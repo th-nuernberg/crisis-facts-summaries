@@ -161,37 +161,18 @@ function draw_diagramm(response_json){
 
     var mychartObject = document.getElementById('myChart')
 
-    /*
-    var chart = new Chart(mychartObject, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Alle Daten",
-                backgroundColor: 'rgba(65,105,225,1)',
-                borderColor: 'rgba(65,105,225,1)',
-                data: values
-            }, {
-            label: "Daten der Zusammenfassung",
-            backgroundColor: 'rgba(12,55,225,1)',
-            borderColor: 'rgba(12,55,225,1)',
-            data: [{x:'2013-01-16T16:54:22.0Z', y:20}, {x:'2013-01-17T14:57:20.0Z', y:10}]
-            }]
-        }
-    });
-    */
-   
+
     var chart = new Chart(mychartObject, {
         type: 'bar',
         data: {
             datasets: [{
-                label: "Zusammenfassung Daten",
+                label: "Summary Timestamps",
                 backgroundColor: 'rgba(255,0,0,1)',
                 borderColor: 'rgba(255,0,0,1)',
                 barThickness: 1,
                 data: dataZusammenfassung
             }, {
-                label: "Alle Daten",
+                label: "All Timestamps",
                 backgroundColor: 'rgba(65,105,225,1)',
                 borderColor: 'rgba(65,105,225,1)',
                 barThickness: 1,
@@ -208,6 +189,19 @@ function draw_diagramm(response_json){
                 },
                 y: {
                     beginAtZero :true
+                }
+            },
+            plugins: {
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'x',
+                    }
                 }
             }
         }       
