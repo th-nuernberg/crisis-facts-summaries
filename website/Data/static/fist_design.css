@@ -99,8 +99,21 @@ html {
     width: 110px;
 }
 #Label{
+    font-weight: bolder;
     align-self: left;
     float: left;
+    margin-bottom: 10px;
+}
+#exclude_div{
+  margin-top: 10px;
+}
+#Label_2{
+  font-weight: bolder;
+  align-self: left;
+  float: left;
+  margin-bottom: 12px;
+  margin-top: 12px;
+  margin-right: 5em;
 }
 .Insert_Form {
     margin: 5em;
@@ -242,7 +255,6 @@ html {
     -ms-user-select: none;
     user-select: none;
     text-align: left;
-    
   }
   
   /* Hide the browser's default checkbox */
@@ -253,7 +265,12 @@ html {
     height: 0;
     width: 0;
   }
-  
+  #checkbox_hard_exclude{
+    margin: 10px;
+    float: left;
+    font-size: medium;
+    font-weight: bolder;
+  }
   /* Create a custom checkbox */
   .checkmark {
     position: absolute;
@@ -263,6 +280,9 @@ html {
     width: 25px;
     background-color: rgb(255, 255, 255);
   }
+  #check_hard_exclude_button{
+    background-color: lightgray;
+  }
   
   /* On mouse-over, add a grey background color */
   .container_check:hover input ~ .checkmark {
@@ -271,6 +291,9 @@ html {
   
   /* When the checkbox is checked, add a blue background */
   .container_check input:checked ~ .checkmark {
+    background-color: #2196F3;
+  }
+  .container_check input:checked ~ #check_hard_exclude_button {
     background-color: #2196F3;
   }
   
@@ -367,6 +390,7 @@ html {
     text-align: left;
     font-weight: bolder;
   }
+
   #min_df{
     float: left;
   }

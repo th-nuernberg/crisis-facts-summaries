@@ -255,11 +255,13 @@ function get_parameter_as_json(){
     let min_df = document.getElementById("min_df").value
     let max_df = document.getElementById("max_df").value
 
+    let hard_exclude = document.getElementById("hard_exclude").checked
+
     // Make a json with all parameters, to be send to the backend
     let variables_for_summary = {
                                 "max_length": max_length,
                                 "question": summary_question,
-                                "exclude_params":exclude_params,
+                                "exclude_params":{"params":exclude_params,"hard_exclude":hard_exclude},
                                 "timespan" : {"from": {"date":date_from, "time":time_from}, "to": {"date": date_to, "time":time_to}},
                                 "function_type": function_type,
                                 "dataset":dataset,
