@@ -19,16 +19,17 @@ def start_summarize():
    parameters = parameters_from_frontend
    all_parameters_set = False
    print(parameters)
-   summary_as_json = gesamt(eins=parameters["kontext_checkmarks"]["eins"], 
-                        zwei=parameters["kontext_checkmarks"]["zwei"],
-                        drei=parameters["kontext_checkmarks"]["drei"],
-                        vier=parameters["kontext_checkmarks"]["vier"],
-                        max_length=int(parameters["max_length"]),
+   summary_as_json = gesamt(one=parameters["kontext_checkmarks"]["eins"], 
+                        two=parameters["kontext_checkmarks"]["zwei"],
+                        three=parameters["kontext_checkmarks"]["drei"],
+                        four=parameters["kontext_checkmarks"]["vier"],
+                        maxLength=int(parameters["max_length"]),
                         percentConcepts=parameters["number_of_concepts"],  
                         question=parameters["question"],
-                        exclude=parameters["exclude_params"],
+                        exclude=parameters["exclude_params"]["params"],
+                        hardexclude=parameters["exclude_params"]["hard_exclude"],
                         returnorder=parameters["return_order_of_summary"],
-                        Datensatz=parameters["dataset"]
+                        dataset=parameters["dataset"]
                         )
    print(summary_as_json) # Zum debuggen
    return summary_as_json

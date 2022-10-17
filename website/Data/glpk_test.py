@@ -1,6 +1,7 @@
 #FLASK and FLASK-Endpoint
 from audioop import maxpp, reverse
 import json
+from statistics import variance
 import nltk
 import math
 from pymprog import *
@@ -15,25 +16,16 @@ nlp = spacy.load('en_core_web_sm')
 def init():
     nltk.download('punkt')
 
-#Funktion zum einlesen der neuen Daten in Felix/download.py
+#Funktion zum einlesen der Daten
 def readInput(pathToFile):
     df = []
-    with open(pathToFile, 'r', encoding="utf-8") as json_file:
-        mytext = json_file.read()
+    with open(pathToFile, 'r', encoding="utf-8") as jsonFile:
+        mytext = jsonFile.read()
         lines = mytext.split("\n")
         for line in lines:
             if len(line) > 0:
                 df.append(json.loads(line))
     return df
-
-# Gibt eine Liste mit allen Bigrammen (Bigramm -> "wortA wortB wortC wortD" = "wortA wortB" "wortB wortC" "wortC wortD") aus einem mitgegebenen Text zurück
-def bigramme(text):
-    words = re.findall(r'[A-Za-z0-9]+', text)
-    result = []
-    for i in range(0, len(words)):
-        if (i < (len(words) - 1)):
-            result.append(words[i] + "_" + words[i + 1])
-    return result
 
 # Es wird gezählt, wie viele Ereignisse zu einem bestimmten Zeitpunkt erfasst wurden. Diese Daten werden grafisch auf der Webseite angezeigt
 def sum_appearances(rohdaten):
@@ -82,29 +74,29 @@ def normalize(text):
     text = tprep.remove.accents(text)
     return text
 
-# Das gleiche wie die Funktion darüber nur mit n-grammen (also n Wörterbündel)
-def ngrame(original_text,test_dict,to_lower,to_lemma):
+# Erzeugt n-gramme aus dem input Text
+def ngrame(originalText,testDict,toLower,toLemma):
     stopwords =[]
     with open('/usr/src/app/Datensaetze/stopwords-en.txt', encoding='utf-8') as file:
         stopwords = file.read().splitlines()
     result = []
     text = ""
-    original_text = clean(original_text)
-    if to_lower:
-        original_text = original_text.lower()
+    originalText = clean(originalText)
+    if toLower:
+        originalText = originalText.lower()
     #original_text = normalize(original_text)
     
-    for w in original_text.split():
+    for w in originalText.split():
         if w not in stopwords:
             text = text + " " + w
     for i in range(1,5):
-        if(test_dict[str(i)]):
+        if(testDict[str(i)]):
             ngrame = []
-            n_grams = ngrams(re.findall(r'[A-Za-z0-9]+', text), i)
-            for grams in n_grams:
+            nGrams = ngrams(re.findall(r'[A-Za-z0-9]+', text), i)
+            for grams in nGrams:
                 hold =""
                 for gram in grams:
-                    if to_lemma:
+                    if toLemma:
                         doc = nlp(gram)
                         for t in doc:                    
                             hold += t.lemma_
@@ -115,7 +107,7 @@ def ngrame(original_text,test_dict,to_lower,to_lemma):
             result.extend(ngrame)
     return result
  
-def extractSentencesNLTK(rawDicts,test_dict,to_lower,to_lemma):
+def extractSentencesNLTK(rawDicts,testDict,toLower,toLemma):
     sentencesDicts = []
     sentenceId = 0
     for rawDict in rawDicts:
@@ -128,16 +120,16 @@ def extractSentencesNLTK(rawDicts,test_dict,to_lower,to_lemma):
                                             ("document_id", rawDict['document_id']),
                                             ("sentence_id", sentenceId),
                                             ("sentence", clean(sentence)),
-                                            ('bigrams', list(set(ngrame(sentence,test_dict,to_lower,to_lemma))))]))
+                                            ('bigrams', list(set(ngrame(sentence,testDict,toLower,toLemma))))]))
             sentenceId += 1
     return sentencesDicts
 
-def Filter(sentences, exclude):
-    badwords = exclude.lower().split()
+def filter(sentences, exclude):
+    badWords = exclude.lower().split()
     filteredsentences = []
     for sentence in sentences:
         test = True
-        for word in badwords:
+        for word in badWords:
             for gramm in sentence["bigrams"]:
                 if  (word+"___") in gramm:
                     test = False
@@ -158,10 +150,8 @@ def extractBigramsPerDocument(sentenceDicts):
 # TF-IDF:
 #   - Termn Frequency: Gewichtung der Wörter anhand der Häufigkeit im Text
 #   - momentan Document Frequency: Gewichtung der Wörter anhand der Häufigkeit in Seiten (oder größerer Texteinheit -> Wort kam in 3 Texteinheiten vor)
-#   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet.
-#   - 
-# Gewichtung der Bigramme feststellen -> Wie häufig kommt ein Bigramm in dem Text vor
-def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,percentConcepts,question,exclude,Vorzugsfaktor =2):
+#   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet. 
+def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,preferencefactor =2):
 
     bigramDict = {}
     if TF:    
@@ -178,17 +168,17 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,percentC
                 bigramDict[bigram] = bigramDict[bigram] + 1            
     
     #Korrekturfaktor
-    anzahl_dict = {1:0,2:0,3:0,4:0,5:0}
+    amountDict = {1:0,2:0,3:0,4:0,5:0}
     bigrammList = []
     for sentence in sentences:
         for bigram in sentence["bigrams"]:
             bigrammList.append(bigram)
     for  gramm in bigrammList:
-        anzahl_dict[gramm.count('___')+1] = anzahl_dict[gramm.count('___')+1]+1
-    anzahl_kleinster_gramme =0
+        amountDict[gramm.count('___')+1] = amountDict[gramm.count('___')+1]+1
+    amountShortestGramms =0
     for i in range(1,5):
-        if anzahl_kleinster_gramme ==0:
-            anzahl_kleinster_gramme= anzahl_dict[i]
+        if amountShortestGramms ==0:
+            amountShortestGramms= amountDict[i]
 
     uniqueBigrams = list(set(bigrammList))
     #IDF Fakor
@@ -207,11 +197,11 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,percentC
             testDict[gram] = list(set(testDict[gram]))
     
     #question Vorbereitung
-    goodwords = question.lower().split()
-    questionFaktor =5
+    goodWords = question.lower().split()
+    questionFactor =5
     #exclude Vorbereitung
-    badwords = exclude.lower().split()
-    excludeFaktor =-0.5
+    badWords = exclude.lower().split()
+    excludeFactor =-0.5
 
     
     #Wert Berchnung
@@ -219,41 +209,40 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,min_df,max_df,percentC
         for gramm in uniqueBigrams:
             grammLength =gramm.count('___')+1
             # Gewichtung * Vorzugsfaktor * Korrekturfaktor *log *IDF
-            if len(testDict[gramm])/amountSen > max_df or len(testDict[gramm]) < min_df:
-                bigramDict[gramm] =0
-            else:
-                bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) * math.log(amountSen/len(testDict[gramm]))
-                for word in goodwords:
+            if len(testDict[gramm])/amountSen <= maxDf and len(testDict[gramm]) >= minDf:
+                bigramDict[gramm] = bigramDict[gramm] * (grammLength*preferencefactor) * (amountShortestGramms/amountDict[grammLength]) * math.log(amountSen/len(testDict[gramm]))
+                for word in goodWords:
                     if (word+ "___") in gramm:
-                        bigramDict[gramm] = bigramDict[gramm] *questionFaktor
-                for word in badwords:
+                        bigramDict[gramm] = bigramDict[gramm] *questionFactor
+                for word in badWords:
                     if (word+ "___") in gramm:
-                        bigramDict[gramm] = bigramDict[gramm] *excludeFaktor
+                        bigramDict[gramm] = bigramDict[gramm] *excludeFactor
     else:
         for gramm in uniqueBigrams:
             grammLength =gramm.count('___')+1
-            # Gewichtung * Vorzugsfaktor * Korrekturfaktor *log *IDF
-            bigramDict[gramm] = bigramDict[gramm] * (grammLength*Vorzugsfaktor) * (anzahl_kleinster_gramme/anzahl_dict[grammLength]) 
-            for word in goodwords:
+            # Gewichtung * Vorzugsfaktor * Korrekturfaktor 
+            bigramDict[gramm] = bigramDict[gramm] * (grammLength*preferencefactor) * (amountShortestGramms/amountDict[grammLength]) 
+            for word in goodWords:
                 if (word+ "___") in gramm:
-                    bigramDict[gramm] = bigramDict[gramm] *questionFaktor
-            for word in badwords:
+                    bigramDict[gramm] = bigramDict[gramm] *questionFactor
+            for word in badWords:
                 if (word+ "___") in gramm:
-                    bigramDict[gramm] = bigramDict[gramm] *excludeFaktor
+                    bigramDict[gramm] = bigramDict[gramm] *excludeFactor
 
     # Top N Prozent auswählen 
+
     if percentConcepts != "100":
-        anzahlkonzepte = int(len(bigramDict) *(int(percentConcepts)/100))
-        bigramDict =dict(sorted(bigramDict.items(), key=lambda item: item[1], reverse = True)[:anzahlkonzepte])
+        amountConcepts = int(len(bigramDict) *(int(percentConcepts)/100))
+        bigramDict =dict(sorted(bigramDict.items(), key=lambda item: item[1], reverse = True)[:amountConcepts])
     return bigramDict
 
 # Erstellt eine Matrix mit den Vorkommnissen der Engrammen in den Sätzen
 # Anzahl der Spalten ist Anzahl der Ngramme
 # Anzahl der Zeilen ist Anzahl der Sätze
 def calculateOccurrences(bigramList, sentenceBigramList):
-    dim_columns = len(bigramList)
-    dim_rows = len(sentenceBigramList)
-    occ = [[0 for j in range(dim_columns)] for i in range(dim_rows)]
+    dimColumns = len(bigramList)
+    dimRows = len(sentenceBigramList)
+    occ = [[0 for j in range(dimColumns)] for i in range(dimRows)]
     for i in range(len(sentenceBigramList)):
         for j in range(len(bigramList)):
             if bigramList[j] in sentenceBigramList[i]:
@@ -262,60 +251,56 @@ def calculateOccurrences(bigramList, sentenceBigramList):
 
 # TODO: dies ist zu ressourcenintensiv -> doch direkt mit glpk? Kann das optimiert werden?
 # TODO: wegen Serverzugriff Mail schreiben 
-# def calculateSummary(saetze, weights, occurrences, totalLength):
-#     i = len(weights)  # Anzahl der Konzepte
-#     l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
-#     j = len(saetze)
-#     begin('test konzepte')
-#     c = var('c', i, kind=bool)  # ist ein konzept im Summary enhalten
-#     s = var('s', j, kind=bool)  # ist ein Satz im Summary enthalten
-#     maximize(sum(weights[a] * c[a] for a in range(i)))
-#     sum(l[b] * s[b] for b in range(j)) <= totalLength
-#     for a in range(i):
-#         sum(s[b] * occurrences[b][a] for b in range(j)) >= c[a]
-#         for b in range(j):
-#             s[b] * occurrences[b][a] <= c[a]
-#     solve()
-#     print("###>Objective value: %f" % vobj())
-#     summary = []
-#     for b in range(j):
-#         # print(s[b].primal)
-#         if s[b].primal == 1.0:
-#             print(b)
-#             summary.append(saetze[b])
-#     return summary
+def calculateSummary(saetze, weights, occurrences, totalLength):
+    i = len(weights)  # Anzahl der Konzepte
+    l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
+    j = len(saetze)
+    begin('test konzepte')
+    c = var('c', i, kind=bool)  # ist ein konzept im Summary enhalten
+    s = var('s', j, kind=bool)  # ist ein Satz im Summary enthalten
+    max(sum(weights[a] * c[a] for a in range(i)))
+    sum(l[b] * s[b] for b in range(j)) <= totalLength
+    for a in range(i):
+        sum(s[b] * occurrences[b][a] for b in range(j)) >= c[a]
+        for b in range(j):
+            s[b] * occurrences[b][a] <= c[a]
+    #solve()
+    #print("###>Objective value: %f" % vobj())
+    summary = []
+    for b in range(j):
+        # print(s[b].primal)
+        if s[b].primal == 1.0:
+            print(b)
+            summary.append(saetze[b])
+    return summary
 
-def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLength):
+def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTotalLength):
     sentenceIndices = []
     totalLength = 0
     continueSearching = True
-    satzDict={}
-    zeitDict={}
+    sentenceDict={}
     for s in sentences:
-        satzDict[s["sentence_id"]]= s["sentence"]
-    for s in sentences:
-        zeitDict[s["sentence_id"]]= s["timestamp"]
+        sentenceDict[s["sentence_id"]]= s["sentence"]
 
     # calculate total value for all sentences
     sentenceValue = []
-    for s in saetze:
+    for s in sentenceList:
         sentenceValue.append(0)
-    for i in range(len(saetze)):
+    for i in range(len(sentenceList)):
         for j in range(len((weights))):
             sentenceValue[i] += occurrences[i][j] * weights[j]
-        #if i % 1000 == 0:
-        #    print(i)
+
     sentence =""
     while continueSearching:
         # get maximum value per length
         maxVal = 0
         maxSentence = -1
         for i in range(len(sentenceValue)):
-            val = sentenceValue[i] / len(satzDict[saetze[i]])
-            if (maxVal < val) & (totalLength + len(satzDict[saetze[i]]) < maxTotalLength):
+            val = sentenceValue[i] / len(sentenceDict[sentenceList[i]])
+            if (maxVal < val) & (totalLength + len(sentenceDict[sentenceList[i]]) < maxTotalLength):
                 maxVal = val
                 maxSentence = i
-                sentence = satzDict[saetze[i]]
+                sentence = sentenceDict[sentenceList[i]]
 
         # if a new sentence has been found, adjust the values
         if maxSentence != -1:
@@ -336,7 +321,7 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
 
     for i in sentenceIndices:
         for s in sentences:
-            if(s["sentence_id"] == saetze[i]):
+            if(s["sentence_id"] == sentenceList[i]):
                 # timestamp wird auf das passende Format gebracht
                 summary["sentences"].append(s["sentence"])
                 fastformatiert = s["timestamp"].replace('T', ' ')
@@ -350,39 +335,31 @@ def calculateSummaryGreedy(saetze, sentences, weights, occurrences, maxTotalLeng
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(eins,zwei,drei,vier, Datensatz,percentConcepts,returnorder="",hardexclude=True,timespan=0,weigth=0,max_length=600,TF=True,IDF=True,min_df=3,max_df=0.8,to_lower=True,to_lemma=False,question="",exclude=""):
-    Anzahl_gramme = 5000
-    test_dict = {"1":eins, "2":zwei,"3":drei,"4":vier}
+def gesamt(one,two,three,four, dataset,percentConcepts,returnorder="",hardexclude=True,timespan=0,weigth=0,maxLength=600,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,toLemma=False,question="",exclude=""):
+    testDict = {"1":one, "2":two,"3":three,"4":four}
     print("Start!")
     start = time.time()
-    L = max_length # Anzhal Buchstaben im Summary
-    pathToFile = "/usr/src/app/Datensaetze/prepared/"+Datensatz  #Datensatz_1.json 26.relonly.jsonl
+    pathToFile = "/usr/src/app/Datensaetze/prepared/"+dataset
     data = readInput(pathToFile)
 
     # Test für grafische Darstellung des Diagramms
     timeDataForDiagramm = sum_appearances(data)
 
-    sentences = extractSentencesNLTK(data,test_dict,to_lower,to_lemma)
+    sentences = extractSentencesNLTK(data,testDict,toLower,toLemma)
     if exclude != "" and hardexclude:
-        sentences = Filter(sentences,exclude)
+        sentences = filter(sentences,exclude)
 
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     if hardexclude:
         exclude= ""
-    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,min_df,max_df,percentConcepts,question,exclude)
+    
+    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude)
+    occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
+    weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
+    sentenceList = [s['sentence_id'] for s in sentences]
 
-    # True setzen falls der Arbeitsspeicher voll läuft
-    if False:
-        occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys())[:Anzahl_gramme], [s['bigrams'] for s in sentences])
-        weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())[:Anzahl_gramme]
-    else:
-        #occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
-        #occ = TfIdfBerechnen(sentences)
-        occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
-        weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
-    saetzeList = [s['sentence_id'] for s in sentences]
-
-    summarySenetencesincomplete = calculateSummaryGreedy(saetzeList, sentences, weights, occ, L)
+    summarySenetencesincomplete = calculateSummaryGreedy(sentenceList, sentences, weights, occ, maxLength)
+    #summarySenetencesincomplete = calculateSummary(sentences, weights, occ, max_length)
     summarySenetences = add_sum_appearances(summarySenetencesincomplete,timeDataForDiagramm)
 
     if returnorder == "first_found_first":
@@ -396,4 +373,4 @@ def gesamt(eins,zwei,drei,vier, Datensatz,percentConcepts,returnorder="",hardexc
     print("Fertig!")
     print(end - start)
     print("Sekunden Ausfuehrungszeit")
-    return json.dumps(summarySenetences) # wieder auf summarySenetences ändern
+    return json.dumps(summarySenetences) 
