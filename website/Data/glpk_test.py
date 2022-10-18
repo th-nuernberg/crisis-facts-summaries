@@ -2,6 +2,7 @@
 from audioop import maxpp, reverse
 import json
 from statistics import variance
+from sys import maxsize
 import nltk
 import math
 from pymprog import *
@@ -152,7 +153,8 @@ def extractBigramsPerDocument(sentenceDicts):
 #   - momentan Document Frequency: Gewichtung der Wörter anhand der Häufigkeit in Seiten (oder größerer Texteinheit -> Wort kam in 3 Texteinheiten vor)
 #   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet. 
 def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,preferencefactor =2):
-
+    print(minDf)
+    print(maxDf)
     bigramDict = {}
     if TF:    
         # Term Frequency
@@ -201,8 +203,7 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentCon
     questionFactor =5
     #exclude Vorbereitung
     badWords = exclude.lower().split()
-    excludeFactor =-0.5
-
+    excludeFactor= -0.5
     
     #Wert Berchnung
     if IDF:
@@ -217,6 +218,8 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentCon
                 for word in badWords:
                     if (word+ "___") in gramm:
                         bigramDict[gramm] = bigramDict[gramm] *excludeFactor
+            else:
+                bigramDict.pop(gramm, None)
     else:
         for gramm in uniqueBigrams:
             grammLength =gramm.count('___')+1
@@ -258,14 +261,15 @@ def calculateSummary(saetze, weights, occurrences, totalLength):
     begin('test konzepte')
     c = var('c', i, kind=bool)  # ist ein konzept im Summary enhalten
     s = var('s', j, kind=bool)  # ist ein Satz im Summary enthalten
-    max(sum(weights[a] * c[a] for a in range(i)))
+
+    maximize(sum(weights[a] * c[a] for a in range(i)))
     sum(l[b] * s[b] for b in range(j)) <= totalLength
     for a in range(i):
         sum(s[b] * occurrences[b][a] for b in range(j)) >= c[a]
         for b in range(j):
             s[b] * occurrences[b][a] <= c[a]
-    #solve()
-    #print("###>Objective value: %f" % vobj())
+    solve()
+    print("###>Objective value: %f" % vobj())
     summary = []
     for b in range(j):
         # print(s[b].primal)
@@ -354,12 +358,15 @@ def gesamt(one,two,three,four, dataset,percentConcepts,returnorder="",hardexclud
         exclude= ""
     
     bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude)
+    print(len(sentences))
+    print(len(bigramWeights))
     occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
     weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
     sentenceList = [s['sentence_id'] for s in sentences]
+   
 
     summarySenetencesincomplete = calculateSummaryGreedy(sentenceList, sentences, weights, occ, maxLength)
-    #summarySenetencesincomplete = calculateSummary(sentences, weights, occ, max_length)
+    #summarySenetencesincomplete = calculateSummary(sentences, weights, occ, maxLength)
     summarySenetences = add_sum_appearances(summarySenetencesincomplete,timeDataForDiagramm)
 
     if returnorder == "first_found_first":

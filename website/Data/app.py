@@ -29,6 +29,8 @@ def start_summarize():
                         exclude=parameters["exclude_params"]["params"],
                         hardexclude=parameters["exclude_params"]["hard_exclude"],
                         returnorder=parameters["return_order_of_summary"],
+                        minDf=int(parameters["tf_idf"]["min_df"]),
+                        maxDf=float(parameters["tf_idf"]["max_df"]),
                         dataset=parameters["dataset"]
                         )
    print(summary_as_json) # Zum debuggen
