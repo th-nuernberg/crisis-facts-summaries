@@ -352,7 +352,7 @@ html {
   /* Create Gridlayout*/
   #field_more_opt{
     display: grid;
-    grid-template-columns: 160px 160px 240px auto;
+    grid-template-columns: 120px 240px 200px auto;
     column-gap: 1em;
     min-width: 600px;
   }

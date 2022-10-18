@@ -246,9 +246,6 @@ function get_parameter_as_json(){
             }
     }
 
-    let checkmark_likes = document.getElementById("likes").checked;
-    let checkmark_follows = document.getElementById("follows").checked;
-
     let number_concepts = document.getElementById("numb_concepts").value
     let order_of_summary = document.getElementById("type_of_summary_return").value
 
@@ -267,7 +264,6 @@ function get_parameter_as_json(){
                                 "dataset":dataset,
                                 "atleast_one_checkmark_ticked":atleast_one,
                                 "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},
-                                "meta_daten":{"likes":checkmark_likes,"follow":checkmark_follows},
                                 "number_of_concepts": number_concepts,
                                 "return_order_of_summary":order_of_summary,
                                 "tf_idf":{"min_df":min_df, "max_df":max_df},    
