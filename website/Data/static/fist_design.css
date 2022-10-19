@@ -348,7 +348,7 @@ html {
     font-weight: bolder;
     grid-column: 2;
     text-align: left;
-    margin-top: 1em;
+    margin-top: 1.2em;
     margin-bottom: 12px;
   }
   #output_concepts{
