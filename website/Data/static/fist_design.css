@@ -123,6 +123,9 @@ html {
 #dropdown_function_type{
     margin-left: 1em;
 }
+#type_of_function{
+  max-width: 130px;
+}
 .dropbtn:hover{
     background-color: dodgerblue;
 }
