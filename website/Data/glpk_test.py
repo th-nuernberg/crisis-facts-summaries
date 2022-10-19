@@ -152,35 +152,36 @@ def extractBigramsPerDocument(sentenceDicts):
 #   - Termn Frequency: Gewichtung der Wörter anhand der Häufigkeit im Text
 #   - momentan Document Frequency: Gewichtung der Wörter anhand der Häufigkeit in Seiten (oder größerer Texteinheit -> Wort kam in 3 Texteinheiten vor)
 #   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet. 
-def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,preferencefactor =2):
-    print(minDf)
-    print(maxDf)
+def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,preferencefactor =2,schritt1=0):
     bigramDict = {}
+    amountDict = {1:0,2:0,3:0,4:0,5:0}
+    bigrammList = []
+
     if TF:    
         # Term Frequency
         for sentence in sentences:
             for bigram in sentence["bigrams"]:
                 bigramDict.setdefault(bigram, 0)
                 bigramDict[bigram] = bigramDict[bigram] + 1
+                bigrammList.append(bigram)
+                amountDict[bigram.count('___')+1] = amountDict[bigram.count('___')+1]+1
     else:            
         # Document Frequency
         for documentId in documentsDict:
             for bigram in documentsDict[documentId]:
                 bigramDict.setdefault(bigram, 0)
-                bigramDict[bigram] = bigramDict[bigram] + 1            
+                bigramDict[bigram] = bigramDict[bigram] + 1  
+                bigrammList.append(bigram) 
+                amountDict[bigram.count('___')+1] = amountDict[bigram.count('___')+1]+1         
     
     #Korrekturfaktor
-    amountDict = {1:0,2:0,3:0,4:0,5:0}
-    bigrammList = []
-    for sentence in sentences:
-        for bigram in sentence["bigrams"]:
-            bigrammList.append(bigram)
-    for  gramm in bigrammList:
-        amountDict[gramm.count('___')+1] = amountDict[gramm.count('___')+1]+1
     amountShortestGramms =0
     for i in range(1,5):
         if amountShortestGramms ==0:
             amountShortestGramms= amountDict[i]
+
+    schritt21 = time.time()
+    print("schritt2.1:"+str(schritt21-schritt1))        
 
     uniqueBigrams = list(set(bigrammList))
     #IDF Fakor und Vorbereitung für minDf und maxDf als Filter auch bei DF und TF
@@ -190,12 +191,19 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentCon
     uniquesentences = list(set(documentList))
     amountSen =len(uniquesentences)    
     testDict = {}
-    for gram in uniqueBigrams:
-        testDict.setdefault(gram,[])
-        for sentence in sentences:
-            if gram in sentence["bigrams"]:
-                testDict[gram].append(sentence['document_id'])
-        testDict[gram] = list(set(testDict[gram]))
+
+    #for gram in uniqueBigrams:
+        #testDict.setdefault(gram,[])
+        #for documentId in documentsDict:
+            #if gram in documentsDict[documentId]:
+                #testDict[gram].append(documentId)
+        #testDict[gram] = list(set(testDict[gram]))
+
+    for documentID in documentsDict:
+        for gramm in documentsDict[documentID]:
+            testDict.setdefault(gramm,[])
+            testDict[gramm].append(documentID)
+            testDict[gramm] = list(set(testDict[gramm]))
     
     #question Vorbereitung
     goodWords = question.lower().split()
@@ -203,6 +211,9 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentCon
     #exclude Vorbereitung
     badWords = exclude.lower().split()
     excludeFactor= -0.5
+
+    schritt22 = time.time()
+    print("schritt2.2:"+str(schritt22-schritt21))
     
     #Wert Berchnung
     if IDF:
@@ -234,6 +245,8 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentCon
             else:
                 bigramDict.pop(gramm, None)
 
+    schritt23 = time.time()
+    print("schritt2.3:"+str(schritt23-schritt22))
     # Top N Prozent auswählen 
     if percentConcepts != "100":
         amountConcepts = int(len(bigramDict) *(int(percentConcepts)/100))
@@ -375,14 +388,20 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,startDate=None,
     bigramsPerDocument = extractBigramsPerDocument(sentences)
     if hardexclude:
         exclude= ""
+
+    schritt1 = time.time()
+    print("Schritt1:"+str(schritt1-start))
     
-    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude)
+    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,schritt1)
+    schritt2 = time.time()
+    print("Schritt2:"+str(schritt2-schritt1))
     print(len(sentences))
     print(len(bigramWeights))
     occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
     weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
     sentenceList = [s['sentence_id'] for s in sentences]
-   
+    schritt3 = time.time()
+    print("Schritt3:"+str(schritt3-schritt2))
 
     summarySenetencesincomplete = calculateSummaryGreedy(sentenceList, sentences, weights, occ, maxLength)
     #summarySenetences = calculateSummary(sentences, weights, occ, maxLength)#summarySenetencesincomplete
@@ -393,7 +412,9 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,startDate=None,
     if returnorder == "last_found_first":
         summarySenetences["sentences"] =list(sorted(summarySenetences["timestamp_dict"],reverse=True).values())
 
-    print(summarySenetences)
+    schritt4 = time.time()
+    print("Schritt4:"+str(schritt4-schritt3))
+    #print(summarySenetences)
 
     end = time.time()
     print("Fertig!")
