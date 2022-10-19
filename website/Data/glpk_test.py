@@ -395,6 +395,20 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,startDate=None,
     bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,schritt1)
     schritt2 = time.time()
     print("Schritt2:"+str(schritt2-schritt1))
+
+    sentences_test =[]
+    miniumGrams = round(len(bigramWeights)/1500)
+    if miniumGrams ==0:
+        miniumGrams =1
+    for sentence in sentences:
+        for bigramm in sentence['bigrams']:
+            test = 0
+            if bigramm in bigramWeights:
+                test = test+1
+            if test > (len(sentence['bigrams'])*0.3) or test >= miniumGrams :
+                sentences_test.append(sentence)
+
+    sentences =sentences_test
     print(len(sentences))
     print(len(bigramWeights))
     occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
