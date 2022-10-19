@@ -135,6 +135,9 @@ html {
 #label_dataset{
     margin-left: 1em;
 }
+#dropdown_representation_type{
+  margin-left: 1em;
+}
 .dropbtn {
     background-color: steelblue;
     color: white;

@@ -224,6 +224,8 @@ function get_parameter_as_json(){
 
     let function_type = document.getElementById("type_of_function").value;
 
+    let represent_type = document.getElementById("type_of_representation").value
+
     // Check if Parameters have been entered
     let summary_question = document.getElementById("text_area").value;
     if(!summary_question){summary_question = ""}
@@ -262,6 +264,7 @@ function get_parameter_as_json(){
                                 "timespan" : {"from": {"date":date_from, "time":time_from}, "to": {"date": date_to, "time":time_to}},
                                 "function_type": function_type,
                                 "dataset":dataset,
+                                "represent_type": represent_type,
                                 "atleast_one_checkmark_ticked":atleast_one,
                                 "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},
                                 "number_of_concepts": number_concepts,
