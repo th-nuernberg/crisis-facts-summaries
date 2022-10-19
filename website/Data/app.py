@@ -31,6 +31,8 @@ def start_summarize():
                         returnorder=parameters["return_order_of_summary"],
                         minDf=int(parameters["tf_idf"]["min_df"]),
                         maxDf=float(parameters["tf_idf"]["max_df"]),
+                        startDate=parameters["timespan"]["from"]["date"]+"T"+parameters["timespan"]["from"]["time"],
+                        endDate=parameters["timespan"]["to"]["date"]+"T"+parameters["timespan"]["to"]["time"],
                         dataset=parameters["dataset"]
                         )
    print(summary_as_json) # Zum debuggen

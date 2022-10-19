@@ -219,8 +219,8 @@ function get_parameter_as_json(){
     let date_from = document.getElementById("date_from").value;
     let time_from = document.getElementById("time_from").value;
 
-    let date_to = document.getElementById("time_from").value;
-    let time_to = document.getElementById("time_from").value;
+    let date_to = document.getElementById("date_to").value;
+    let time_to = document.getElementById("time_to").value;
 
     let function_type = document.getElementById("type_of_function").value;
 

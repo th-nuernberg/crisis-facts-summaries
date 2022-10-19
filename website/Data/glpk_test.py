@@ -183,20 +183,19 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentCon
             amountShortestGramms= amountDict[i]
 
     uniqueBigrams = list(set(bigrammList))
-    #IDF Fakor
-    if IDF:
-        documentList =[]
+    #IDF Fakor und Vorbereitung für minDf und maxDf als Filter auch bei DF und TF
+    documentList =[]
+    for sentence in sentences:
+        documentList.append(sentence['document_id'])
+    uniquesentences = list(set(documentList))
+    amountSen =len(uniquesentences)    
+    testDict = {}
+    for gram in uniqueBigrams:
+        testDict.setdefault(gram,[])
         for sentence in sentences:
-            documentList.append(sentence['document_id'])
-        uniquesentences = list(set(documentList))
-        amountSen =len(uniquesentences)    
-        testDict = {}
-        for gram in uniqueBigrams:
-            testDict.setdefault(gram,[])
-            for sentence in sentences:
-                if gram in sentence["bigrams"]:
-                    testDict[gram].append(sentence['document_id'])
-            testDict[gram] = list(set(testDict[gram]))
+            if gram in sentence["bigrams"]:
+                testDict[gram].append(sentence['document_id'])
+        testDict[gram] = list(set(testDict[gram]))
     
     #question Vorbereitung
     goodWords = question.lower().split()
@@ -224,16 +223,18 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentCon
         for gramm in uniqueBigrams:
             grammLength =gramm.count('___')+1
             # Gewichtung * Vorzugsfaktor * Korrekturfaktor 
-            bigramDict[gramm] = bigramDict[gramm] * (grammLength*preferencefactor) * (amountShortestGramms/amountDict[grammLength]) 
-            for word in goodWords:
-                if (word+ "___") in gramm:
-                    bigramDict[gramm] = bigramDict[gramm] *questionFactor
-            for word in badWords:
-                if (word+ "___") in gramm:
-                    bigramDict[gramm] = bigramDict[gramm] *excludeFactor
+            if len(testDict[gramm])/amountSen <= maxDf and len(testDict[gramm]) >= minDf:
+                bigramDict[gramm] = bigramDict[gramm] * (grammLength*preferencefactor) * (amountShortestGramms/amountDict[grammLength]) 
+                for word in goodWords:
+                    if (word+ "___") in gramm:
+                        bigramDict[gramm] = bigramDict[gramm] *questionFactor
+                for word in badWords:
+                    if (word+ "___") in gramm:
+                        bigramDict[gramm] = bigramDict[gramm] *excludeFactor
+            else:
+                bigramDict.pop(gramm, None)
 
     # Top N Prozent auswählen 
-
     if percentConcepts != "100":
         amountConcepts = int(len(bigramDict) *(int(percentConcepts)/100))
         bigramDict =dict(sorted(bigramDict.items(), key=lambda item: item[1], reverse = True)[:amountConcepts])
@@ -270,12 +271,19 @@ def calculateSummary(saetze, weights, occurrences, totalLength):
             s[b] * occurrences[b][a] <= c[a]
     solve()
     print("###>Objective value: %f" % vobj())
-    summary = []
+    sentences = []
     for b in range(j):
         # print(s[b].primal)
         if s[b].primal == 1.0:
-            print(b)
-            summary.append(saetze[b])
+            sentences.append(saetze[b]["sentence"])
+
+    summary = { "sentences": [],
+            "timestamp": [],
+            "timestampsforDiagramm": [],
+            "occurrencesforDiagramm": [],
+            "timestamp_dict": {} }
+    print(sentences)
+    summary["sentences"] = sentences
     return summary
 
 def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTotalLength):
@@ -339,7 +347,7 @@ def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTot
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(one,two,three,four, dataset,percentConcepts,returnorder="",hardexclude=True,timespan=0,weigth=0,maxLength=600,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,toLemma=False,question="",exclude=""):
+def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,startDate=None,endDate=None,returnorder="",hardexclude=True,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,toLemma=False,question="",exclude=""):
     testDict = {"1":one, "2":two,"3":three,"4":four}
     print("Start!")
     start = time.time()
@@ -349,7 +357,18 @@ def gesamt(one,two,three,four, dataset,percentConcepts,returnorder="",hardexclud
     # Test für grafische Darstellung des Diagramms
     timeDataForDiagramm = sum_appearances(data)
 
-    sentences = extractSentencesNLTK(data,testDict,toLower,toLemma)
+    sentences_all = extractSentencesNLTK(data,testDict,toLower,toLemma)
+
+    sentences= []
+    if startDate != "T" and endDate != "T":
+        for sentence in sentences_all:
+            if sentence["timestamp"] > startDate and sentence["timestamp"] < endDate:
+                sentences.append(sentence)
+    else:
+        sentences = sentences_all
+
+                
+
     if exclude != "" and hardexclude:
         sentences = filter(sentences,exclude)
 
@@ -366,7 +385,7 @@ def gesamt(one,two,three,four, dataset,percentConcepts,returnorder="",hardexclud
    
 
     summarySenetencesincomplete = calculateSummaryGreedy(sentenceList, sentences, weights, occ, maxLength)
-    #summarySenetencesincomplete = calculateSummary(sentences, weights, occ, maxLength)
+    #summarySenetences = calculateSummary(sentences, weights, occ, maxLength)#summarySenetencesincomplete
     summarySenetences = add_sum_appearances(summarySenetencesincomplete,timeDataForDiagramm)
 
     if returnorder == "first_found_first":
