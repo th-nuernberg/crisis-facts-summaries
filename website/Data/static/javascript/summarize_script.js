@@ -342,8 +342,8 @@ function get_parameter_as_json(){
 }
 
 /**
- * When the "Analyse" button is pressed
- * Shows the loading circle animation
+ * When Called by the function make_a_summay()
+ * Show the loading circle animation
  * 
  * @note Also makes the Button "Analyse" unclickable and grayed out
  * 
@@ -363,7 +363,7 @@ function close_button_show_loader(analyse_button,loader){
 
 /**
  * When make_a_summary gets an answer, in json format, from the backend 
- * Hide the loading circle Animation when the summary is returned from the back-end
+ * Hide the loading circle Animation
  * 
  * @note Also makes the Button "Analyse" clickable and no longer grayed out
  * 
