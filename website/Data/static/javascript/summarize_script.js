@@ -1,4 +1,8 @@
-// Initial Assignement for Button analyse
+/***
+ * When entering/refreshing the Website
+ * Add Eventlistener to the Button "Analyse" ->  for Function "make_a_summary"
+ * Add Eventlistener to the Button "More Options" -> make it into a collapsible Dropdown menu
+ */
 function initAssignment(){
 
     let button = document.getElementById("calculate_button");
@@ -9,6 +13,7 @@ function initAssignment(){
 
     for (i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", function() {
+            // add the functinality to make the "more options" button into a dropdown menu
             this.classList.toggle("active");
             var content = document.getElementById("field_more_opt");
             if (content.style.maxHeight){
@@ -20,9 +25,22 @@ function initAssignment(){
 }
 
 
-//Create Options for Dataset dropdown menu
+/**
+ * When entering/refreshing the Website
+ * Make a Get Request to the Backend to the address "http://127.0.0.1:5000/datasets"
+ * 
+ * @note the return Value of this adress is a json format string and includes filenames
+ *       that are in the folder: "website/Data/Datensaetze/prepared" and end with json or jsonl
+ * 
+ * Add every name in the json string as option for the dropdown menu "Dataset to analyse"
+ * 
+ * @note for the function that gets the datasets see the file: "website/Data/app.py"
+ */
 async function getDataset(){
-let response_json;
+
+    let response_json;
+
+//#region Get request to the backend to the adress "http://127.0.0.1:5000/datasets"
 
     await fetch("http://127.0.0.1:5000/datasets", 
         {
@@ -38,6 +56,9 @@ let response_json;
             response_json = jsonResponse
         }).catch((err) => console.error(err));
 
+//#endregion
+
+        //Create the options for the dropdown menu
         let data_dropdown = document.getElementById("type_of_dataset");
         
         for(let i = 0; i < response_json["files"].length; i++){
@@ -49,7 +70,27 @@ let response_json;
         }    
 }
 
-
+/**
+ * When pressing the Button "Analyse"
+ * Remove previous html element with a summary if it exists
+ * 
+ * Call Function get_parameter_as_json(): to get all front_end Parameters 
+ * Check if atleast one Contextsize was selected
+ * @note if none were selected: cancel the function | else: proceed as usual
+ * 
+ * Call Function close_button_show_loader(): so no further request can be made till the first one is done
+ * 
+ * Make a Post Request to the Backend to the address "http://127.0.0.1:5000/summarize" with these parameters
+ * @note the return Value of this adress is a json format string and includes the summary and the timestamps
+ * 
+ * Create a new html element with the Parameters from the json file
+ * 
+ * Call Function open_button_hide_loader: Enable the Button "Analyse"
+ * 
+ * Call Function "Draw_Diagramm()"
+ * 
+ * @note for the function that summarizes see the file: "website/Data/app.py"
+ */
 async function make_a_summary(){
     //if there is already a summary, remove it 
     if(document.getElementById("new_summary") != null){
@@ -72,6 +113,8 @@ async function make_a_summary(){
     let loader = document.getElementById("load");
 
     close_button_show_loader(analyse_button,loader);
+
+//#region Post request to the backend to the adress "http://127.0.0.1:5000/summarize"
 
     //Send Data to Backend and await calculated results
     await fetch("http://127.0.0.1:5000/summarize", 
@@ -97,25 +140,28 @@ async function make_a_summary(){
             
             response_json = jsonResponse
         }).catch((err) => console.error(err));
+//#endregion
 
     //Hide loading circle; Enable Analyse Button when function is finished
     open_button_hide_loader(analyse_button,loader);
 
-    let main_Container = document.getElementById("Summary");
+//#region create the new html element with the sentences from the json as innerHTML and append to the Summary
 
+    let main_Container = document.getElementById("Summary");
     let new_summary = document.createElement("p");
     new_summary.setAttribute('id', "new_summary");
 
     new_summary.setAttribute('align', "left");
 
-    draw_diagramm(response_json);
-
     //Add each sentence of the summary with space between them
     for(let i = 0; i < response_json["sentences"].length; i++){
         new_summary.innerHTML += response_json["sentences"][i] + " ";
     }
-
     main_Container.append(new_summary);
+
+//#endregion
+
+    draw_diagramm(response_json);
 }
 
 function draw_diagramm(response_json){
@@ -208,13 +254,23 @@ function draw_diagramm(response_json){
     },)
 }
 
-function get_parameter_as_json(){
 
+/**
+ * When called by the function make_a_summary()
+ * gets the values of the front end Parameter and makes a json string
+ * 
+ * @note also adds a paramter in the json file if atleast one of the Checkboxes for 
+ * Kontextsize was checked
+ * 
+ * @returns all parameters from the front End GUI as a json formated string
+ */
+function get_parameter_as_json(){
+    
+//#region Get Parameters outside of the more options field
     let dataset = document.getElementById("type_of_dataset").value
     if(!dataset){dataset = "empty"}
-
+    
     let max_length = document.getElementById("max_length").value;
-    if(!max_length){max_length = 600}
 
     let date_from = document.getElementById("date_from").value;
     let time_from = document.getElementById("time_from").value;
@@ -225,14 +281,16 @@ function get_parameter_as_json(){
     let function_type = document.getElementById("type_of_function").value;
 
     let represent_type = document.getElementById("type_of_representation").value
+//#endregion
 
-    // Check if Parameters have been entered
+    // Check if Keywords have been entered in search or exclude
     let summary_question = document.getElementById("text_area").value;
     if(!summary_question){summary_question = ""}
 
     let exclude_params = document.getElementById("text_area_exclude").value;
     if(!exclude_params){exclude_params = ""}
 
+//#region Get Checkbox Params and check if atleast one was clicked
     //Get Value for checkmarks Kontext
     let kontext_mark_one = document.getElementById("kontext_eins").checked;
     let kontext_mark_two = document.getElementById("kontext_zwei").checked;
@@ -247,7 +305,10 @@ function get_parameter_as_json(){
             atleast_one = true;
             }
     }
+//#endregion
 
+
+//#region Get Parameters in the more options field
     let number_concepts = document.getElementById("numb_concepts").value
     let order_of_summary = document.getElementById("type_of_summary_return").value
 
@@ -258,6 +319,7 @@ function get_parameter_as_json(){
     let weight_exclude_param = document.getElementById("weight_exclude_param").value
 
     let hard_exclude = document.getElementById("hard_exclude").checked
+//#endregion
 
     // Make a json with all parameters, to be send to the backend
     let variables_for_summary = {
@@ -280,12 +342,14 @@ function get_parameter_as_json(){
 }
 
 /**
- * Shows the loading circle animation when the "Analyse" button is pressed
+ * When the "Analyse" button is pressed
+ * Shows the loading circle animation
+ * 
+ * @note Also makes the Button "Analyse" unclickable and grayed out
  * 
  * @param {analyse_button} analyse_button is the Button "Analyse"
  * @param {loader} loader is the loading circle including the animation in css
  * 
- * @note Also makes the Button "Analyse" unclickable and grayed out
  */
 function close_button_show_loader(analyse_button,loader){
     analyse_button.style.opacity = 0.5
@@ -298,12 +362,14 @@ function close_button_show_loader(analyse_button,loader){
 }
 
 /**
- * Hides the loading circle Animation when the summary is returned from the back-end
- * 
- * @param {analyse_button} analyse_button is the Button "Analyse"
- * @param {loader} loader is the loading circle including the animation in css
+ * When make_a_summary gets an answer, in json format, from the backend 
+ * Hide the loading circle Animation when the summary is returned from the back-end
  * 
  * @note Also makes the Button "Analyse" clickable and no longer grayed out
+ * 
+ * @param {analyse_button} analyse_button is the Button "Analyse" in the front end GUI
+ * @param {loader} loader is the loading circle including the animation in css
+ * 
  */
 function open_button_hide_loader(analyse_button,loader){
     loader.style.visibility = "hidden"
