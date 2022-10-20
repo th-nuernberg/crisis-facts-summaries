@@ -396,10 +396,15 @@ html {
     text-align: left;
     font-weight: bolder;
   }
-
   #min_df{
     float: left;
   }
   #max_df{
+    float: left;
+  }
+  #weight_search_param{
+    float: left;
+  }
+  #weight_exclude_param{
     float: left;
   }

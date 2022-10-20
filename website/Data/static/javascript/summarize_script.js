@@ -254,6 +254,9 @@ function get_parameter_as_json(){
     let min_df = document.getElementById("min_df").value
     let max_df = document.getElementById("max_df").value
 
+    let weight_search_param = document.getElementById("weight_search_param").value
+    let weight_exclude_param = document.getElementById("weight_exclude_param").value
+
     let hard_exclude = document.getElementById("hard_exclude").checked
 
     // Make a json with all parameters, to be send to the backend
@@ -269,7 +272,8 @@ function get_parameter_as_json(){
                                 "kontext_checkmarks": {"eins":kontext_mark_one,"zwei":kontext_mark_two,"drei":kontext_mark_three,"vier":kontext_mark_four},
                                 "number_of_concepts": number_concepts,
                                 "return_order_of_summary":order_of_summary,
-                                "tf_idf":{"min_df":min_df, "max_df":max_df},    
+                                "tf_idf":{"min_df":min_df, "max_df":max_df},
+                                "weight_of_params":{"include": weight_search_param, "exclude": weight_exclude_param, },    
                             };
     //alert(JSON.stringify(variables_for_summary))
     return variables_for_summary;
