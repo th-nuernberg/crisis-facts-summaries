@@ -80,7 +80,7 @@ async function getDataset(){
  * 
  * Call Function close_button_show_loader(): so no further request can be made till the first one is done
  * 
- * Make a Post Request to the Backend to the address "http://127.0.0.1:5000/summarize" with these parameters
+ * Make a Post Request to the Backend to the address "http://127.0.0.1:5000/summarize" with front_end parameters
  * @note the return Value of this adress is a json format string and includes the summary and the timestamps
  * 
  * Create a new html element with the Parameters from the json file
@@ -262,7 +262,7 @@ function draw_diagramm(response_json){
  * @note also adds a paramter in the json file if atleast one of the Checkboxes for 
  * Kontextsize was checked
  * 
- * @returns all parameters from the front End GUI as a json formated string
+ * @return all parameters from the front End GUI as a json formated string
  */
 function get_parameter_as_json(){
     
@@ -337,7 +337,7 @@ function get_parameter_as_json(){
                                 "tf_idf":{"min_df":min_df, "max_df":max_df},
                                 "weight_of_params":{"include": weight_search_param, "exclude": weight_exclude_param, },    
                             };
-    //alert(JSON.stringify(variables_for_summary))
+    //alert(JSON.stringify(variables_for_summary))  //for debugging
     return variables_for_summary;
 }
 
@@ -362,7 +362,7 @@ function close_button_show_loader(analyse_button,loader){
 }
 
 /**
- * When make_a_summary gets an answer, in json format, from the backend 
+ * When Called by the function make_a_summay() when it gets a answer from the back_end
  * Hide the loading circle Animation
  * 
  * @note Also makes the Button "Analyse" clickable and no longer grayed out

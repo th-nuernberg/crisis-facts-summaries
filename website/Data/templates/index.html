@@ -82,41 +82,41 @@
         <div class="param_options">
             <div class="content" id="field_more_opt">
                 <div id="grid_colm_1">
-                    <p id="label_checkbox">Kontextgröße:</p>
-                    <label class="container_check" id="con_1">Eins
+                    <p id="label_checkbox">Contextsize:</p>
+                    <label class="container_check" id="con_1">One
                         <input type="checkbox" id="kontext_eins">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container_check" id="con_2">Zwei
+                    <label class="container_check" id="con_2">Two
                         <input type="checkbox"checked="checked" id="kontext_zwei">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container_check" id="con_3">Drei
+                    <label class="container_check" id="con_3">Three
                         <input type="checkbox" id="kontext_drei">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container_check" id="con_4">Vier
+                    <label class="container_check" id="con_4">Four
                         <input type="checkbox" id="kontext_vier">
                         <span class="checkmark"></span>
                     </label>
                 </div>
                 
                 <div id="grid_colm_2">
-                    <p id="label_checkbox_2">Anzahl der zu berücksichtigen Konzepte:</p>
+                    <p id="label_checkbox_2">Number of concepts to consider:</p>
                     <input class="slider" type="range" value="100" min="1" max="100" step="1" id="numb_concepts" oninput="this.nextElementSibling.value = this.value">
                         <input class="text" id="numb_ctxt_txt" value="100"  oninput="this.previousElementSibling.value = this.value" >
                         <output id="output_concepts">%</output><br>
-                    <p id="label_checkbox_3_2">Ausgabe Reihenfolge der Konzepte in der Zusammenfassung:</p>
+                    <p id="label_checkbox_3_2">Return order of the concepts in the summary:</p>
                     <select class="dropbtn" name="return_type" id="type_of_summary_return">
-                        <option class="dropbtn_opt" value="oldest_found_first" selected="selected">Ältestes gefundenes zuerst</option>
-                        <option class="dropbtn_opt" value="newest_found_first">Neuestes gefundenes zuerst</option>
-                        <option class="dropbtn_opt" value="best_found_first">Am best bewerteste zuerst</option>
+                        <option class="dropbtn_opt" value="oldest_found_first" selected="selected">Oldest found first</option>
+                        <option class="dropbtn_opt" value="newest_found_first">Newest found first</option>
+                        <option class="dropbtn_opt" value="best_found_first">Best rated first</option>
                     </select>
                 </div>
                 
                 <div id="grid_colm_3">
                     <div>
-                        <p id="label_checkbox_2">Optionen für TF-IDF:</p>
+                        <p id="label_checkbox_2">Options for TF-IDF:</p>
                         <p id="label_checkbox_4_2">Min DF:</p>
                         <input class="slider" type="range" value="5" min="1" max="10" step="1" id="min_df" oninput="this.nextElementSibling.value = this.value">
                         <output id="output_min_df">5</output><br>
@@ -130,13 +130,13 @@
 
                 <div id="grid_colm_4">
                     <div>
-                        <p id="label_checkbox_2">Gewichtung der Keywords:</p>
-                        <p id="label_checkbox_4_2">Positiv Gewichtung der Search Keywords:</p>
+                        <p id="label_checkbox_2">Weight of the Keywords:</p>
+                        <p id="label_checkbox_4_2">Positiv weight of the Search Keywords:</p>
                         <input class="slider" type="range" value="3" min="2" max="10" step="1" id="weight_search_param" oninput="this.nextElementSibling.value = this.value">
                         <output id="output_min_df">3</output><br>
                     </div>
                     <div>
-                        <p id="label_checkbox_4_2">Negativ Gewichtung der Exclude Keywords:</p>
+                        <p id="label_checkbox_4_2">Negativ weight of the Exclude Keywords:</p>
                         <input class="slider" type="range" value="-0.5" min="-0.5" max="0.9" step="0.1" id="weight_exclude_param" oninput="this.nextElementSibling.value = this.value">
                         <output id="output_min_df">-0.5</output><br>
                     </div>

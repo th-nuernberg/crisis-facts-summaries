@@ -360,7 +360,7 @@ html {
     display: grid;
     grid-template-columns: 120px 240px 200px auto;
     column-gap: 1em;
-    min-width: 600px;
+    min-width: 780px;
   }
   #grid_colm_1{
     grid-column: 1;
@@ -376,6 +376,7 @@ html {
   }
   #type_of_summary_return{
     max-width: 240px;
+    float: left;
   }
   #numb_concepts{
     max-width: 120px;
