@@ -289,6 +289,13 @@ html {
   #check_hard_exclude_button{
     background-color: lightgray;
   }
+  #stopwordlist_div{
+    margin-top: 1em;
+  }
+  #box_stopwords{
+    font-size: 18px;
+    font-weight: bold;
+  }
   
   /* On mouse-over, add a grey background color */
   .container_check:hover input ~ .checkmark {

@@ -290,7 +290,7 @@ function get_parameter_as_json(){
     let exclude_params = document.getElementById("text_area_exclude").value;
     if(!exclude_params){exclude_params = ""}
 
-//#region Get Checkbox Params and check if atleast one was clicked
+//#region Get Checkbox Params in more options and check if atleast one was clicked
     //Get Value for checkmarks Kontext
     let kontext_mark_one = document.getElementById("kontext_eins").checked;
     let kontext_mark_two = document.getElementById("kontext_zwei").checked;
@@ -315,6 +315,8 @@ function get_parameter_as_json(){
     let min_df = document.getElementById("min_df").value
     let max_df = document.getElementById("max_df").value
 
+    let use_stopword_list = document.getElementById("stopword_checkbox").checked
+
     let weight_search_param = document.getElementById("weight_search_param").value
     let weight_exclude_param = document.getElementById("weight_exclude_param").value
 
@@ -335,6 +337,7 @@ function get_parameter_as_json(){
                                 "number_of_concepts": number_concepts,
                                 "return_order_of_summary":order_of_summary,
                                 "tf_idf":{"min_df":min_df, "max_df":max_df},
+                                "use_stopwordlist":use_stopword_list,
                                 "weight_of_params":{"include": weight_search_param, "exclude": weight_exclude_param, },    
                             };
     //alert(JSON.stringify(variables_for_summary))  //for debugging
