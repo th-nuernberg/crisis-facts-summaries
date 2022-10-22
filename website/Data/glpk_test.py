@@ -9,7 +9,6 @@ from pymprog import *
 import re
 from nltk import ngrams
 import time
-import textacy as tprep
 import spacy
 
 nlp = spacy.load('en_core_web_sm')
@@ -67,13 +66,6 @@ def clean(text):
     # sequences of white spaces
     text = re.sub(r'\s+', ' ', text)
     return text.strip()
-
-def normalize(text):
-    text = tprep.normalize.hyphenated_words(text)
-    text = tprep.normalize.quotation_marks(text)
-    text = tprep.normalize.unicode(text)
-    text = tprep.remove.accents(text)
-    return text
 
 # Erzeugt n-gramme aus dem input Text
 def ngrame(originalText_,testDict,toLower,toLemma):

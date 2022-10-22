@@ -18,8 +18,6 @@ RUN pip install flask
 RUN pip install flask-cors
 RUN pip install pymprog
 RUN pip install nltk
-RUN pip install textacy
-RUN pip install pandas
 RUN pip install -U scikit-learn
 RUN pip install -U spacy
 RUN python -m spacy download en_core_web_sm
