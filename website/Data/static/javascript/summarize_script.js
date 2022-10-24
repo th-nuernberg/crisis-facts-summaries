@@ -176,10 +176,7 @@ function draw_diagramm(response_json){
     // Häufigkeit aller Daten wird zu einem Datenobjekt verarbeitet
     for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
         labels.push(response_json["timestampsforDiagramm"][i]);
-    }
-
-    for(let i = 0; i < response_json["occurrencesforDiagramm"].length; i++){
-        values.push(response_json["occurrencesforDiagramm"][i]);
+        values.push(0);
     }
 
     for(let i = 0; i < labels.length; i++){
