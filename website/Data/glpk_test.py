@@ -284,18 +284,13 @@ def calculateSummary(saetze, weights, occurrences, totalLength):
     solve()
     print("###>Objective value: %f" % vobj())
     summary = { "sentences": [],
-            "timestamp": [],
             "timestampsforDiagramm": [],
-            "occurrencesforDiagramm": [],
             "timestamp_dict": {} }
     for b in range(j):
         # print(s[b].primal)
         if s[b].primal == 1.0:
             summary["sentences"].append(saetze[b]["sentence"])
-            fastformatiert = saetze[b]["timestamp"].replace('T', ' ')
-            formatiert = fastformatiert.replace('.0Z', '')            
-            summary["timestamp"].append(saetze[b]["timestamp"])
-            summary["timestamp_dict"][formatiert] = saetze[b]["sentence"]
+            summary["timestamp_dict"][saetze[b]["timestamp"]] = saetze[b]["sentence"]
    
     return summary
 
@@ -339,9 +334,7 @@ def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTot
             continueSearching = False # no new sentence that fit the length was found, end the search
 
     summary = { "sentences": [],
-            "timestamp": [],
             "timestampsforDiagramm": [],
-            "occurrencesforDiagramm": [],
             "timestamp_dict": {} }
     
     for i in sentenceIndices:
@@ -349,10 +342,7 @@ def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTot
             if(s["sentence_id"] == sentenceList[i]):
                 # timestamp wird auf das passende Format gebracht
                 summary["sentences"].append(s["sentence"])
-                fastformatiert = s["timestamp"].replace('T', ' ')
-                formatiert = fastformatiert.replace('.0Z', '')
-                summary["timestamp"].append(formatiert)
-                summary["timestamp_dict"][formatiert] = s["sentence"]
+                summary["timestamp_dict"][s["timestamp"]] = s["sentence"]
     
     return summary
 
