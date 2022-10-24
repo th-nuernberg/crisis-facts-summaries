@@ -294,7 +294,7 @@ def calculateSummary(saetze, weights, occurrences, totalLength):
             summary["sentences"].append(saetze[b]["sentence"])
             fastformatiert = saetze[b]["timestamp"].replace('T', ' ')
             formatiert = fastformatiert.replace('.0Z', '')            
-            summary["timestamp"].append(formatiert)
+            summary["timestamp"].append(saetze[b]["timestamp"])
             summary["timestamp_dict"][formatiert] = saetze[b]["sentence"]
    
     return summary
