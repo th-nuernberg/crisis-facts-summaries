@@ -40,7 +40,7 @@ def start_summarize():
                         endDate=parameters["timespan"]["to"]["date"]+"T"+parameters["timespan"]["to"]["time"],
                         dataset=parameters["dataset"]
                         )
-   print(summary_as_json) # Zum debuggen
+   print(summary_as_json)
    return summary_as_json
 
 

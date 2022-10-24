@@ -164,19 +164,62 @@ async function make_a_summary(){
     draw_diagramm(response_json);
 }
 
+/**
+ * After execution of function make_a_summary()
+ * Draws a diagramm wich shows on wich timestamps how many information nuggets were extracted
+ * 
+ * Extracts all timestamps from the Json string
+ * Checks if timestamp occurs more than once
+ * @note if timestamp occurs more than once the value entry will be changed
+ * 
+ * All labels and values are saved in a data array
+ * 
+ * The same procedure follows for the timestamps of the selected sentences 
+ * 
+ * After all timetstamps are saved in data arrays the chart object will be created
+ * 
+ * In this object, two datasets will be configured. One for all timestamps and one for the timestamps of the selected sentences
+ * 
+ * Two add-ons / plugins are implemented 
+ * 
+ * First the time-adapter (to display the time on the timeline correctly)
+ * 
+ * Last the zoom-plugin (so you can zoom in the diagramm)
+ */
 function draw_diagramm(response_json){
-    // Diagramm
+    
+//#region Initialize all variables
     labels = [];
     values = [];
     data = [];
     labelsZusammenfassung = [];
     valuesZusammenfassung = [];
     dataZusammenfassung = [];
+//#endregion
 
-    // Häufigkeit aller Daten wird zu einem Datenobjekt verarbeitet
+//# region all timestamps are packed into data[]
     for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
-        labels.push(response_json["timestampsforDiagramm"][i]);
-        values.push(0);
+        timestamp_not_formatted = response_json["timestampsforDiagramm"][i];
+        timestamp = timestamp_not_formatted.slice(0,10); // timestamps are formatted into the right format
+        wasset = false;
+        
+        if(labels.length == 0){}
+        else
+        {
+            for(let j in labels)
+            {
+                if(labels[j] == timestamp){
+                    values[j] = values[j] + 1;
+                    wasset = true;
+                }
+            }
+        }
+
+        if(wasset == false)
+        {
+            labels.push(timestamp);
+            values.push(1);
+        }
     }
 
     for(let i = 0; i < labels.length; i++){
@@ -184,14 +227,29 @@ function draw_diagramm(response_json){
         const points = {x:labels[i],y:values[i]}
         data.push(points);
     }
+//#endregion
 
-    // Formatierung der für die Zusammenfassung genutzten Daten
-    for(let i = 0; i < response_json["timestamp"].length; i++){
-        if(labelsZusammenfassung.includes(response_json["timestamp"][i])){
-            valuesZusammenfassung[i] = valuesZusammenfassung[i] + 1;
+//#region only the timestamps wich belong to the selected sentences are packed into an own dataZusammenfassung[] array
+    for(let i in response_json["timestamp_dict"]){
+        timestamp_not_formatted = i;
+        timestamp = timestamp_not_formatted.slice(0,10);// timestamps are formatted into the right format
+        wasset = false;
+        
+        if(labelsZusammenfassung.length == 0){}
+        else
+        {
+            for(let j in labelsZusammenfassung)
+            {
+                if(labelsZusammenfassung[j] == timestamp){
+                    valuesZusammenfassung[j] = valuesZusammenfassung[j] + 1;
+                    wasset = true;
+                }
+            }
         }
-        else{
-            labelsZusammenfassung.push(response_json["timestamp"][i]);
+
+        if(wasset == false)
+        {
+            labelsZusammenfassung.push(timestamp);
             valuesZusammenfassung.push(1);
         }
     }
@@ -201,24 +259,23 @@ function draw_diagramm(response_json){
         const points = {x:labelsZusammenfassung[i],y:valuesZusammenfassung[i]}
         dataZusammenfassung.push(points);
     }
+//#endregion
 
+//#region creation of a new chart
     var mychartObject = document.getElementById('myChart')
-
-
     var chart = new Chart(mychartObject, {
-        type: 'bar',
         data: {
             datasets: [{
+                type: 'bubble',
                 label: "Summary Timestamps",
                 backgroundColor: 'rgba(255,0,0,1)',
                 borderColor: 'rgba(255,0,0,1)',
-                barThickness: 1,
                 data: dataZusammenfassung
             }, {
+                type: 'line',
                 label: "All Timestamps",
                 backgroundColor: 'rgba(65,105,225,1)',
                 borderColor: 'rgba(65,105,225,1)',
-                barThickness: 1,
                 data: data
             }],
         },
@@ -249,6 +306,7 @@ function draw_diagramm(response_json){
             }
         }       
     },)
+//#endregion
 }
 
 

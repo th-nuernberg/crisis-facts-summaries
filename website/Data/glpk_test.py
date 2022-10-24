@@ -43,8 +43,8 @@ def add_sum_appearances(summarySenetences,timeDataForDiagramm):
     for s in timeDataForDiagramm:
         summarySenetences["timestampsforDiagramm"].append(s)
 
-    print("Alles angehängt:")
-    print(summarySenetences)
+    # print("Alles angehängt:")
+    # print(summarySenetences)
     return summarySenetences
 
 def clean(text):
@@ -282,7 +282,7 @@ def calculateSummary(saetze, weights, occurrences, totalLength):
         for b in range(j):
             s[b] * occurrences[b][a] <= c[a]
     solve()
-    print("###>Objective value: %f" % vobj())
+    # print("###>Objective value: %f" % vobj())
     summary = { "sentences": [],
             "timestampsforDiagramm": [],
             "timestamp_dict": {} }
