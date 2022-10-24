@@ -29,25 +29,22 @@ def readInput(pathToFile):
 
 # Es wird gezählt, wie viele Ereignisse zu einem bestimmten Zeitpunkt erfasst wurden. Diese Daten werden grafisch auf der Webseite angezeigt
 def sum_appearances(rohdaten):
-    listofDates = {}
+    listofDates = []
     for satz in rohdaten:
         time = satz["timestamp"]
-        if time in listofDates.keys():
-            listofDates[time] = listofDates[time] + 1
-        else:
-            listofDates[time] = 1
+        listofDates.append(time)
 
-    #print("Alle Zeitpunkte:")
-    #print(listofDates)
+    # print("Alle Zeitpunkte:")
+    # print(listofDates)
+    # Format der Zeitpunkte: 2012-03-04T08:55:20.000000Z
     return listofDates
 
 def add_sum_appearances(summarySenetences,timeDataForDiagramm):
-    keys = timeDataForDiagramm.keys()
-    for s in keys:
-        fastformatiert = s.replace('T', ' ')
-        formatiert = fastformatiert.replace('.0Z', '')
-        summarySenetences["timestampsforDiagramm"].append(formatiert)
-        summarySenetences["occurrencesforDiagramm"].append(timeDataForDiagramm[s])
+    for s in timeDataForDiagramm:
+        summarySenetences["timestampsforDiagramm"].append(s)
+
+    print("Alles angehängt:")
+    print(summarySenetences)
     return summarySenetences
 
 def clean(text):
