@@ -286,19 +286,20 @@ def calculateSummary(saetze, weights, occurrences, totalLength):
             s[b] * occurrences[b][a] <= c[a]
     solve()
     print("###>Objective value: %f" % vobj())
-    sentences = []
-    for b in range(j):
-        # print(s[b].primal)
-        if s[b].primal == 1.0:
-            sentences.append(saetze[b]["sentence"])
-
     summary = { "sentences": [],
             "timestamp": [],
             "timestampsforDiagramm": [],
             "occurrencesforDiagramm": [],
             "timestamp_dict": {} }
-
-    summary["sentences"] = sentences
+    for b in range(j):
+        # print(s[b].primal)
+        if s[b].primal == 1.0:
+            summary["sentences"].append(saetze[b]["sentence"])
+            fastformatiert = saetze[b]["timestamp"].replace('T', ' ')
+            formatiert = fastformatiert.replace('.0Z', '')            
+            summary["timestamp"].append(formatiert)
+            summary["timestamp_dict"][formatiert] = saetze[b]["sentence"]
+   
     return summary
 
 def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTotalLength):
@@ -415,9 +416,15 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
     summarySenetences = add_sum_appearances(summarySenetencesIncomplete,timeDataForDiagramm)
 
     if returnorder == "oldest_found_first":
-        summarySenetences["sentences"] =list(summarySenetences["timestamp_dict"].values())
+        summarySenetences["sentences"] =[]
+        timestamps = sorted(summarySenetences["timestamp_dict"])
+        for timestamp in timestamps:
+            summarySenetences["sentences"].append(summarySenetences["timestamp_dict"][timestamp])
     if returnorder == "newest_found_first":
-        summarySenetences["sentences"] =list(sorted(summarySenetences["timestamp_dict"],reverse=True).values())
+        summarySenetences["sentences"] = []
+        timestamps = sorted(summarySenetences["timestamp_dict"],reverse=True)
+        for timestamp in timestamps:
+            summarySenetences["sentences"].append(summarySenetences["timestamp_dict"][timestamp])
 
     schritt4 = time.time()
     print("Schritt4:"+str(schritt4-schritt3))
