@@ -80,6 +80,8 @@ async function getDataset(){
  * 
  * Call Function close_button_show_loader(): so no further request can be made till the first one is done
  * 
+ * Make a abort Controller for a timeout function with variable timer
+ * 
  * Make a Post Request to the Backend to the address "http://127.0.0.1:5000/summarize" with front_end parameters
  * @note the return Value of this adress is a json format string and includes the summary and the timestamps
  * 
@@ -114,11 +116,16 @@ async function make_a_summary(){
 
     close_button_show_loader(analyse_button,loader);
 
+    //make a controller for a timeout if Backend takes to long
+    const controller = new AbortController();
+    const timeoutID = setTimeout(() => controller.abort(), variables_for_summary["time_till_timeout_in_ms"])
+
 //#region Post request to the backend to the adress "http://127.0.0.1:5000/summarize"
 
     //Send Data to Backend and await calculated results
     await fetch("http://127.0.0.1:5000/summarize", 
         {
+            signal: controller.signal,
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -365,18 +372,21 @@ function get_parameter_as_json(){
 
 
 //#region Get Parameters in the more options field
-    let number_concepts = document.getElementById("numb_concepts").value
-    let order_of_summary = document.getElementById("type_of_summary_return").value
+    let number_concepts = document.getElementById("numb_concepts").value;
+    let order_of_summary = document.getElementById("type_of_summary_return").value;
 
-    let min_df = document.getElementById("min_df").value
-    let max_df = document.getElementById("max_df").value
+    let min_df = document.getElementById("min_df").value;
+    let max_df = document.getElementById("max_df").value;
 
-    let use_stopword_list = document.getElementById("stopword_checkbox").checked
+    let use_stopword_list = document.getElementById("stopword_checkbox").checked;
 
-    let weight_search_param = document.getElementById("weight_search_param").value
-    let weight_exclude_param = document.getElementById("weight_exclude_param").value
+    let weight_search_param = document.getElementById("weight_search_param").value;
+    let weight_exclude_param = document.getElementById("weight_exclude_param").value;
 
-    let hard_exclude = document.getElementById("hard_exclude").checked
+    let hard_exclude = document.getElementById("hard_exclude").checked;
+
+    let time_till_timeout_in_ms = document.getElementById("time_till_timeout").value;
+    time_till_timeout_in_ms = time_till_timeout_in_ms*60*1000;
 //#endregion
 
     // Make a json with all parameters, to be send to the backend
@@ -394,7 +404,8 @@ function get_parameter_as_json(){
                                 "return_order_of_summary":order_of_summary,
                                 "tf_idf":{"min_df":min_df, "max_df":max_df},
                                 "use_stopwordlist":use_stopword_list,
-                                "weight_of_params":{"include": weight_search_param, "exclude": weight_exclude_param, },    
+                                "weight_of_params":{"include": weight_search_param, "exclude": weight_exclude_param, },
+                                "time_till_timeout_in_ms": time_till_timeout_in_ms,    
                             };
     //alert(JSON.stringify(variables_for_summary))  //for debugging
     return variables_for_summary;

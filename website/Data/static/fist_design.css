@@ -77,6 +77,7 @@ html {
   }
 .slider{
     cursor: pointer;
+    float: left;
 }
 .param_label{
     font-weight: bolder;
@@ -361,6 +362,15 @@ html {
   #output_concepts{
     float: left;
     margin-left: 10px;
+    margin-top: 2px;
+  }
+  #output_minutes{
+    float: left;
+    margin-left: 10px;
+  }
+  #output_size_summary{
+    float: left;
+    margin-left: 10px;
   }
   /* Create Gridlayout*/
   #field_more_opt{
@@ -403,16 +413,4 @@ html {
     margin-bottom: 0%;
     text-align: left;
     font-weight: bolder;
-  }
-  #min_df{
-    float: left;
-  }
-  #max_df{
-    float: left;
-  }
-  #weight_search_param{
-    float: left;
-  }
-  #weight_exclude_param{
-    float: left;
   }
