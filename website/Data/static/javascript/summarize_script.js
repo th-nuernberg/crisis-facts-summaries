@@ -197,7 +197,7 @@ function draw_diagramm(response_json){
     dataZusammenfassung = [];
 //#endregion
 
-//# region all timestamps are packed into data[]
+//#region all timestamps are packed into data[]
     for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
         timestamp_not_formatted = response_json["timestampsforDiagramm"][i];
         timestamp = timestamp_not_formatted.slice(0,10); // timestamps are formatted into the right format
@@ -307,6 +307,7 @@ function draw_diagramm(response_json){
         }       
     },)
 //#endregion
+
 }
 
 
