@@ -144,7 +144,7 @@ def extractBigramsPerDocument(sentenceDicts):
 #   - Termn Frequency: Gewichtung der Wörter anhand der Häufigkeit im Text
 #   - momentan Document Frequency: Gewichtung der Wörter anhand der Häufigkeit in Seiten (oder größerer Texteinheit -> Wort kam in 3 Texteinheiten vor)
 #   - Inverse Document Frequency: Auch Häufigkeit, aber sehr häufig vorkommende Wörter werden weniger gewichtet und sehr selten vorkommende Wörter schwerer gewichtet. 
-def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,preferencefactor =2):
+def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,questionFactor,excludeFactor,preferencefactor =2):
     bigramDict = {}
     amountDict = {1:0,2:0,3:0,4:0,5:0}
     bigrammList = []
@@ -196,10 +196,10 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentCon
     
     #question Vorbereitung
     goodWords = question.lower().split()
-    questionFactor =5
+    #questionFactor =5
     #exclude Vorbereitung
     badWords = exclude.lower().split()
-    excludeFactor= -0.5
+    #excludeFactor= -0.5
     
     reducedBigramDict ={}
     #Wert Berchnung
@@ -380,7 +380,7 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
     schritt1 = time.time()
     print("Schritt1:"+str(schritt1-start))
     
-    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude)
+    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,questionFactor,excludeFactor)
 
     schritt2 = time.time()
     print("Schritt2:"+str(schritt2-schritt1))
