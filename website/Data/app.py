@@ -38,6 +38,7 @@ def start_summarize():
                         maxDf=float(parameters["tf_idf"]["max_df"]),
                         startDate=parameters["timespan"]["from"]["date"]+"T"+parameters["timespan"]["from"]["time"],
                         endDate=parameters["timespan"]["to"]["date"]+"T"+parameters["timespan"]["to"]["time"],
+                        Timeout =parameters["time_till_timeout_in_ms"] ,
                         dataset=parameters["dataset"]
                         )
    print(summary_as_json)

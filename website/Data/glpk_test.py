@@ -350,12 +350,13 @@ def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTot
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,excludeFactor,calcMethode,startDate=None,endDate=None,returnorder="",hardexclude=True,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,toLemma=False,question="",exclude=""):
+def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,excludeFactor,calcMethode,Timeout,startDate=None,endDate=None,returnorder="",hardexclude=True,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,toLemma=False,question="",exclude=""):
     testDict = {"1":one, "2":two,"3":three,"4":four}
     print("Start!")
     start = time.time()
     pathToFile = "/usr/src/app/Datensaetze/prepared/"+dataset
     data = readInput(pathToFile)
+    Timeout = Timeout/1000
 
     # Test für grafische Darstellung des Diagramms
     timeDataForDiagramm = sum_appearances(data)
@@ -378,12 +379,18 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
         exclude= ""
 
     schritt1 = time.time()
-    print("Schritt1:"+str(schritt1-start))
+    if schritt1-start >Timeout:
+        return { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {}}
+    else:
+        print("Schritt1:"+str(schritt1-start))
     
     bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,questionFactor,excludeFactor)
 
     schritt2 = time.time()
-    print("Schritt2:"+str(schritt2-schritt1))
+    if schritt2-start >Timeout:
+        return { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {}}
+    else:
+        print("Schritt2:"+str(schritt2-schritt1))
 
     sentences = filterSentences(sentences, bigramWeights)
 
@@ -393,8 +400,12 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
     occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
     weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
     sentenceList = [s['sentence_id'] for s in sentences]
+
     schritt3 = time.time()
-    print("Schritt3:"+str(schritt3-schritt2))
+    if schritt3-start >Timeout:
+        return { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {}}
+    else:
+        print("Schritt3:"+str(schritt3-schritt2))
 
     if calcMethode == "Greedy":
         summarySenetencesIncomplete = calculateSummaryGreedy(sentenceList, sentences, weights, occ, maxLength)
@@ -414,7 +425,10 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
             summarySenetences["sentences"].append(summarySenetences["timestamp_dict"][timestamp])
 
     schritt4 = time.time()
-    print("Schritt4:"+str(schritt4-schritt3))
+    if schritt4-start >Timeout:
+        return { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {}}
+    else:
+        print("Schritt4:"+str(schritt4-schritt3))
 
     end = time.time()
     print("Fertig!")
