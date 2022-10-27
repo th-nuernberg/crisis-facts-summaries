@@ -23,7 +23,7 @@
             <div class="params">
                 <label class="param_label" for="max_length">Length of the Summary:</label>
                 <input class="slider" type="range" value="600" min="50" max="1000" step="50" id="max_length" oninput="this.nextElementSibling.value = this.value">
-                <output id="output_size_summary">600</output><output id="output_size_summary">Words</output><br>
+                <output id="output_size_summary">600</output><output id="output_size_summary">Letters</output><br>
             </div>
         </div>
 
@@ -83,19 +83,19 @@
             <div class="content" id="field_more_opt">
                 <div id="grid_colm_1">
                     <p id="label_checkbox">Contextsize:</p>
-                    <label class="container_check" id="con_1">One
+                    <label class="container_check" id="con_1">Unigram
                         <input type="checkbox" id="kontext_eins">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container_check" id="con_2">Two
+                    <label class="container_check" id="con_2">Bigram
                         <input type="checkbox"checked="checked" id="kontext_zwei">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container_check" id="con_3">Three
+                    <label class="container_check" id="con_3">Trigram
                         <input type="checkbox" id="kontext_drei">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container_check" id="con_4">Four
+                    <label class="container_check" id="con_4">Fourgram
                         <input type="checkbox" id="kontext_vier">
                         <span class="checkmark"></span>
                     </label>
@@ -106,7 +106,7 @@
                     <input class="slider" type="range" value="100" min="1" max="100" step="1" id="numb_concepts" oninput="this.nextElementSibling.value = this.value">
                         <input class="text" id="numb_ctxt_txt" value="100"  oninput="this.previousElementSibling.value = this.value" >
                         <output id="output_concepts">%</output><br>
-                    <p id="label_checkbox_3_2">Return order of the concepts in the summary:</p>
+                    <p id="label_checkbox_3_2">Return order of the sentences in the summary:</p>
                     <select class="dropbtn" name="return_type" id="type_of_summary_return">
                         <option class="dropbtn_opt" value="oldest_found_first" selected="selected">Oldest found first</option>
                         <option class="dropbtn_opt" value="newest_found_first">Newest found first</option>
