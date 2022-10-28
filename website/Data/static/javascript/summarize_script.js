@@ -281,6 +281,10 @@ function draw_diagramm(response_json){
             }, {
                 type: 'line',
                 label: "All Timestamps",
+                fill: {
+                    target: true,
+                    above: 'rgba(65,105,225,0.5)'
+                },
                 backgroundColor: 'rgba(65,105,225,1)',
                 borderColor: 'rgba(65,105,225,1)',
                 data: data
@@ -308,7 +312,7 @@ function draw_diagramm(response_json){
                             enabled: true
                         },
                         mode: 'x',
-                    }
+                    },
                 }
             }
         }       
