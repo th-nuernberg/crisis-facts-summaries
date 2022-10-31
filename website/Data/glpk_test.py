@@ -269,7 +269,7 @@ def calculateOccurrences(bigramList, sentenceBigramList):
 # TODO: wegen Serverzugriff Mail schreiben 
 def calculateSummary(saetze, weights, occurrences, totalLength):
     i = len(weights)  # Anzahl der Konzepte
-    l = list(map(lambda x: len(x), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
+    l = list(map(lambda x: len(x["sentence"]), saetze))  # [len(satz1), len(satz2), len(satz3)]  # länge der Sätze
     j = len(saetze)
     begin('test konzepte')
     c = var('c', i, kind=bool)  # ist ein konzept im Summary enhalten
