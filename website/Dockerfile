@@ -2,7 +2,7 @@
 FROM python:3
 
 WORKDIR /usr/src/app
-COPY /Data /usr/src/app
+#COPY /Data /usr/src/app
 
 RUN apt-get -y update
 
