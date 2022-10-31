@@ -277,7 +277,10 @@ function draw_diagramm(response_json){
                 label: "Summary Timestamps",
                 backgroundColor: 'rgba(255,0,0,1)',
                 borderColor: 'rgba(255,0,0,1)',
-                data: dataZusammenfassung
+                data: dataZusammenfassung,
+                datalabels: {
+                    color: '#36A2EB'
+                }
             }, {
                 type: 'line',
                 label: "All Timestamps",
@@ -313,7 +316,7 @@ function draw_diagramm(response_json){
                         },
                         mode: 'x',
                     },
-                }
+                },
             }
         }       
     },)
