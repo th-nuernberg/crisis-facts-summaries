@@ -25,7 +25,7 @@ RUN python -m spacy download en_core_web_sm
 RUN python3 -m nltk.downloader popular
 
 #RUN mv /usr/src/app/node_modules/ /usr/src/app/static/
-RUN chmod a+rwx /usr/src/app/glpk_test.py
+#RUN chmod a+rwx /usr/src/app/glpk_test.py
 
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 EXPOSE 5000
