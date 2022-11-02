@@ -194,21 +194,23 @@ async function make_a_summary(){
  * Last the zoom-plugin (so you can zoom in the diagramm)
  */
 function draw_diagramm(response_json){
-    
+    if(window.chart){
+        window.chart.destroy();
+    }
 //#region Initialize all variables
-    labels = [];
-    values = [];
-    data = [];
-    labelsZusammenfassung = [];
-    valuesZusammenfassung = [];
-    dataZusammenfassung = [];
+    let labels = [];
+    let values = [];
+    let data = [];
+    let labelsZusammenfassung = [];
+    let valuesZusammenfassung = [];
+    let dataZusammenfassung = [];
 //#endregion
 
 //#region all timestamps are packed into data[]
     for(let i = 0; i < response_json["timestampsforDiagramm"].length; i++){
-        timestamp_not_formatted = response_json["timestampsforDiagramm"][i];
-        timestamp = timestamp_not_formatted.slice(0,10); // timestamps are formatted into the right format
-        wasset = false;
+        let timestamp_not_formatted = response_json["timestampsforDiagramm"][i];
+        let timestamp = timestamp_not_formatted.slice(0,10); // timestamps are formatted into the right format
+        let wasset = false;
         
         if(labels.length == 0){}
         else
@@ -238,9 +240,9 @@ function draw_diagramm(response_json){
 
 //#region only the timestamps wich belong to the selected sentences are packed into an own dataZusammenfassung[] array
     for(let i in response_json["timestamp_dict"]){
-        timestamp_not_formatted = i;
-        timestamp = timestamp_not_formatted.slice(0,10);// timestamps are formatted into the right format
-        wasset = false;
+        let timestamp_not_formatted = i;
+        let timestamp = timestamp_not_formatted.slice(0,10);// timestamps are formatted into the right format
+        let wasset = false;
         
         if(labelsZusammenfassung.length == 0){}
         else
@@ -266,21 +268,21 @@ function draw_diagramm(response_json){
         const points = {x:labelsZusammenfassung[i],y:valuesZusammenfassung[i]}
         dataZusammenfassung.push(points);
     }
+
+    console.log(dataZusammenfassung);
+    console.log(data);
 //#endregion
 
 //#region creation of a new chart
-    var mychartObject = document.getElementById('myChart')
-    var chart = new Chart(mychartObject, {
+    let mychartObject = document.getElementById('myChart')
+    let chart = new Chart(mychartObject, {
         data: {
             datasets: [{
                 type: 'bubble',
                 label: "Summary Timestamps",
                 backgroundColor: 'rgba(255,0,0,1)',
                 borderColor: 'rgba(255,0,0,1)',
-                data: dataZusammenfassung,
-                datalabels: {
-                    color: '#36A2EB'
-                }
+                data: dataZusammenfassung
             }, {
                 type: 'line',
                 label: "All Timestamps",
@@ -296,12 +298,22 @@ function draw_diagramm(response_json){
         options: {
             scales: {
                 x: {
+                    title: {
+                        display: true,
+                        allign: 'center',
+                        text: 'Datum'
+                    },
                     type: 'time',
                     time: {
                         unit: 'day'
                     }
                 },
                 y: {
+                    title: {
+                        display: true,
+                        allign: 'center',
+                        text: 'Anzahl Dokumente'
+                    },
                     beginAtZero :true
                 }
             },
@@ -317,9 +329,14 @@ function draw_diagramm(response_json){
                         mode: 'x',
                     },
                 },
+                datalabels: {
+                    offset: 'top'
+                },
             }
         }       
     },)
+
+    window.chart = chart;
 //#endregion
 
 }
