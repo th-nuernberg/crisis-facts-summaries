@@ -16,7 +16,7 @@
         </head>
     <body class="body" onload="initAssignment(),getDataset()">
         <header class="header">
-            <h2 id="head_txt">IT Projekt</h2>
+            <h2 id="head_txt">Crisis Facts</h2>
         </header>
         
     <div>
@@ -137,13 +137,13 @@
 
                 <div id="grid_colm_4">
                     <div>
-                        <p id="label_checkbox_2">Weight of the Keywords:</p>
-                        <p id="label_checkbox_4_2">Positiv weight of the Search Keywords:</p>
+                        <p id="label_checkbox_2">Factor for the Keywords:</p>
+                        <p id="label_checkbox_4_2">Positiv factor of the Search Keywords:</p>
                         <input class="slider" type="range" value="3" min="2" max="10" step="1" id="weight_search_param" oninput="this.nextElementSibling.value = this.value">
                         <output id="output_min_df">3</output><br>
                     </div>
                     <div>
-                        <p id="label_checkbox_4_2">Negativ weight of the Exclude Keywords:</p>
+                        <p id="label_checkbox_4_2">Negativ factor of the Exclude Keywords:</p>
                         <input class="slider" type="range" value="-0.5" min="-0.5" max="0.9" step="0.1" id="weight_exclude_param" oninput="this.nextElementSibling.value = this.value">
                         <output id="output_min_df">-0.5</output><br>
                     </div>
