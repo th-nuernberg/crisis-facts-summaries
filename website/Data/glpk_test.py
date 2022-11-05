@@ -65,7 +65,7 @@ def clean(text):
     return text.strip()
 
 # Erzeugt n-gramme aus dem input Text
-def ngrame(originalText_,testDict,toLower,toLemma):
+def ngrame(originalText_,testDict,toLower):
     stopwords =[]
     with open('/usr/src/app/Datensaetze/stopwords-en.txt', encoding='utf-8') as file:
         stopwords = file.read().splitlines()
@@ -85,20 +85,15 @@ def ngrame(originalText_,testDict,toLower,toLemma):
             nGrams = ngrams(re.findall(r'[A-Za-z0-9]+', text), i)
             for grams in nGrams:
                 hold =""
-                for gram in grams:
-                    if toLemma:
-                        doc = nlp(gram)
-                        for t in doc:                    
-                            hold += t.lemma_
-                    else:
-                        hold += gram
-                        hold +="___"
+                for gram in grams:                    
+                    hold += gram
+                    hold +="___"
                 ngrame.append(hold)
             result.extend(ngrame)
     
     return result
  
-def extractSentencesNLTK(rawDicts,testDict,toLower,toLemma):
+def extractSentencesNLTK(rawDicts,testDict,toLower):
     sentencesDicts = []
     sentenceId = 0
     for rawDict in rawDicts:
@@ -107,7 +102,7 @@ def extractSentencesNLTK(rawDicts,testDict,toLower,toLemma):
         sentences = list(map(lambda x: x.strip(), sentences))
         for sentence in sentences:
             if len(clean(sentence)) >0:
-                ngrams = list(set(ngrame(sentence,testDict,toLower,toLemma)))
+                ngrams = list(set(ngrame(sentence,testDict,toLower)))
                 if len(ngrams) >0:
                     sentencesDicts.append(dict([("timestamp", rawDict['timestamp']),
                                             ("document_id", rawDict['document_id']),
@@ -350,18 +345,19 @@ def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTot
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,excludeFactor,calcMethode,Timeout,startDate=None,endDate=None,returnorder="",hardexclude=True,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,toLemma=False,question="",exclude=""):
+def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,excludeFactor,calcMethode,Timeout,startDate=None,endDate=None,returnorder="",hardexclude=True,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,question="",exclude=""):
     testDict = {"1":one, "2":two,"3":three,"4":four}
     print("Start!")
     start = time.time()
     pathToFile = "/usr/src/app/Datensaetze/prepared/"+dataset
     data = readInput(pathToFile)
     Timeout = Timeout/1000
+    returnValueTimeout = { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {},"amountSentences":0,"amountConcepts":0}
 
     # Test für grafische Darstellung des Diagramms
     timeDataForDiagramm = sum_appearances(data)
 
-    sentences_all = extractSentencesNLTK(data,testDict,toLower,toLemma)
+    sentences_all = extractSentencesNLTK(data,testDict,toLower)
 
     sentences= []
     if startDate != "T" and endDate != "T":
@@ -380,7 +376,7 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
 
     schritt1 = time.time()
     if schritt1-start >Timeout:
-        return { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {}}
+        return returnValueTimeout
     else:
         print("Schritt1:"+str(schritt1-start))
     
@@ -388,7 +384,7 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
 
     schritt2 = time.time()
     if schritt2-start >Timeout:
-        return { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {}}
+        return returnValueTimeout
     else:
         print("Schritt2:"+str(schritt2-schritt1))
 
@@ -403,7 +399,7 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
 
     schritt3 = time.time()
     if schritt3-start >Timeout:
-        return { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {}}
+        return returnValueTimeout
     else:
         print("Schritt3:"+str(schritt3-schritt2))
 
@@ -426,10 +422,12 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
 
     schritt4 = time.time()
     if schritt4-start >Timeout:
-        return { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {}}
+        return returnValueTimeout
     else:
         print("Schritt4:"+str(schritt4-schritt3))
 
+    summarySenetences["amountSentences"] = str(len(sentences))
+    summarySenetences["amountConcepts"] = str(len(bigramWeights))
     end = time.time()
     print("Fertig!")
     print(end - start)
