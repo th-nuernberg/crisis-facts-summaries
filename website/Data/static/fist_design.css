@@ -11,15 +11,24 @@ html {
     height: 60px;
     margin-bottom: 1em;
 }
+#header_link{
+  padding-top: 0.8%;
+}
 #head_txt {
     margin-top: 0%;
     margin-left: 4%;
     padding-top: 0.8%;
     color:whitesmoke;
+    text-decoration: none;
+    font-weight: bold;
+    font-size:xx-large; 
 }
+#head_txt:hover{
+  color: lightcyan;
+}
+
 .body {
     margin: 0%;
-
 }
 #calculate_button{
   float: right;
