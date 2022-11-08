@@ -17,7 +17,12 @@
     <body class="body" onload="initAssignment(),getDataset()">
         <header class="header">
             <div id="header_link">
-                <a id="head_txt" a href="https://crisisfacts.github.io/" target="_blank" >Crisis Facts</a>
+                <div id="crisis_link_div">
+                    <a id="head_txt" href="https://crisisfacts.github.io/" target="_blank" >Crisis Facts</a>
+                </div>
+                <a id="logo_link" href="https://www.th-nuernberg.de/" target="_blank">
+                    <img id="th_logo" src="{{ url_for('static', filename='th_ohm_logo.png')}}">
+                </a>
             </div>
         </header>
         

@@ -2,17 +2,21 @@ html {
     text-align: center;
     }
 .header {
-    background-color:royalblue;
+    background-color:#0046a0;
     border-bottom-style: solid;
-    border-color: lightskyblue;
+    border-color: #3d80d6;
     border-width: 10px;
     margin-top: 0%;
     text-align: left;
     height: 60px;
     margin-bottom: 1em;
 }
-#header_link{
-  padding-top: 0.8%;
+#crisis_link_div{
+  float: left;
+  min-width: 209px;
+  max-width: 15%;
+  padding-top: 12px;
+  padding-left: 70px;
 }
 #head_txt {
     margin-top: 0%;
@@ -25,6 +29,13 @@ html {
 }
 #head_txt:hover{
   color: lightcyan;
+}
+#th_logo{
+  margin-top: 0.25%;
+  width: 50px;
+  height: 50px;
+  float: right;
+  margin-right: 3%;
 }
 
 .body {
