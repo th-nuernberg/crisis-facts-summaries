@@ -27,9 +27,7 @@ html {
     font-weight: bold;
     font-size:xx-large; 
 }
-#head_txt:hover{
-  color: lightcyan;
-}
+
 #th_logo{
   margin-top: 0.25%;
   width: 50px;
@@ -248,7 +246,7 @@ html {
     max-height: 0;
     width: 50%;
     overflow: hidden;
-    transition: max-height 0.2s ease-out;
+    transition: max-height 214px 0.2s ease-out;
     background-color: #f1f1f1;
     float: left;
   }
