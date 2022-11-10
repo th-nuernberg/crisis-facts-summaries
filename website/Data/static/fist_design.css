@@ -62,9 +62,12 @@ html {
     overflow: hidden;
     margin-left: 5em;
     margin-bottom: 10px;
-   
+}
+#time_till_timeout{
+  margin-bottom: 10px;
 }
 .param_options{
+  
     align-self: left;
     overflow: hidden;
     margin-left: 5em;
@@ -246,14 +249,14 @@ html {
     max-height: 0;
     width: 50%;
     overflow: hidden;
-    transition: max-height 214px 0.2s ease-out;
+    transition: max-height 0.2s ease-out;
     background-color: #f1f1f1;
     float: left;
   }
   .active, .collapsible:hover {
     background-color: dodgerblue;
   }
-  
+  /* Add a White + */
   .collapsible:after {
     content: '\002B';
     color: white;
@@ -261,11 +264,10 @@ html {
     float: right;
     margin-left: 5px;
   }
-  
+  /* Add a White - */
   .active:after {
     content: "\2212";
   }
-
 
  /* The Checkmark container */
 .container_check {
@@ -393,9 +395,9 @@ html {
   /* Create Gridlayout*/
   #field_more_opt{
     display: grid;
-    grid-template-columns: 150px 240px 200px auto;
+    grid-template-columns: 150px 240px 200px 250px auto;
     column-gap: 1em;
-    min-width: 780px;
+    min-width: 60%;
   }
   #grid_colm_1{
     grid-column: 1;
@@ -408,6 +410,9 @@ html {
   }
   #grid_colm_4{
     grid-column: 4;
+  }
+  #grid_colm_5{
+    grid-column: 5;
   }
   #type_of_summary_return{
     max-width: 240px;
@@ -426,6 +431,10 @@ html {
   #output_min_df{
     float: left;
     margin-left: 10px;
+  }
+  #output_filter_sentence{
+    float: left;
+    margin-left: 5px;
   }
   #label_checkbox_4_2{
     margin-bottom: 0%;

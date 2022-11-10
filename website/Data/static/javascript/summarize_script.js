@@ -11,15 +11,15 @@ function initAssignment(){
     var coll = document.getElementsByClassName("collapsible");
     var i;
 
+    //Add a event listener to  make the "more options" button into a dropdown menu
     for (i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", function() {
-            // add the functinality to make the "more options" button into a dropdown menu
             this.classList.toggle("active");
             var content = document.getElementById("field_more_opt");
             if (content.style.maxHeight){
             content.style.maxHeight = null;
             } else {
-            content.style.maxHeight = content.scrollHeight + "px";
+            content.style.maxHeight = content.scrollHeight + 10 +  "px";
             } 
         });}
 }
@@ -411,6 +411,9 @@ function get_parameter_as_json(){
 
     let time_till_timeout_in_ms = document.getElementById("time_till_timeout").value;
     time_till_timeout_in_ms = time_till_timeout_in_ms*60*1000;
+
+    let lowercase = document.getElementById("lowercase_checkbox").checked;
+    let factor_filter_sentence = document.getElementById("filter_sentences").value;
 //#endregion
 
     // Make a json with all parameters, to be send to the backend
@@ -428,6 +431,8 @@ function get_parameter_as_json(){
                                 "return_order_of_summary":order_of_summary,
                                 "tf_idf":{"min_df":min_df, "max_df":max_df},
                                 "use_stopwordlist":use_stopword_list,
+                                "use_lowercase": lowercase,
+                                "factor_filtering_sentences": factor_filter_sentence,
                                 "weight_of_params":{"include": weight_search_param, "exclude": weight_exclude_param, },
                                 "time_till_timeout_in_ms": time_till_timeout_in_ms,    
                             };
