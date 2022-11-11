@@ -49,9 +49,6 @@ def start_summarize():
 def get_datasets()->json:
     #get datasetnames as json
     
-    #momentan nicht korrekter Pfad, weil nicht genau klar welche Datensätze jetzt genutzt werden sollen
-    #relative Pfade funktionieren noch nicht richtig, deswegen über current working directory (cwd)
-    
     curr_path = os.path.abspath(os.getcwd())
     curr_path+="\Datensaetze"
     dir_list = "/usr/src/app/Datensaetze/prepared/" #os.listdir(curr_path)

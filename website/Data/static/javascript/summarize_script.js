@@ -97,6 +97,7 @@ async function make_a_summary(){
     //if there is already a summary, remove it 
     if(document.getElementById("new_summary") != null){
     document.getElementById("new_summary").remove();
+    document.getElementById("new_number_sent_conc").remove();
     }
 
     //Get all Parameters
@@ -155,15 +156,22 @@ async function make_a_summary(){
 //#region create the new html element with the sentences from the json as innerHTML and append to the Summary
 
     let main_Container = document.getElementById("Summary");
+    let new_number_sent_conc = document.createElement("p");
     let new_summary = document.createElement("p");
     new_summary.setAttribute('id', "new_summary");
+    new_number_sent_conc('id', "new_number_sent_conc");
 
+    new_number_sent_conc.setAttribute('align', "left");
     new_summary.setAttribute('align', "left");
+
+    //Add number of concepts and Sentences
+    new_number_sent_conc.innerHTML += "Number of Sentences used: " + response_json["amountSentences"] + "| Number of Concepts used: " + response_json["amountConcepts"];
 
     //Add each sentence of the summary with space between them
     for(let i = 0; i < response_json["sentences"].length; i++){
         new_summary.innerHTML += response_json["sentences"][i] + " ";
     }
+    main_Container.append(new_number_sent_conc);
     main_Container.append(new_summary);
 
 //#endregion
