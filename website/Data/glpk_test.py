@@ -9,9 +9,9 @@ from pymprog import *
 import re
 from nltk import ngrams
 import time
-import spacy
+#import spacy
 
-nlp = spacy.load('en_core_web_sm')
+#nlp = spacy.load('en_core_web_sm')
 
 def init():
     nltk.download('punkt')
@@ -230,8 +230,9 @@ def extractWeightPerBigram(documentsDict,sentences,TF,IDF,minDf,maxDf,percentCon
         reducedBigramDict =dict(sorted(reducedBigramDict.items(), key=lambda item: item[1], reverse = True)[:amountConcepts])
     return reducedBigramDict
 
-def filterSentences(sentences,bigramWeights):
+def filterSentences(sentences,bigramWeights,sentenceFactor):
     sentencesFiltered =[]
+    sentenceFactor = float(sentenceFactor)
 
     weightAllSentences =0
     for sentence in sentences:
@@ -242,7 +243,7 @@ def filterSentences(sentences,bigramWeights):
         weightAllSentences = weightAllSentences + (sentenceWeight / len(sentence["bigrams"]))
 
     for sentence in sentences:
-        if sentence["meanSentenceWeight"] > (weightAllSentences/ len(sentences))*2:
+        if sentence["meanSentenceWeight"] > (weightAllSentences/ len(sentences))*sentenceFactor:
             sentencesFiltered.append(sentence)
     
     return sentencesFiltered
@@ -345,7 +346,7 @@ def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTot
 # TODO: zeitpunkte in Gewichtung mi einbeziehen
 # TODO: mit evaluationsmatrix evaluieren -> siehe Mail
 
-def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,excludeFactor,calcMethode,Timeout,startDate=None,endDate=None,returnorder="",hardexclude=True,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,question="",exclude=""):
+def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,excludeFactor,calcMethode,sentenceFactor,Timeout,startDate=None,endDate=None,returnorder="",hardexclude=True,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,question="",exclude=""):
     testDict = {"1":one, "2":two,"3":three,"4":four}
     print("Start!")
     start = time.time()
@@ -388,7 +389,7 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
     else:
         print("Schritt2:"+str(schritt2-schritt1))
 
-    sentences = filterSentences(sentences, bigramWeights)
+    sentences = filterSentences(sentences, bigramWeights,sentenceFactor)
 
     print("AnzahlSätze:"+str(len(sentences)))
     print("AnzahlGrame:"+str(len(bigramWeights)))

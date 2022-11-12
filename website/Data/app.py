@@ -39,6 +39,8 @@ def start_summarize():
                         startDate=parameters["timespan"]["from"]["date"]+"T"+parameters["timespan"]["from"]["time"],
                         endDate=parameters["timespan"]["to"]["date"]+"T"+parameters["timespan"]["to"]["time"],
                         Timeout =parameters["time_till_timeout_in_ms"] ,
+                        toLower=parameters["use_lowercase"],
+                        sentenceFactor=parameters["factor_filtering_sentences"],
                         dataset=parameters["dataset"]
                         )
    print(summary_as_json)
