@@ -159,7 +159,7 @@ async function make_a_summary(){
     let new_number_sent_conc = document.createElement("p");
     let new_summary = document.createElement("p");
     new_summary.setAttribute('id', "new_summary");
-    new_number_sent_conc('id', "new_number_sent_conc");
+    new_number_sent_conc.setAttribute('id', "new_number_sent_conc");
 
     new_number_sent_conc.setAttribute('align', "left");
     new_summary.setAttribute('align', "left");

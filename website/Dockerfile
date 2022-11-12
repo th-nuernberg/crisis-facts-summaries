@@ -21,7 +21,7 @@ RUN pip install pymprog
 RUN pip install nltk
 RUN pip install -U scikit-learn
 RUN pip install -U spacy
-RUN python -m spacy download en_core_web_sm
+#RUN python -m spacy download en_core_web_sm
 RUN python3 -m nltk.downloader popular
 
 #RUN mv /usr/src/app/node_modules/ /usr/src/app/static/
