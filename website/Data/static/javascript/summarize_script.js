@@ -165,7 +165,7 @@ async function make_a_summary(){
     new_summary.setAttribute('align', "left");
 
     //Add number of concepts and Sentences
-    new_number_sent_conc.innerHTML += "Number of Sentences used: " + response_json["amountSentences"] + "| Number of Concepts used: " + response_json["amountConcepts"];
+    new_number_sent_conc.innerHTML += "Number of Sentences used: " + response_json["amountSentences"] + " | Number of Concepts used: " + response_json["amountConcepts"];
 
     //Add each sentence of the summary with space between them
     for(let i = 0; i < response_json["sentences"].length; i++){
