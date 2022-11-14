@@ -42,7 +42,7 @@ Factor for filtering sentences: In order to reduce the runtime, we only include 
 Hard Exclude instead of lower rating of the parameters: This removes any sentences containing the key words improving runtime.
 
 ## Support
-There is no support for the application.
+There is no support for the application. However in this folder is a file describing the architecture of this procject.
 
 ## Roadmap
 Future Releases may include a suggestion on which parameters will likely yield the best results and which yield the best result per minute of runtime.
