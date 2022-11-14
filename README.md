@@ -1,98 +1,71 @@
-# It Projekt
-Before running Files from Felix or Marcus, install all needed packages [List of them will be added]
-for named entity recognition Spacy needs a file which contains the named entities, get the file
-that is used in this project with:
-
-```
-python -m spacy download en_core_web_sm
-```
-
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.informatik.fh-nuernberg.de/lutzfe79909/it-projekt.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://git.informatik.fh-nuernberg.de/lutzfe79909/it-projekt/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
+Crisis Facts
 
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+The Crisis Facts application is a tool to create a summary of the text corpus about a certain event. The many parameters allow you to test which effect any common parameter has on
+the quality of the created summary and the runtime. Additionaly, it shows in a diagramme at which time the texts of the corpus were created. 
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Before running files, install python 3 and install all needed packages with the following commands:
+
+pip install flask
+pip install flask-cors
+pip install pymprog
+pip install nltk
+pip install -U scikit-learn
+pip install -U spacy
+python3 -m nltk.downloader popular
+
+In order to run the application with minimal effort download docker and use:
+
+docker build 
+
+to create an image in the folder website. If you run into issues build an image,
+you should go to the file Readme in the folder website. If you build the image successfully, you can create an container with the command:
+
+docker run -v <PathToDocuments>:/usr/src/app/Datensaetze/ -p 5000:5000 <ImageName>
+
+in order to get a working application. If you are lacking datasets download them at the Crisis Facts website and transform them to fit the needs of the
+application with the scripts in the folder archive. Then you can open the website and start experimenting.
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+If you want to have a summary without thinking too much about the internals ignore the "more options" button and hit the "Analyze" button. Soon there will be summary at the bottom
+of the website. If you want to get a grip on the effects of some parameter hit the "more options" button and change the parameters as you please. Note any decrease in runtime 
+will likely cause the summary to get worse. There are a few options that should be explained a little bit further:
+
+Number of concepts to consider: N-grams represent concepts. If the runtime is long try reducing them with this parameter
+Min DF:  Although best known with the TF-IDF representation, we implemented this for all representations in order to filter less frequently occurring concepts. 
+Max DF in %: Although best known with the TF-IDF representation, we implemented this for all representations in order to filter too frequently occurring concepts.
+Positive factor of the Search Keywords: With this factor you decide how important it is to have the key words in the summary.
+Negative factor of the Exclude Keywords: With this factor you decide how important it is to not have the key words in the summary.
+Factor for filtering sentences: In order to reduce the runtime, we only include the most promising sentences in the final algorytihmen. This factor decides 
+    How many times higher than the average sentence the sentences need to score in order to be included in the final calculation.
+Hard Exclude instead of lower rating of the parameters: This removes any sentences containing the key words improving runtime.
 
 ## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+There is no support for the application.
 
 ## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Future Releases may include a suggestion on which parameters will likely yield the best results and which yield the best result per minute of runtime.
+Another feature might be the use of timestamps to find the best summary there is.
 
 ## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+The authors of the are Marcus Heider, Daniel Titz, Tobias Gaiser and Felix Lutz.
+A special Thank you goes to Philipp Seeberger and Professor Doctor Riedhammer for guiding this project.
+Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+And last but not least thank you to the Crisis Facts Challenge.
 
 ## License
-For open source projects, say how it is licensed.
+Copyright 2022 Marcus Heider, Daniel Titz, Tobias Gaiser and Felix Lutz
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+The project is finished. The website can be used to demonstrate the effects of different hyperparameters have on the task of text summarisation. 
