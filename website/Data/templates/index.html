@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-    <html lang="de">
+    <html lang="en">
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,199 +14,199 @@
             <script src="{{url_for('static', filename='javascript/summarize_script.js')}}"></script>
             <script src="{{url_for('static', filename='node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js')}}"></script>
         </head>
-    <body class="body" onload="initAssignment(),getDataset()">
-        <header class="header">
-            <div id="header_link">
-                <div id="crisis_link_div">
-                    <a id="head_txt" href="https://crisisfacts.github.io/" target="_blank" >Crisis Facts</a>
+        <body class="body" onload="initAssignment(),getDataset()" >
+            <header class="header">
+                <div id="header_link">
+                    <div id="crisis_link_div">
+                        <a id="head_txt" href="https://crisisfacts.github.io/" target="_blank" >Crisis Facts</a>
+                    </div>
+                    <a id="logo_link" href="https://www.th-nuernberg.de/" target="_blank">
+                        <img id="th_logo" src="{{ url_for('static', filename='th_ohm_logo.png')}}">
+                    </a>
                 </div>
-                <a id="logo_link" href="https://www.th-nuernberg.de/" target="_blank">
-                    <img id="th_logo" src="{{ url_for('static', filename='th_ohm_logo.png')}}">
-                </a>
+            </header>
+            
+            <div>
+                <div class="Parameters">
+                    <div class="params">
+                        <label class="param_label" for="max_length">Length of the Summary:</label>
+                        <input class="slider" type="range" value="600" min="50" max="1000" step="50" id="max_length" oninput="this.nextElementSibling.value = this.value">
+                        <output id="output_size_summary">600</output><output id="output_size_summary">Letters</output><br>
+                    </div>
             </div>
-        </header>
-        
-    <div>
-        <div class="Parameters">
-            <div class="params">
-                <label class="param_label" for="max_length">Length of the Summary:</label>
-                <input class="slider" type="range" value="600" min="50" max="1000" step="50" id="max_length" oninput="this.nextElementSibling.value = this.value">
-                <output id="output_size_summary">600</output><output id="output_size_summary">Letters</output><br>
-            </div>
-        </div>
 
-        <div class="param_options" id="time">
-            <div class="param_options_time">
-                    <label>Timespan: From </label>
-            </div>
-            <div class="param_options_time">
-                <input class="date" type="date" id="date_from">
-                <input class="time" type="time" id="time_from">
-            </div>
-            <div class="param_options_time">
-                <label id="label_time_to">To</label>
-            </div>
-            <div class="param_options_time">
-                <input class="date" type="date" id="date_to">
-                <input class="time"  type="time" id="time_to">
-            </div>
-        </div>
-
-        <div class="param_options" id="dropdown">
-            <div class="param_options_time">
-                <label class="param_label" for="function_type">Analyse Function Type:</label>
-            </div>
-            <div class="param_options_time" id="dropdown_function_type">
-                <select class="dropbtn" name="function_type" id="type_of_function">
-                    <option class="dropbtn_opt" value="Greedy" selected="selected">Greedy</option>
-                    <option class="dropbtn_opt" value="Integer_linear">Integer Linear</option>
-                </select>
-            </div>
-            <div class="param_options_time">
-                <label class="param_label" for="dataset" id="label_dataset">Dataset to analyse:</label>
-            </div>
-            <div class="param_options_time" id="dropdown_dataset">
-                <select class="dropbtn" name="dataset" id="type_of_dataset">
-                    
-                </select>
-            </div>
-            <div class="param_options_time" id="dropdown_representation_type">
-                <label class="param_label" for="representation_type" id="label_representation_type">Representation Type:</label>
-            </div>
-            <div class="param_options_time" id="dropdown_representation_type">
-                <select class="dropbtn" name="representation_type" id="type_of_representation">
-                    <option class="dropbtn_opt" value="df" selected="selected">Document Frequency</option>
-                    <option class="dropbtn_opt" value="tf">Term Frequency</option>
-                    <option class="dropbtn_opt" value="tf-idf">TF - IDF</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="param_options_collaps">
-            <div class="collaps_btn">
-                <button class="collapsible">More Options</button>
-            </div>  
-        </div>
-        <div class="param_options">
-            <div class="content" id="field_more_opt">
-                <div id="grid_colm_1">
-                    <p id="label_checkbox">Contextsize:</p>
-                    <label class="container_check" id="con_1">Unigram
-                        <input type="checkbox" id="kontext_eins">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="container_check" id="con_2">Bigram
-                        <input type="checkbox"checked="checked" id="kontext_zwei">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="container_check" id="con_3">Trigram
-                        <input type="checkbox" id="kontext_drei">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="container_check" id="con_4">Fourgram
-                        <input type="checkbox" id="kontext_vier">
-                        <span class="checkmark"></span>
-                    </label>
+            <div class="param_options" id="time">
+                <div class="param_options_time">
+                        <label>Timespan: From </label>
                 </div>
-                
-                <div id="grid_colm_2">
-                    <p id="label_checkbox_2">Number of concepts to consider:</p>
-                    <input class="slider" type="range" value="100" min="1" max="100" step="1" id="numb_concepts" oninput="this.nextElementSibling.value = this.value">
-                        <input class="text" id="numb_ctxt_txt" value="100"  oninput="this.previousElementSibling.value = this.value" >
-                        <output id="output_concepts">%</output><br>
-                    <p id="label_checkbox_3_2">Return order of the sentences in the summary:</p>
-                    <select class="dropbtn" name="return_type" id="type_of_summary_return">
-                        <option class="dropbtn_opt" value="oldest_found_first" selected="selected">Oldest found first</option>
-                        <option class="dropbtn_opt" value="newest_found_first">Newest found first</option>
-                        <option class="dropbtn_opt" value="best_found_first">Best rated first</option>
+                <div class="param_options_time">
+                    <input class="date" type="date" id="date_from">
+                    <input class="time" type="time" id="time_from">
+                </div>
+                <div class="param_options_time">
+                    <label id="label_time_to">To</label>
+                </div>
+                <div class="param_options_time">
+                    <input class="date" type="date" id="date_to">
+                    <input class="time"  type="time" id="time_to">
+                </div>
+            </div>
+
+            <div class="param_options" id="dropdown">
+                <div class="param_options_time">
+                    <label class="param_label" for="function_type">Analyse Function Type:</label>
+                </div>
+                <div class="param_options_time" id="dropdown_function_type">
+                    <select class="dropbtn" name="function_type" id="type_of_function">
+                        <option class="dropbtn_opt" value="Greedy" selected="selected">Greedy</option>
+                        <option class="dropbtn_opt" value="Integer_linear">Integer Linear</option>
                     </select>
                 </div>
-                
-                <div id="grid_colm_3">
-                    <div>
-                        <p id="label_checkbox_2">Options for TF-IDF:</p>
-                        <p id="label_checkbox_4_2">Min DF:</p>
-                        <input class="slider" type="range" value="5" min="1" max="10" step="1" id="min_df" oninput="this.nextElementSibling.value = this.value">
-                        <output id="output_min_df">5</output><br>
-                    </div>
-                    <div>
-                        <p id="label_checkbox_4_2">Max DF in %:</p>
-                        <input class="slider" type="range" value="0.8" min="0.5" max="0.9" step="0.1" id="max_df" oninput="this.nextElementSibling.value = this.value">
-                        <output id="output_min_df">0.8</output><br>
-                    </div>
-                    <div id="stopwordlist_div">
-                        <label class="container_check" id="box_stopwords">Filter with stop word list
-                            <input type="checkbox" checked="checked" id="stopword_checkbox">
-                            <span class="checkmark" id="stopwords_box_button"></span>
-                        </label>
-                    </div>
+                <div class="param_options_time">
+                    <label class="param_label" for="dataset" id="label_dataset">Dataset to analyse:</label>
                 </div>
+                <div class="param_options_time" id="dropdown_dataset">
+                    <select class="dropbtn" name="dataset" id="type_of_dataset">
+                        
+                    </select>
+                </div>
+                <div class="param_options_time" id="dropdown_representation_type">
+                    <label class="param_label" for="representation_type" id="label_representation_type">Representation Type:</label>
+                </div>
+                <div class="param_options_time" id="dropdown_representation_type">
+                    <select class="dropbtn" name="representation_type" id="type_of_representation">
+                        <option class="dropbtn_opt" value="df" selected="selected">Document Frequency</option>
+                        <option class="dropbtn_opt" value="tf">Term Frequency</option>
+                        <option class="dropbtn_opt" value="tf-idf">TF - IDF</option>
+                    </select>
+                </div>
+            </div>
 
-                <div id="grid_colm_4">
-                    <div>
-                        <p id="label_checkbox_2">Factor for the Keywords:</p>
-                        <p id="label_checkbox_4_2">Positiv factor of the Search Keywords:</p>
-                        <input class="slider" type="range" value="3" min="2" max="10" step="1" id="weight_search_param" oninput="this.nextElementSibling.value = this.value">
-                        <output id="output_min_df">3</output><br>
-                    </div>
-                    <div>
-                        <p id="label_checkbox_4_2">Negativ factor of the Exclude Keywords:</p>
-                        <input class="slider" type="range" value="-0.5" min="-0.5" max="0.9" step="0.1" id="weight_exclude_param" oninput="this.nextElementSibling.value = this.value">
-                        <output id="output_min_df">-0.5</output><br>
-                    </div>
-                    <div>
-                        <p id="label_checkbox_4_2">Time till Timeout of analysis:</p>
-                        <input class="slider" type="range" value="5" min="1" max="30" step="1" id="time_till_timeout" oninput="this.nextElementSibling.value = this.value">
-                        <output id="output_min_df">5</output><output id="output_minutes">minutes</output><br>
-                    </div>
-                </div>
-                <div id="grid_colm_5">
-                    <p id="label_checkbox_4_2">Additional Options:</p>
-                    <div id="stopwordlist_div">
-                        <label class="container_check" id="box_stopwords">All words in lowercase
-                            <input type="checkbox"  id="lowercase_checkbox">
-                            <span class="checkmark" id="lowercase_box_button"></span>
+            <div class="param_options_collaps">
+                <div class="collaps_btn">
+                    <button class="collapsible">More Options</button>
+                </div>  
+            </div>
+            <div class="param_options">
+                <div class="content" id="field_more_opt">
+                    <div id="grid_colm_1">
+                        <p id="label_checkbox">Contextsize:</p>
+                        <label class="container_check" id="con_1">Unigram
+                            <input type="checkbox" id="kontext_eins">
+                            <span class="checkmark"></span>
                         </label>
+                        <label class="container_check" id="con_2">Bigram
+                            <input type="checkbox"checked="checked" id="kontext_zwei">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container_check" id="con_3">Trigram
+                            <input type="checkbox" id="kontext_drei">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container_check" id="con_4">Fourgram
+                            <input type="checkbox" id="kontext_vier">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    
+                    <div id="grid_colm_2">
+                        <p id="label_checkbox_2">Number of concepts to consider:</p>
+                        <input class="slider" type="range" value="100" min="1" max="100" step="1" id="numb_concepts" oninput="this.nextElementSibling.value = this.value">
+                            <input class="text" id="numb_ctxt_txt" value="100"  oninput="this.previousElementSibling.value = this.value" >
+                            <output id="output_concepts">%</output><br>
+                        <p id="label_checkbox_3_2">Return order of the sentences in the summary:</p>
+                        <select class="dropbtn" name="return_type" id="type_of_summary_return">
+                            <option class="dropbtn_opt" value="oldest_found_first" selected="selected">Oldest found first</option>
+                            <option class="dropbtn_opt" value="newest_found_first">Newest found first</option>
+                            <option class="dropbtn_opt" value="best_found_first">Best rated first</option>
+                        </select>
+                    </div>
+                    
+                    <div id="grid_colm_3">
                         <div>
-                            <p id="label_checkbox_4_2">Factor for filtering sentences:</p>
-                            <input class="slider" type="range" value="2" min="0.5" max="4" step="0.5" id="filter_sentences" oninput="this.nextElementSibling.value = this.value">
-                            <output id="output_filter_sentence">0.5</output>
+                            <p id="label_checkbox_2">Options for TF-IDF:</p>
+                            <p id="label_checkbox_4_2">Min DF:</p>
+                            <input class="slider" type="range" value="5" min="1" max="10" step="1" id="min_df" oninput="this.nextElementSibling.value = this.value">
+                            <output id="output_min_df">5</output><br>
+                        </div>
+                        <div>
+                            <p id="label_checkbox_4_2">Max DF in %:</p>
+                            <input class="slider" type="range" value="0.8" min="0.5" max="0.9" step="0.1" id="max_df" oninput="this.nextElementSibling.value = this.value">
+                            <output id="output_min_df">0.8</output><br>
+                        </div>
+                        <div id="stopwordlist_div">
+                            <label class="container_check" id="box_stopwords">Filter with stop word list
+                                <input type="checkbox" checked="checked" id="stopword_checkbox">
+                                <span class="checkmark" id="stopwords_box_button"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="grid_colm_4">
+                        <div>
+                            <p id="label_checkbox_2">Factor for the Keywords:</p>
+                            <p id="label_checkbox_4_2">Positiv factor of the Search Keywords:</p>
+                            <input class="slider" type="range" value="3" min="2" max="10" step="1" id="weight_search_param" oninput="this.nextElementSibling.value = this.value">
+                            <output id="output_min_df">3</output><br>
+                        </div>
+                        <div>
+                            <p id="label_checkbox_4_2">Negativ factor of the Exclude Keywords:</p>
+                            <input class="slider" type="range" value="-0.5" min="-0.5" max="0.9" step="0.1" id="weight_exclude_param" oninput="this.nextElementSibling.value = this.value">
+                            <output id="output_min_df">-0.5</output><br>
+                        </div>
+                        <div>
+                            <p id="label_checkbox_4_2">Time till Timeout of analysis:</p>
+                            <input class="slider" type="range" value="5" min="1" max="30" step="1" id="time_till_timeout" oninput="this.nextElementSibling.value = this.value">
+                            <output id="output_min_df">5</output><output id="output_minutes">minutes</output><br>
+                        </div>
+                    </div>
+                    <div id="grid_colm_5">
+                        <p id="label_checkbox_4_2">Additional Options:</p>
+                        <div id="stopwordlist_div">
+                            <label class="container_check" id="box_stopwords">All words in lowercase
+                                <input type="checkbox"  id="lowercase_checkbox">
+                                <span class="checkmark" id="lowercase_box_button"></span>
+                            </label>
+                            <div>
+                                <p id="label_checkbox_4_2">Factor for filtering sentences:</p>
+                                <input class="slider" type="range" value="2" min="0.5" max="4" step="0.5" id="filter_sentences" oninput="this.nextElementSibling.value = this.value">
+                                <output id="output_filter_sentence">0.5</output>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-        <div class="Insert_Form">
-            <div>
-                <label id="Label" for="text">Search-Parameter</label>
-                <textarea id="text_area" name="text" cols="35" rows="1"  placeholder="Keyword or words seperated by a single space that should be in the summary"></textarea>
-            </div>
-            <div id="exclude_div">
-                <label id="Label_2" for="text">Exclude Parameter</label>
-                <label class="container_check" id="checkbox_hard_exclude">Hard Exclude instead of lower rating of the parameters
-                    <input type="checkbox" id="hard_exclude">
-                    <span class="checkmark" id="check_hard_exclude_button"></span>
-                </label>
-                <textarea id="text_area_exclude" name="text" cols="35" rows="1"  placeholder="Keyword or words seperated by a single space that should NOT be in the summary"></textarea>
-            </div>  
-                <div class="button">
-                    <button id="calculate_button" type="button">Analyse</button>
+            
+            <div class="Insert_Form">
+                <div>
+                    <label id="Label" for="text">Search-Parameter</label>
+                    <textarea id="text_area" name="text" cols="35" rows="1"  placeholder="Keyword or words seperated by a single space that should be in the summary"></textarea>
                 </div>
-                <div class="loading_circle">
-                    <div class="loader" id="load"></div>
-                </div>	
-        </div>
-        
+                <div id="exclude_div">
+                    <label id="Label_2" for="text">Exclude Parameter</label>
+                    <label class="container_check" id="checkbox_hard_exclude">Hard Exclude instead of lower rating of the parameters
+                        <input type="checkbox" id="hard_exclude">
+                        <span class="checkmark" id="check_hard_exclude_button"></span>
+                    </label>
+                    <textarea id="text_area_exclude" name="text" cols="35" rows="1"  placeholder="Keyword or words seperated by a single space that should NOT be in the summary"></textarea>
+                </div>  
+                    <div class="button">
+                        <button id="calculate_button" type="button">Analyse</button>
+                    </div>
+                    <div class="loading_circle">
+                        <div class="loader" id="load"></div>
+                    </div>	
+            </div>
+            
 
-        <div id="Graph">
-            <canvas id="myChart" width="600" height="200"></canvas>
-        </div>
+            <div id="Graph">
+                <canvas id="myChart" width="600" height="50"></canvas>
+            </div>
 
-        <div class="text_summary">
-            <article id="Summary">
-                <h1 id="start_summary">Summary:</h1>
-            </article>
-        </div>
-    </body>
-</html> 
+            <div class="text_summary">
+                <article id="Summary">
+                    <h1 id="start_summary">Summary:</h1>
+                </article>
+            </div>
+        </body>
+    </html> 
