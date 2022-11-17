@@ -24,7 +24,7 @@ you should go to the file Readme in the folder website. If you build the image s
 
 docker run -v <PathToDocuments>:/usr/src/app/Datensaetze/ -p 5000:5000 <ImageName>
 
-in order to get a working application. If you are lacking datasets download them at the Crisis Facts website and transform them to fit the needs of the
+in order to get a working application. You can open the website in the docker container or with localhost over port 5000. If you are lacking datasets download them at the Crisis Facts website and transform them to fit the needs of the
 application with the scripts in the folder archive. Then you can open the website and start experimenting.
 
 ## Usage

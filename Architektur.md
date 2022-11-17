@@ -1,20 +1,24 @@
+In the beginnign of each line the relative path to a file is given.
+Any important file is listed here.
+
 ## Docker
-The Dockerfile that should be used to create an image is in the folder website. There is also a Readme for the Dockerfile
-explaining how it can be used.
+website/Dockerfile:     The Dockerfile that should be used to create an image is in the folder website. 
+website/Readme.txt:     There is also a Readme for the Dockerfileexplaining how it can be used.
 
 ## Frontend
-The files for the forntend can be found under website/data. The html file for the website can be found in the folder templates.
-The css-file is found in the folder static together with the folder containing the Node.js-modules. Also the icon and pictures 
-used in the website can be found there. In website/data is folder containing the JavaScript file used to implement the frontend 
-logic for sending the parameters to the backend, dispaling the results and creating the diagramm.
+website/data/templates/index.html:                      The html file is the foundation of the website.
+website/data/static/first_design.css:                   The used for the cosmetics of the website.
+website/data/static/node_modules:                       The Node.js-modules used for the website.
+website/data/static/th_ohm_logo.png:                    The ohm logo used for the website.
+website/data/static/Icon_from_web.ico:                  The icon used for the website.
+website/data/static/javascript/summarize_script.js:     This is the file containing the javascript code powering the frontend.
 
 ## Backend
-In website/data is the file app.py this is used for flask to manage the communication between front and backend and the creation of the website.
-The file glpk_test.py is the file used to create summaries with the diffrent parameters and getting the data for the diagramm. 
+website/data/app.py:        This file is used for flask to manage the communication between front and backend.
+website/data/glpk_test.py:  This file is used to create summaries with the diffrent parameters and getting the data for the diagramm. 
 
 ## Other Folders
-In the log folder are files used during the development.
-In the Archive folder is file called format_json.txt, which contains an example how the entries of a text corpus
-for this application should look like. The corpus should be stored in a file with a json or jsonl ending. The file named
-download.py helps you to download 8 text corpi for the application to run on. Inorder to get them in the right format 
-use the script transform_Json.py.
+log:                            In the log folder are files used during the development.
+Archive/format_json.txt:        This contains an example of how the entries of a text corpus for this application should look like. The corpus should be stored in a file with a json or jsonl ending. 
+Archive/download.py:            The file helps you to download 8 text corpi for the application to run on. 
+Archive/transform_Json.py:      Inorder to get text corpi in the right format use the script transform_Json.py.
