@@ -173,6 +173,9 @@ html {
 #dropdown_function_type{
     margin-left: 1em;
 }
+#dropdown_demo_example{
+  margin-left: 1em;
+}
 #type_of_function{
   max-width: 130px;
 }
@@ -462,7 +465,7 @@ html {
     margin-left: 1em;
     text-align: center;
   }
-  #output_min_df{
+  .output_content{
     float: left;
     margin-left: 10px;
   }

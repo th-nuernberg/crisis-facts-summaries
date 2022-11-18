@@ -51,7 +51,24 @@
                     <input class="time"  type="time" id="time_to">
                 </div>
             </div>
-
+            <div class="param_options" id="dropdown">
+                <div class="param_options_time">
+                    <label class="param_label" for="function_type">Demo examples:</label>
+                </div>
+                <div class="param_options_time" id="dropdown_demo_example">
+                    <select class="dropbtn" name="example_type" id="type_of_example">
+                        <option class="dropbtn_opt" value="0" selected="selected">No example selected</option>
+                        <option class="dropbtn_opt" value="1">Data 39, Standard</option>
+                        <option class="dropbtn_opt" value="2">Data 39, with TF-IDF</option>
+                        <option class="dropbtn_opt" value="3">Data 39, ideal solution</option>
+                        <option class="dropbtn_opt" value="4">Data 39, good greedy solution</option>
+                        <option class="dropbtn_opt" value="5">Data 39, all Context sizes</option>
+                        <option class="dropbtn_opt" value="6">Data 26, Standart</option>
+                        <option class="dropbtn_opt" value="7">Data 26, with less sentences</option>
+                    </select>
+                </div>
+            </div>
+            
             <div class="param_options" id="dropdown">
                 <div class="param_options_time">
                     <label class="param_label" for="function_type">Analyse Function Type:</label>
@@ -132,12 +149,12 @@
                             <p id="label_checkbox_2">Options for TF-IDF:</p>
                             <p id="label_checkbox_4_2">Min DF:</p>
                             <input class="slider" type="range" value="5" min="1" max="10" step="1" id="min_df" oninput="this.nextElementSibling.value = this.value">
-                            <output id="output_min_df">5</output><br>
+                            <output class="output_content" id="output_min_df">5</output><br>
                         </div>
                         <div>
                             <p id="label_checkbox_4_2">Max DF in %:</p>
                             <input class="slider" type="range" value="0.8" min="0.5" max="0.9" step="0.1" id="max_df" oninput="this.nextElementSibling.value = this.value">
-                            <output id="output_min_df">0.8</output><br>
+                            <output class="output_content" id="output_max_df">0.8</output><br>
                         </div>
                         <div id="stopwordlist_div">
                             <label class="container_check" id="box_stopwords">Filter with stop word list
@@ -158,17 +175,17 @@
                             <p id="label_checkbox_2">Factor for the Keywords:</p>
                             <p id="label_checkbox_4_2">Positiv factor of the Search Keywords:</p>
                             <input class="slider" type="range" value="3" min="2" max="10" step="1" id="weight_search_param" oninput="this.nextElementSibling.value = this.value">
-                            <output id="output_min_df">3</output><br>
+                            <output class="output_content" id="output_weight_search">3</output><br>
                         </div>
                         <div>
                             <p id="label_checkbox_4_2">Negativ factor of the Exclude Keywords:</p>
                             <input class="slider" type="range" value="-0.5" min="-0.5" max="0.9" step="0.1" id="weight_exclude_param" oninput="this.nextElementSibling.value = this.value">
-                            <output id="output_min_df">-0.5</output><br>
+                            <output class="output_content" id="output_weight_exclude">-0.5</output><br>
                         </div>
                         <div>
                             <p id="label_checkbox_4_4">Time till Timeout of analysis:</p>
                             <input class="slider" type="range" value="5" min="1" max="30" step="1" id="time_till_timeout" oninput="this.nextElementSibling.value = this.value">
-                            <output id="output_min_df">5</output><output id="output_minutes">minutes</output><br>
+                            <output class="output_content" id="output_time_till">5</output><output id="output_minutes">minutes</output><br>
                         </div>
                     </div>
                     </div>

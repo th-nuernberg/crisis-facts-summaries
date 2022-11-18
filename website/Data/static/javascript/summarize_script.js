@@ -1,12 +1,16 @@
 /***
  * When entering/refreshing the Website
  * Add Eventlistener to the Button "Analyse" ->  for Function "make_a_summary"
+ * Add Eventlistener to dropdown demo examples -> for function "demo_examples"
  * Add Eventlistener to the Button "More Options" -> make it into a collapsible Dropdown menu
  */
 function initAssignment(){
 
     let button = document.getElementById("calculate_button");
-    button.addEventListener("click",make_a_summary)
+    button.addEventListener("click",make_a_summary);
+
+    let demo_drop = document.getElementById("type_of_example");
+    demo_drop.addEventListener("change",demo_examples);
 
     let coll = document.getElementsByClassName("collapsible");
     let i;
@@ -25,7 +29,6 @@ function initAssignment(){
             } 
         });}
 }
-
 
 /**
  * When entering/refreshing the Website
@@ -486,4 +489,146 @@ function open_button_hide_loader(analyse_button,loader){
     analyse_button.style.cursor = ""
     analyse_button.style.opacity = 1
     analyse_button.disabled = false;
+}
+
+//!!!!!!!!!!!!!!
+// From here on: Functions to select the Demo examples Paramters
+//!!!!!!!!!!!!!!
+
+/***
+ * Main Selector function for the Examples
+ * When Selecting a Example from the dropdown menu: Demo examples
+ * Sets the parameters for this specific example
+ */
+ function demo_examples(){
+    let value = document.getElementById("type_of_example").value
+    let dropdown_function_type = document.getElementById("type_of_function");
+    let dropdown_lenght = dropdown_function_type.options.length;
+    let type_dataset = document.getElementById("type_of_dataset");
+    let dataset_lenght = type_dataset.options.length;
+    let drop_type_of_represent = document.getElementById("type_of_representation");
+    let type_of_represnt_length = drop_type_of_represent.options.length;
+
+    //Set all default parameters which do not change or change very little
+    select_default_values();
+
+//#region Large switch case which selects parameters, all slightly similar but also different so it looks like boiler plate code
+    switch(value){
+        default: break;
+        case "1":
+            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
+            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
+            demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"df");
+            break;
+        case "2": 
+            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
+            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
+            demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"tf-idf");
+            break;
+        case "3":
+            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Integer_linear");
+            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
+            demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"tf-idf");
+            demo_ex_set_tf_idf_values(3,0.9); 
+            break;
+        case "4":
+            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
+            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
+            demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"tf-idf");
+            demo_ex_set_tf_idf_values(3,0.8);
+            break;
+        case "5":
+            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
+            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
+            demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"tf-idf");
+            demo_ex_check_all_context();
+            break;
+        case "6":
+            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
+            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"26.relonly.jsonl");
+            demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"df");
+            break;
+        case "7":
+            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
+            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"26.relonly.jsonl");
+            demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"df");
+            document.getElementById("filter_sentences").value = 2.5;
+            document.getElementById("output_filter_sentence").value = 2.5;
+            break;                
+    }
+//#endregion
+
+}
+
+/**
+ * Helper Function for demo_examples()
+ * When Executed
+ * Sets Default Value for all Parameters which dont change or not by much and are specified in the
+ * corresponding switch case
+ */
+function select_default_values(){
+    let order_return_sum = document.getElementById("type_of_summary_return")
+    let order_return_sum_len = order_return_sum.options.length;
+
+    document.getElementById("max_length").value = 600;
+    document.getElementById("output_size_summary").value = 600;
+    document.getElementById("kontext_eins").checked = false;
+    document.getElementById("kontext_zwei").checked = true;
+    document.getElementById("kontext_drei").checked = false;
+    document.getElementById("kontext_vier").checked = false;
+    document.getElementById("numb_concepts").value = 100;
+    document.getElementById("numb_ctxt_txt").value = "100";
+    document.getElementById("min_df").value = 5;
+    document.getElementById("output_min_df").value = 5;
+    document.getElementById("max_df").value = 0.8;
+    document.getElementById("output_max_df").value = 0.8;
+    demo_ex_dropdown_select_func(order_return_sum_len, order_return_sum, "oldest_found_first");
+    document.getElementById("stopword_checkbox").checked = true;
+    document.getElementById("weight_search_param").value = 3;
+    document.getElementById("output_weight_search").value = 3;
+    document.getElementById("output_weight_exclude").value = -0.5;
+    document.getElementById("output_weight_exclude").value = -0.5;
+    document.getElementById("hard_exclude").checked =false;
+    document.getElementById("time_till_timeout").value = 5;
+    document.getElementById("output_time_till").value = 5;
+    document.getElementById("lowercase_checkbox").checked = false;
+    document.getElementById("filter_sentences").value = 2;
+    document.getElementById("output_filter_sentence").value = 2;
+}
+
+/**
+ * Helper Function for demo_examples()
+ * When Executed
+ * Sets Value for a dropdown menu matching to the value set by the example
+ * @param {*} dropdown_lenght = sum of all selectables from the dropdown
+ * @param {*} dropdown_function_type html id of the dropdown
+ */
+function demo_ex_dropdown_select_func(dropdown_lenght, dropdown_selected_type, value_to_select){
+    for (var i=0; i<dropdown_lenght; i++){
+        if (dropdown_selected_type.options[i].value == value_to_select){
+            dropdown_selected_type.options[i].selected = true;
+        }
+    }
+}
+/**
+ * Helper Function for demo_examples()
+ * When Executed
+ * Checks all checkboxes for the context sizes
+ */
+function demo_ex_check_all_context(){
+    document.getElementById("kontext_eins").checked = true;
+    document.getElementById("kontext_zwei").checked = true;
+    document.getElementById("kontext_drei").checked = true;
+    document.getElementById("kontext_vier").checked = true;
+}
+/**
+ * Helper Function for demo_examples()
+ * When Executed
+ * Sets the values for td-idf
+ */
+function demo_ex_set_tf_idf_values(demo_min_df, demo_max_df){
+    document.getElementById("min_df").value = demo_min_df;
+    document.getElementById("output_min_df").value = demo_min_df;
+    document.getElementById("max_df").value = demo_max_df;
+    document.getElementById("output_max_df").value = demo_max_df;
 }
