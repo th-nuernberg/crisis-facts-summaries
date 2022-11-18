@@ -8,18 +8,20 @@ function initAssignment(){
     let button = document.getElementById("calculate_button");
     button.addEventListener("click",make_a_summary)
 
-    var coll = document.getElementsByClassName("collapsible");
-    var i;
+    let coll = document.getElementsByClassName("collapsible");
+    let i;
 
     //Add a event listener to  make the "more options" button into a dropdown menu
     for (i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", function() {
             this.classList.toggle("active");
-            var content = document.getElementById("field_more_opt");
+            let content = document.getElementById("field_more_opt");
             if (content.style.maxHeight){
             content.style.maxHeight = null;
+            content.style.border = null
             } else {
             content.style.maxHeight = content.scrollHeight + 10 +  "px";
+            content.style.border = '4px solid white';
             } 
         });}
 }

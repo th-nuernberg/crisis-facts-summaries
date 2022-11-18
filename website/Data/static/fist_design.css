@@ -429,9 +429,9 @@ html {
   /* Create Gridlayout*/
   #field_more_opt{
     display: grid;
-    grid-template-columns: 150px 240px 200px 250px auto;
+    grid-template-columns: 150px 240px 200px auto;
     column-gap: 1em;
-    min-width: 60%;
+    min-width: 50%;
   }
   #grid_colm_1{
     grid-column: 1;
@@ -474,4 +474,16 @@ html {
     margin-bottom: 0%;
     text-align: left;
     font-weight: bolder;
+  }
+  #label_checkbox_4_3{
+    float: left;
+    margin-bottom: 0%;
+    text-align: left;
+    font-weight: bolder;
+  }
+  #label_checkbox_4_4{
+    margin-bottom: 0%;
+    text-align: left;
+    font-weight: bolder;
+    margin-top: 20px;
   }
