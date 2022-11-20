@@ -291,10 +291,11 @@ function draw_diagramm(response_json){
     let chart = new Chart(mychartObject, {
         data: {
             datasets: [{
-                type: 'bubble',
+                type: 'line',
                 label: "Summary Timestamps",
                 backgroundColor: 'rgba(255,0,0,1)',
                 borderColor: 'rgba(255,0,0,1)',
+                showLine: false,
                 data: dataZusammenfassung
             }, {
                 type: 'line',
