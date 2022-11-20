@@ -339,7 +339,7 @@ function draw_diagramm(response_json){
                     events: ['click']
                 }
             },
-            onClick: (e) => {
+            onHover: (e) => {
                 let canvasPosition = Chart.helpers.getRelativePosition(e, chart);
                 
     
