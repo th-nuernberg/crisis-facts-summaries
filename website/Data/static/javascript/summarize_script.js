@@ -331,20 +331,21 @@ function draw_diagramm(response_json){
                 }
             },
             plugins: {
-                zoom: {
-                    zoom: {
-                        wheel: {
-                            enabled: true,
-                        },
-                        pinch: {
-                            enabled: true
-                        },
-                        mode: 'x',
-                    },
-                },
                 datalabels: {
                     offset: 'top'
                 },
+                tooltip: {
+                    events: ['click']
+                }
+            },
+            onClick: (e) => {
+                let canvasPosition = Chart.helpers.getRelativePosition(e, chart);
+                
+    
+                // Substitute the appropriate scale IDs
+                let dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+                let dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
+                console.log(dataX + " " + dataY);
             }
         }       
     },)
