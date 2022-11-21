@@ -5,14 +5,19 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from glpk_test import *
 
+# %%
+# Flask preparation
 app = Flask(__name__, template_folder='templates', static_folder='static')
 cors = CORS(app)
 
-#localchost:5000
+# %%
+#create the website when localchost:5000 is reqeusted
 @app.route("/", methods=["GET"])
 def main_page():
     return render_template('index.html')
 
+# %%
+# Invoke a summaristion with the sent parameter upon a reqeust ending with /summarize
 @app.route("/summarize", methods=["POST"])
 def start_summarize():
    parameters_from_frontend = request.get_json()
@@ -41,31 +46,29 @@ def start_summarize():
                         Timeout =parameters["time_till_timeout_in_ms"] ,
                         toLower=parameters["use_lowercase"],
                         sentenceFactor=parameters["factor_filtering_sentences"],
+                        stopwords=parameters["use_stopwordlist"],
                         dataset=parameters["dataset"]
                         )
    print(summary_as_json)
    return summary_as_json
 
-
+# %%
+#get datasetnames as json upon a reqeust ending with /datasets
 @app.route("/datasets", methods=["GET"])
 def get_datasets()->json:
-    #get datasetnames as json
-    
-    curr_path = os.path.abspath(os.getcwd())
-    curr_path+="\Datensaetze"
-    dir_list = "/usr/src/app/Datensaetze/prepared/" #os.listdir(curr_path)
-    
-    #until dataset file structure is cleaned, chekc if file is a json by checking if the string ends with .json
+    dir_list = "/usr/src/app/Datensaetze/prepared/"
+
     list_of_json_files = []
     for name in os.listdir(dir_list):
+        # check if file is a json by checking if the string ends with .json or jsonl
         if(name.endswith(".json") or name.endswith(".jsonl")):
             list_of_json_files.append(name)
-
 
     dir_list_json = {"files": list_of_json_files}
 
     return jsonify(dir_list_json)
 
+# %%
 #Run the app:
 if __name__ == "__main__":
      init()

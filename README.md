@@ -32,6 +32,7 @@ If you want to have a summary without thinking too much about the internals igno
 of the website. If you want to get a grip on the effects of some parameter hit the "more options" button and change the parameters as you please. Note any decrease in runtime 
 will likely cause the summary to get worse. There are a few options that should be explained a little bit further:
 
+Demo examples: This parameter can be used to give a quick Demonstration of the programm. It overrides other settings and can only be used if the two datasets 26.relonly.jsonl and 39.relonly.jsonl exist.
 Number of concepts to consider: N-grams represent concepts. If the runtime is long try reducing them with this parameter
 Min DF:  Although best known with the TF-IDF representation, we implemented this for all representations in order to filter less frequently occurring concepts. 
 Max DF in %: Although best known with the TF-IDF representation, we implemented this for all representations in order to filter too frequently occurring concepts.
