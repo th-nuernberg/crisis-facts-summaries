@@ -1,4 +1,4 @@
-#FLASK and FLASK-Endpoint
+# %% FLASK and FLASK-Endpoint
 from audioop import maxpp, reverse
 import json
 from statistics import variance
@@ -61,21 +61,27 @@ def clean(text):
 
     return text.strip()
 
-# %% Cleans the text input and then creates Ngramms 
-# The Ngramms are then used as concepts
-def ngrame(originalText_,testDict,toLower,stopwords):
+# %% Prepares the text for tokenisation
+def perpareText(originalText,toLower,stopwords):
     stopwords =[]
     with open('/usr/src/app/Datensaetze/stopwords-en.txt', encoding='utf-8') as file:
-        stopwords = file.read().splitlines()
-    result = []
+        stopwords = file.read().splitlines()   
     text = ""
-    originalText = clean(originalText_)
+
+    originalText = clean(originalText)
     if toLower:
         originalText = originalText.lower()
     if stopwords:
         for w in originalText.split():
             if w not in stopwords:
                 text = text + " " + w
+    return text
+
+# %% Creates Ngramms that are later used as concepts
+def ngrame(text,testDict):
+    result = []
+    
+    # Create Unigrams, Bigramms, Trigramms and Quatrogramms as read from the parameter            
     for i in range(1,5):
         if(testDict[str(i)]):
             ngrame = []
@@ -99,7 +105,8 @@ def extractSentencesNLTK(rawDicts,testDict,toLower,stopwords):
         sentences = list(map(lambda x: x.strip(), sentences))
         for sentence in sentences:
             if len(clean(sentence)) >0:
-                ngrams = list(set(ngrame(sentence,testDict,toLower,stopwords)))
+                text = perpareText(sentence,toLower,stopwords)
+                ngrams = list(set(ngrame(text,testDict)))
                 if len(ngrams) >0:
                     sentencesDicts.append(dict([("timestamp", rawDict['timestamp']),
                                             ("document_id", rawDict['document_id']),
@@ -263,7 +270,7 @@ def calculateOccurrences(bigramList, sentenceBigramList):
     return occ
 
 # %% Calculates a summary using inteager linear programming to find a optimal solution
-def calculateSummary(saetze, weights, occurrences, totalLength):
+def calculateSummary(saetze, weights, occurrences, maxTotalLength):
     i = len(weights)  # Amount of concepts
     l = list(map(lambda x: len(x["sentence"]), saetze))    # Amount of sentences
     j = len(saetze)
@@ -273,7 +280,7 @@ def calculateSummary(saetze, weights, occurrences, totalLength):
 
     # set the functions to solve
     maximize(sum(weights[a] * c[a] for a in range(i)))
-    sum(l[b] * s[b] for b in range(j)) <= totalLength
+    sum(l[b] * s[b] for b in range(j)) <= maxTotalLength
     for a in range(i):
         sum(s[b] * occurrences[b][a] for b in range(j)) >= c[a]
         for b in range(j):
@@ -343,28 +350,33 @@ def calculateSummaryGreedy(sentenceList, sentences, weights, occurrences, maxTot
     return summary
 
 # %% Excution of the functions as needed with the correct parameters. Returns a summary of the selected text and the data for the diagramm
-def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,excludeFactor,calcMethode,sentenceFactor,Timeout,startDate=None,endDate=None,returnorder="",stopwords=True,hardexclude=True,TF=True,IDF=True,minDf=3,maxDf=0.8,toLower=True,question="",exclude=""):
-    testDict = {"1":one, "2":two,"3":three,"4":four}
+def prepareDatasetAndCreateSummary(parameterDict):
+    testDict = {
+        "1":parameterDict["one"], 
+        "2":parameterDict["two"],
+        "3":parameterDict["three"],
+        "4":parameterDict["four"]}
     print("Start!")
     start = time.time()
-    pathToFile = "/usr/src/app/Datensaetze/prepared/"+dataset
+    pathToFile = "/usr/src/app/Datensaetze/prepared/"+parameterDict["dataset"]
     data = readInput(pathToFile)
-    Timeout = Timeout/1000
+    Timeout = parameterDict["Timeout"]/1000
     returnValueTimeout = { "sentences": ["Timeout"],"timestampsforDiagramm": [],"timestamp_dict": {},"amountSentences":0,"amountConcepts":0}
 
     # Test für grafische Darstellung des Diagramms
     timeDataForDiagramm = sum_appearances(data)
 
     # Creates a finegrained text corpus
-    sentences_all = extractSentencesNLTK(data,testDict,toLower,stopwords)
+    sentences_all = extractSentencesNLTK(data,testDict,parameterDict["toLower"],parameterDict["stopwords"])
 
     # Filters the corpus only including the sentences which are in a given timespan
-    sentences = filterTimespan(sentences_all,startDate,endDate)
+    sentences = filterTimespan(sentences_all,parameterDict["startDate"],parameterDict["endDate"])
 
-    if exclude != "" and hardexclude:
+    if parameterDict["exclude"] != "" and parameterDict["hardexclude"]:
         sentences = filter(sentences,exclude)
 
-    if hardexclude:
+    exclude = parameterDict["exclude"]
+    if parameterDict["hardexclude"]:
         exclude= ""
 
     bigramsPerDocument = extractBigramsPerDocument(sentences)
@@ -379,7 +391,9 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
         print("Schritt1:"+str(schritt1-start))
     
     # Calculates the weigth for each bigramm using the reqeusted represtation form
-    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,TF,IDF,minDf,maxDf,percentConcepts,question,exclude,questionFactor,excludeFactor)
+    bigramWeights = extractWeightPerBigram(bigramsPerDocument,sentences,parameterDict["TF"],
+        parameterDict["IDF"],parameterDict["minDf"],parameterDict["maxDf"],parameterDict["percentConcepts"],parameterDict["question"],
+        parameterDict["exclude"],parameterDict["questionFactor"],parameterDict["excludeFactor"])
 
     # Checks if the maximum time for the calculation is up
     schritt2 = time.time()
@@ -389,7 +403,7 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
         print("Schritt2:"+str(schritt2-schritt1))
 
     # Filters the sentences to only include the most promising ones
-    sentences = filterSentences(sentences, bigramWeights,sentenceFactor)
+    sentences = filterSentences(sentences, bigramWeights,parameterDict["sentenceFactor"])
   
     occ = calculateOccurrences(list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).keys()), [s['bigrams'] for s in sentences])
     weights = list(dict(sorted(bigramWeights.items(), key=lambda item:item[1], reverse=True)).values())
@@ -403,19 +417,19 @@ def gesamt(one,two,three,four, dataset,percentConcepts,maxLength,questionFactor,
         print("Schritt3:"+str(schritt3-schritt2))
 
     # Checks if the greedy or the optimal solution is requested
-    if calcMethode == "Greedy":
-        summarySenetencesIncomplete = calculateSummaryGreedy(sentenceList, sentences, weights, occ, maxLength)
+    if parameterDict["calcMethode"] == "Greedy":
+        summarySenetencesIncomplete = calculateSummaryGreedy(sentenceList, sentences, weights, occ, parameterDict["maxLength"])
     else:
-        summarySenetencesIncomplete = calculateSummary(sentences, weights, occ, maxLength)
+        summarySenetencesIncomplete = calculateSummary(sentences, weights, occ, parameterDict["maxLength"])
     summarySenetences = add_sum_appearances(summarySenetencesIncomplete,timeDataForDiagramm)
     
     # Gets the sentences in the reqeusted order
-    if returnorder == "oldest_found_first":
+    if parameterDict["returnorder"] == "oldest_found_first":
         summarySenetences["sentences"] =[]
         timestamps = sorted(summarySenetences["timestamp_dict"])
         for timestamp in timestamps:
             summarySenetences["sentences"].append(summarySenetences["timestamp_dict"][timestamp])
-    if returnorder == "newest_found_first":
+    if parameterDict["returnorder"] == "newest_found_first":
         summarySenetences["sentences"] = []
         timestamps = sorted(summarySenetences["timestamp_dict"],reverse=True)
         for timestamp in timestamps:
