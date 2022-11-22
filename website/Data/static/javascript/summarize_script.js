@@ -341,8 +341,15 @@ function draw_diagramm(response_json){
             },
             onHover: (e) => {
                 let canvasPosition = Chart.helpers.getRelativePosition(e, chart);
+                console.log(chart.data.dataset[0].data[2]);
+
+
+                let meta = chart.getDatasetMeta("Summary Timestamps");
+                console.log(meta);
+                let x = meta.data[1]._model.x;
+                let y = meta.data[1]._model.y;
+                console.log(x + " " + y);
                 
-    
                 // Substitute the appropriate scale IDs
                 let dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
                 let dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
