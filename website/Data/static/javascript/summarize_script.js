@@ -174,7 +174,7 @@ async function make_a_summary(){
 
     //Add each sentence of the summary with space between them
     for(let i = 0; i < response_json["sentences"].length; i++){
-        new_summary.innerHTML += response_json["sentences"][i] + " ";
+        new_summary.innerHTML +=  `<span id=${response_json["timestamp"][i]}>` + response_json["sentences"][i] + " " + "</span>";
     }
     main_Container.append(new_number_sent_conc);
     main_Container.append(new_summary);
