@@ -176,7 +176,10 @@ async function make_a_summary(){
 
     for(let i = 0; i < response_json["sentences"].length; i++){
         let timestamp_key = Object.keys(response_json["timestamp_dict"]).find(key => response_json["timestamp_dict"][key] === response_json["sentences"][i]);
-        let timestamp_Key_Formatted = timestamp_key.slice(0, -17);
+        let timestamp_Key_Formatted = timestamp_key.match('.*T');
+        console.log(timestamp_Key_Formatted);
+        timestamp_Key_Formatted = timestamp_Key_Formatted[0].slice(0, -1);
+        console.log(timestamp_Key_Formatted);
         new_summary.innerHTML +=  `<span class="${timestamp_Key_Formatted}">` + response_json["sentences"][i] + " " + "</span>";
     }
     main_Container.append(new_number_sent_conc);
@@ -358,10 +361,9 @@ function draw_diagramm(response_json){
                         const tooltipModel = context.tooltip;
                         if (tooltipModel.opacity === 0) {
                             tooltipEl.style.opacity = 0;
-                            console.log("Hi :)")//----------------------------------------------Triggert wenn der Punkt verlassen wird
                             let htmlSummary = document.getElementById('new_summary');
                             let childern = htmlSummary.childNodes;
-                            for (var i = 0; i < childern.length; i++) {
+                            for (let i = 0; i < childern.length; i++) {
                                 childern[i].style.color = null;
                             }
                             return;
@@ -383,12 +385,12 @@ function draw_diagramm(response_json){
                         if (tooltipModel.body) {
                             const titleLines = tooltipModel.title || [];
                             const bodyLines = tooltipModel.body.map(getBody);
-                            console.log("Ha :)");//----------------------------------------------Triggert wenn der Punkt betreten wird
     
                             let innerHtml = '<thead>';
     
                             titleLines.forEach(function(title) {
                                 innerHtml += '<tr><th>' + title + '</th></tr>';
+
                                 let splitted = title.split(" ");
                                 let month_wrong_format = new Date(Date.parse(splitted[0] +" 1, 2012")).getMonth()+1;
                                 let month = month_wrong_format.toString();
@@ -401,8 +403,10 @@ function draw_diagramm(response_json){
                                 }
                                 let year = splitted[2].replace(",","");
                                 let readyTimestamp = year + "-" + month + "-" + day;
+                                console.log(readyTimestamp);
 
                                 let elements = document.getElementsByClassName(readyTimestamp);
+                                console.log(elements);
                                 for (var i = 0; i < elements.length; i++) {
                                     elements[i].style.color = "red";
                                 }

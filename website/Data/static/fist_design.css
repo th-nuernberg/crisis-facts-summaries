@@ -2,6 +2,7 @@ html {
     text-align: center;
     height: 100%;
     }
+span { transition: 0.2s ease-in-out;}
 .header {
     padding-bottom: 4px;
     background-color:#0046a0;
@@ -434,3 +435,4 @@ html {
     margin-bottom: 0%;
     margin-top: 20px;
   }
+
