@@ -389,7 +389,6 @@ function draw_diagramm(response_json){
                             let innerHtml = '<thead>';
     
                             titleLines.forEach(function(title) {
-                                innerHtml += '<tr><th>' + title + '</th></tr>';
 
                                 let splitted = title.split(" ");
                                 let month_wrong_format = new Date(Date.parse(splitted[0] +" 1, 2012")).getMonth()+1;
@@ -403,22 +402,23 @@ function draw_diagramm(response_json){
                                 }
                                 let year = splitted[2].replace(",","");
                                 let readyTimestamp = year + "-" + month + "-" + day;
-                                console.log(readyTimestamp);
+                                innerHtml += '<tr><th><font size="3">' + day + "." + month + "." + year + '</font></th></tr>';
 
                                 let elements = document.getElementsByClassName(readyTimestamp);
-                                console.log(elements);
                                 for (var i = 0; i < elements.length; i++) {
-                                    elements[i].style.color = "red";
+                                    const colors = tooltipModel.labelColors[0];
+                                    elements[i].style.color = colors.borderColor;
                                 }
-                                
                             });
                             innerHtml += '</thead><tbody>';
     
                             bodyLines.forEach(function(body, i) {
                                 const colors = tooltipModel.labelColors[i];
-                                let style = 'background:' + colors.backgroundColor;
+                                let style = 'background:' + "null";
+                                style += '; color:' + colors.backgroundColor;
                                 style += '; border-color:' + colors.borderColor;
                                 style += '; border-width: 2px';
+                                style += '; font-size: 15px';
                                 const span = '<span style="' + style + '">' + body + '</span>';
                                 innerHtml += '<tr><td>' + span + '</td></tr>';
                             });
@@ -441,7 +441,6 @@ function draw_diagramm(response_json){
                         tooltipEl.style.pointerEvents = 'none';
                     }
                 }
-
             }
         }       
     },)
