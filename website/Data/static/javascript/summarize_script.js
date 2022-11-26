@@ -176,7 +176,8 @@ async function make_a_summary(){
 
     for(let i = 0; i < response_json["sentences"].length; i++){
         let timestamp_key = Object.keys(response_json["timestamp_dict"]).find(key => response_json["timestamp_dict"][key] === response_json["sentences"][i]);
-        new_summary.innerHTML +=  `<span id="${timestamp_key}">` + response_json["sentences"][i] + " " + "</span>";
+        let timestamp_Key_Formatted = timestamp_key.slice(0, -17);
+        new_summary.innerHTML +=  `<span class="${timestamp_Key_Formatted}">` + response_json["sentences"][i] + " " + "</span>";
     }
     main_Container.append(new_number_sent_conc);
     main_Container.append(new_summary);
@@ -344,7 +345,6 @@ function draw_diagramm(response_json){
                     external: function(context) {
                         // Tooltip Element
                         let tooltipEl = document.getElementById('chartjs-tooltip');
-                        console.log("Hey :)"); //----------------------------------------------Triggert beim ersten mal Hovern und danach wenn der Punkt verlassen wird
     
                         // Create element on first render
                         if (!tooltipEl) {
@@ -358,6 +358,12 @@ function draw_diagramm(response_json){
                         const tooltipModel = context.tooltip;
                         if (tooltipModel.opacity === 0) {
                             tooltipEl.style.opacity = 0;
+                            console.log("Hi :)")//----------------------------------------------Triggert wenn der Punkt verlassen wird
+                            let htmlSummary = document.getElementById('new_summary');
+                            let childern = htmlSummary.childNodes;
+                            for (var i = 0; i < childern.length; i++) {
+                                childern[i].style.color = null;
+                            }
                             return;
                         }
     
@@ -383,22 +389,23 @@ function draw_diagramm(response_json){
     
                             titleLines.forEach(function(title) {
                                 innerHtml += '<tr><th>' + title + '</th></tr>';
-                                console.log(title);//-----------------------------------------------Hier bekommt man den Timestamp
                                 let splitted = title.split(" ");
-                                let month = new Date(Date.parse(splitted[0] +" 1, 2012")).getMonth()+1;
+                                let month_wrong_format = new Date(Date.parse(splitted[0] +" 1, 2012")).getMonth()+1;
+                                let month = month_wrong_format.toString();
                                 if(month.length < 2){
-                                    month = "0" + month;
+                                    month = `0${month}`;
                                 }
                                 let day = splitted[1].replace(",","");
                                 if(day.length < 2){
-                                    day = "0" + day;
+                                    day = `0${day}`;
                                 }
                                 let year = splitted[2].replace(",","");
-
-
                                 let readyTimestamp = year + "-" + month + "-" + day;
-                                console.log(readyTimestamp);
-                                let elements = document.querySelectorAll(`[id^="${readyTimestamp}"]`);
+
+                                let elements = document.getElementsByClassName(readyTimestamp);
+                                for (var i = 0; i < elements.length; i++) {
+                                    elements[i].style.color = "red";
+                                }
                                 
                             });
                             innerHtml += '</thead><tbody>';
