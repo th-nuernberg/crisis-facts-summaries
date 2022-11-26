@@ -338,24 +338,82 @@ function draw_diagramm(response_json){
                     offset: 'top'
                 },
                 tooltip: {
-                    events: ['click']
+                    // Disable the on-canvas tooltip
+                    enabled: false,
+    
+                    external: function(context) {
+                        // Tooltip Element
+                        let tooltipEl = document.getElementById('chartjs-tooltip');
+                        console.log("Hey :)"); //----------------------------------------------Triggert beim ersten mal Hovern und danach wenn der Punkt verlassen wird
+    
+                        // Create element on first render
+                        if (!tooltipEl) {
+                            tooltipEl = document.createElement('div');
+                            tooltipEl.id = 'chartjs-tooltip';
+                            tooltipEl.innerHTML = '<table></table>';
+                            document.body.appendChild(tooltipEl);
+                        }
+    
+                        // Hide if no tooltip
+                        const tooltipModel = context.tooltip;
+                        if (tooltipModel.opacity === 0) {
+                            tooltipEl.style.opacity = 0;
+                            return;
+                        }
+    
+                        // Set caret Position
+                        tooltipEl.classList.remove('above', 'below', 'no-transform');
+                        if (tooltipModel.yAlign) {
+                            tooltipEl.classList.add(tooltipModel.yAlign);
+                        } else {
+                            tooltipEl.classList.add('no-transform');
+                        }
+    
+                        function getBody(bodyItem) {
+                            return bodyItem.lines;
+                        }
+    
+                        // Set Text
+                        if (tooltipModel.body) {
+                            const titleLines = tooltipModel.title || [];
+                            const bodyLines = tooltipModel.body.map(getBody);
+                            console.log("Ha :)");//----------------------------------------------Triggert wenn der Punkt betreten wird
+    
+                            let innerHtml = '<thead>';
+    
+                            titleLines.forEach(function(title) {
+                                innerHtml += '<tr><th>' + title + '</th></tr>';
+                            });
+                            innerHtml += '</thead><tbody>';
+    
+                            bodyLines.forEach(function(body, i) {
+                                const colors = tooltipModel.labelColors[i];
+                                let style = 'background:' + colors.backgroundColor;
+                                style += '; border-color:' + colors.borderColor;
+                                style += '; border-width: 2px';
+                                const span = '<span style="' + style + '">' + body + '</span>';
+                                innerHtml += '<tr><td>' + span + '</td></tr>';
+                            });
+                            innerHtml += '</tbody>';
+    
+                            let tableRoot = tooltipEl.querySelector('table');
+                            tableRoot.innerHTML = innerHtml;
+                        }
+    
+                        const position = context.chart.canvas.getBoundingClientRect();
+                        const bodyFont = Chart.helpers.toFont(tooltipModel.options.bodyFont);
+    
+                        // Display, position, and set styles for font
+                        tooltipEl.style.opacity = 1;
+                        tooltipEl.style.position = 'absolute';
+                        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                        tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                        tooltipEl.style.font = bodyFont.string;
+                        tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
+                        tooltipEl.style.pointerEvents = 'none';
+                    }
                 }
-            },
-            onHover: (e) => {
-                let canvasPosition = Chart.helpers.getRelativePosition(e, chart);
-                console.log(chart.data.dataset[0].data[2]);
 
-
-                let meta = chart.getDatasetMeta("Summary Timestamps");
-                console.log(meta);
-                let x = meta.data[1]._model.x;
-                let y = meta.data[1]._model.y;
-                console.log(x + " " + y);
-                
-                // Substitute the appropriate scale IDs
-                let dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
-                let dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
-                console.log(dataX + " " + dataY);
             }
         }       
     },)
