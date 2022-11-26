@@ -159,7 +159,7 @@ async function make_a_summary(){
     open_button_hide_loader(analyse_button,loader);
 
 //#region create the new html element with the sentences from the json as innerHTML and append to the Summary
-
+    
     let main_Container = document.getElementById("Summary");
     let new_number_sent_conc = document.createElement("p");
     let new_summary = document.createElement("p");
@@ -173,8 +173,10 @@ async function make_a_summary(){
     new_number_sent_conc.innerHTML += "Number of Sentences used: " + response_json["amountSentences"] + " | Number of Concepts used: " + response_json["amountConcepts"];
 
     //Add each sentence of the summary with space between them
+
     for(let i = 0; i < response_json["sentences"].length; i++){
-        new_summary.innerHTML +=  `<span id=${response_json["timestamp"][i]}>` + response_json["sentences"][i] + " " + "</span>";
+        let timestamp_key = Object.keys(response_json["timestamp_dict"]).find(key => response_json["timestamp_dict"][key] === response_json["sentences"][i]);
+        new_summary.innerHTML +=  `<span id="${timestamp_key}">` + response_json["sentences"][i] + " " + "</span>";
     }
     main_Container.append(new_number_sent_conc);
     main_Container.append(new_summary);
