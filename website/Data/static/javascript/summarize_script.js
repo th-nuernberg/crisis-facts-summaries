@@ -383,6 +383,23 @@ function draw_diagramm(response_json){
     
                             titleLines.forEach(function(title) {
                                 innerHtml += '<tr><th>' + title + '</th></tr>';
+                                console.log(title);//-----------------------------------------------Hier bekommt man den Timestamp
+                                let splitted = title.split(" ");
+                                let month = new Date(Date.parse(splitted[0] +" 1, 2012")).getMonth()+1;
+                                if(month.length < 2){
+                                    month = "0" + month;
+                                }
+                                let day = splitted[1].replace(",","");
+                                if(day.length < 2){
+                                    day = "0" + day;
+                                }
+                                let year = splitted[2].replace(",","");
+
+
+                                let readyTimestamp = year + "-" + month + "-" + day;
+                                console.log(readyTimestamp);
+                                let elements = document.querySelectorAll(`[id^="${readyTimestamp}"]`);
+                                
                             });
                             innerHtml += '</thead><tbody>';
     
