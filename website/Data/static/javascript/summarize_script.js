@@ -407,7 +407,7 @@ function draw_diagramm(response_json){
                                 let elements = document.getElementsByClassName(readyTimestamp);
                                 for (var i = 0; i < elements.length; i++) {
                                     const colors = tooltipModel.labelColors[0];
-                                    elements[i].style.color = colors.borderColor;
+                                    elements[i].style.color = "red";
                                 }
                             });
                             innerHtml += '</thead><tbody>';
