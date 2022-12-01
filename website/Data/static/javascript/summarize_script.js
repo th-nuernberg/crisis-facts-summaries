@@ -607,45 +607,36 @@ function open_button_hide_loader(analyse_button,loader){
 
     //Set all default parameters which do not change or change very little
     select_default_values();
+    demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
+    demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
 
-//#region Large switch case which selects parameters, all slightly similar but also different so it looks like boiler plate code
+//#region Large switch case which selects parameters, all slightly similar but also different so it looks similar to boiler plate code
     switch(value){
         default: break;
         case "1":
-            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
-            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
             demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"df");
             break;
         case "2": 
-            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
-            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
             demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"tf-idf");
             break;
         case "3":
             demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Integer_linear");
-            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
             demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"tf-idf");
             demo_ex_set_tf_idf_values(3,0.9); 
             break;
         case "4":
-            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
-            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
             demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"tf-idf");
             demo_ex_set_tf_idf_values(3,0.8);
             break;
         case "5":
-            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
-            demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"39.relonly.jsonl");
             demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"tf-idf");
             demo_ex_check_all_context();
             break;
         case "6":
-            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
             demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"26.relonly.jsonl");
             demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"df");
             break;
         case "7":
-            demo_ex_dropdown_select_func(dropdown_lenght,dropdown_function_type,"Greedy");
             demo_ex_dropdown_select_func(dataset_lenght,type_dataset,"26.relonly.jsonl");
             demo_ex_dropdown_select_func(type_of_represnt_length,drop_type_of_represent,"df");
             document.getElementById("filter_sentences").value = 2.5;
