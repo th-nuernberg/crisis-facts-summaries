@@ -2,7 +2,9 @@ html {
     text-align: center;
     height: 100%;
     }
-span { transition: 0.2s ease-in-out;}
+span { 
+  transition: 0.2s ease-in-out;
+}
 .header {
     padding-bottom: 4px;
     background-color:#0046a0;
@@ -60,7 +62,6 @@ span { transition: 0.2s ease-in-out;}
   background-color: rgb(197, 197, 197);
   border-color: whitesmoke;
 }
-
 .body {
     margin: 0%;
     font-family: Arial, Helvetica, sans-serif;
@@ -153,9 +154,6 @@ span { transition: 0.2s ease-in-out;}
 }
 #Label{
     font-weight: bolder;
-    align-self: left;
-    float: left;
-    margin-bottom: 10px;
 }
 #exclude_div{
   margin-top: 10px;
@@ -202,7 +200,6 @@ span { transition: 0.2s ease-in-out;}
     margin-top: 4px;
     overflow: hidden;
 }
-
 .time_D_Graph{
     margin: 5em;
 }
@@ -277,7 +274,6 @@ span { transition: 0.2s ease-in-out;}
   .active:after {
     content: "\2212";
   }
-
  /* The Checkmark container */
 .container_check {
     display: block;
@@ -292,7 +288,6 @@ span { transition: 0.2s ease-in-out;}
     user-select: none;
     text-align: left;
   }
-  
   /* Hide the browser's default checkbox */
   .container_check input {
     position: absolute;
@@ -325,12 +320,10 @@ span { transition: 0.2s ease-in-out;}
   #box_stopwords{
     font-size: 18px;
   }
-  
   /* On mouse-over, add a grey background color */
   .container_check:hover input ~ .checkmark {
     background-color: rgba(204, 204, 204, 0.312);
   }
-  
   /* When the checkbox is checked, add a blue background */
   .container_check input:checked ~ .checkmark {
     background-color: #2196F3;
@@ -342,19 +335,16 @@ span { transition: 0.2s ease-in-out;}
   .container_check input:checked ~ #check_hard_exclude_button {
     background-color: #2196F3;
   }
-  
   /* Create the checkmark/indicator (hidden when not checked) */
   .checkmark:after {
     content: "";
     position: absolute;
     display: none;
   }
-  
   /* Show the checkmark when checked */
   .container_check input:checked ~ .checkmark:after {
     display: block;
   }
-  
   /* Style the checkmark/indicator */
   .container_check .checkmark:after {
     left: 9px;
@@ -400,9 +390,6 @@ span { transition: 0.2s ease-in-out;}
   }
   #grid_colm_4{
     grid-column: 4;
-  }
-  #grid_colm_5{
-    grid-column: 5;
   }
   #type_of_summary_return{
     max-width: 240px;
