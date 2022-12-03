@@ -205,12 +205,6 @@ async function make_a_summary(){
  * After all timetstamps are saved in data arrays the chart object will be created
  * 
  * In this object, two datasets will be configured. One for all timestamps and one for the timestamps of the selected sentences
- * 
- * Two add-ons / plugins are implemented 
- * 
- * First the time-adapter (to display the time on the timeline correctly)
- * 
- * Last the zoom-plugin (so you can zoom in the diagramm)
  */
 function draw_diagramm(response_json){
     if(window.chart){
@@ -447,7 +441,6 @@ function draw_diagramm(response_json){
 
     window.chart = chart;
 //#endregion
-
 }
 
 
