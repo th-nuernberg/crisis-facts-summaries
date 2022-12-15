@@ -3,7 +3,7 @@ import json
 import os
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-from glpk_test import *
+from text_corpus_summarization import *
 
 # %% Flask preparation
 app = Flask(__name__, template_folder='templates', static_folder='static')
