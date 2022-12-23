@@ -5,7 +5,7 @@ The Crisis Facts application is a tool to create a summary of the text corpus ab
 the quality of the created summary and the runtime. Additionaly, it shows in a diagramme at which time the texts of the corpus were created. 
 
 ## Installation
-Before running files, install python 3 and install all needed packages with the following commands:
+Before running files without docker and webapplication, install python 3 and install all needed packages with the following commands:
 
 pip install flask
 pip install flask-cors
@@ -17,15 +17,13 @@ python3 -m nltk.downloader popular
 
 In order to run the application with minimal effort download docker and use:
 
-docker build 
+docker build -t <name> .
 
-to create an image in the folder website. If you run into issues build an image,
-you should go to the file Readme in the folder website. If you build the image successfully, you can create an container with the command:
+to create an image in the folder website. If you build the image successfully, you can create an container with the command:
 
-docker run -v <PathToDocuments>:/usr/src/app/Datensaetze/ -p 5000:5000 <ImageName>
+docker run -v <PathToDocuments>:/usr/src/app/Datensaetze/prepared/ -p 5000:5000 <ImageName>
 
-in order to get a working application. You can open the website in the docker container or with localhost over port 5000. If you are lacking datasets download them at the Crisis Facts website and transform them to fit the needs of the
-application with the scripts in the folder archive. Then you can open the website and start experimenting.
+in order to get a working application. You can open the website in the docker container or with localhost over port 5000. If you are lacking datasets download them at the Crisis Facts website and transform them to fit the needs of the application with the scripts in the folder archive. Then you can open the website and start experimenting.
 
 ## Usage
 If you want to have a summary without thinking too much about the internals ignore the "more options" button and hit the "Analyze" button. Soon there will be summary at the bottom

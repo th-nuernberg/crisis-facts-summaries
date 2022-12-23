@@ -1,19 +1,15 @@
-# Kommentierte Stellen einkommentieren, falls der Container ohne Volume laufen soll
+# Kommentierte Stellen auskommentieren, falls der Container mit Volume laufen soll
 FROM python:3
 
 WORKDIR /usr/src/app
-#COPY /Data /usr/src/app
+#auskommentieren falls nötig
+COPY /Data /usr/src/app 
 
 RUN apt-get -y update
 
-#RUN mkdir switch
+#Debugging 
+#RUN mkdir switch 
 #RUN chmod a+rwx /usr/src/app/switch
-
-RUN apt-get -y install npm
-#RUN npm install chart.js
-#RUN npm install date-fns chartjs-adapter-date-fns --save
-#RUN npm install chartjs-plugin-datalabels --save
-#RUN npm install chartjs-plugin-zoom
 
 RUN pip install flask
 RUN pip install flask-cors
@@ -21,11 +17,10 @@ RUN pip install pymprog
 RUN pip install nltk
 RUN pip install -U scikit-learn
 RUN pip install -U spacy
-#RUN python -m spacy download en_core_web_sm
 RUN python3 -m nltk.downloader popular
 
-#RUN mv /usr/src/app/node_modules/ /usr/src/app/static/
-#RUN chmod a+rwx /usr/src/app/text_corpus_summarization.py
+#auskommentieren falls nötig
+RUN chmod a+rwx /usr/src/app/text_corpus_summarization.py
 
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 EXPOSE 5000
